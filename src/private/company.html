@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Baari Company</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #EDF2EF; --card: #FFFFFF; --ink: #10241B; --muted: #4A6154; --faint: #6E8377; --line: #DCE6E0; --row: #F4F8F6;
+  --brand: #12805A; --on-brand: #FFFFFF; --soft: #DCF1E6; --soft-ink: #0B5A3F; --nav: #0A1F17; --nav-ink: #BFD6CA;
+  --ok: #17683F; --warn: #8A5A00; --warn-bg: #FFF1D0; --bad: #AE2F1B; --bad-bg: #FBE5E1; --grid: #E3ECE7;
+  --font: "Figtree", "Segoe UI", system-ui, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { color-scheme: light; }
+body { background: var(--bg); color: var(--ink); font: 400 17px/1.5 var(--font); -webkit-font-smoothing: antialiased; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; border-radius: 8px; }
+[hidden] { display: none !important; }
+.i { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+/* login */
+.login { min-height: 100vh; display: grid; place-items: center; padding: 20px; background: var(--nav); }
+.lcard { width: 100%; max-width: 400px; background: var(--card); border-radius: 22px; padding: 28px; }
+.lcard h1 { font: 800 28px/1.1 var(--font); letter-spacing: -0.02em; margin-top: 18px; }
+.lcard p { color: var(--muted); margin-top: 6px; }
+.brandrow { display: flex; align-items: center; gap: 10px; font: 800 21px/1 var(--font); letter-spacing: -0.02em; }
+.logo { width: 34px; height: 34px; border-radius: 11px; background: var(--brand); color: #fff; display: grid; place-items: center; }
+.tag { font: 700 14px/1 var(--font); padding: 4px 8px; border-radius: 99px; background: var(--soft); color: var(--soft-ink); }
+.field { margin-top: 14px; }
+.field label { display: block; font-weight: 600; font-size: 16px; margin-bottom: 5px; }
+input, select, textarea { width: 100%; padding: 11px 12px; border: 1.5px solid var(--line); border-radius: 12px; background: #fff; }
+textarea { resize: vertical; min-height: 70px; }
+input:focus, select:focus, textarea:focus { border-color: var(--brand); outline: none; box-shadow: 0 0 0 3px var(--soft); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 18px; border: 0; border-radius: 12px; background: var(--brand); color: var(--on-brand); font-weight: 700; cursor: pointer; }
+.btn:hover { filter: brightness(1.08); }
+.btn.full { width: 100%; margin-top: 18px; }
+.btn.ghost { background: var(--soft); color: var(--soft-ink); }
+.btn.danger { background: var(--bad-bg); color: var(--bad); }
+.btn.sm { padding: 7px 12px; font-size: 16px; border-radius: 10px; }
+.btn[disabled] { opacity: .55; cursor: default; }
+.msg { margin-top: 12px; font-size: 16px; min-height: 20px; }
+.msg.err { color: var(--bad); } .msg.good { color: var(--ok); }
+.note { color: var(--faint); font-size: 15px; margin-top: 14px; }
+
+/* shell */
+.shell { display: grid; grid-template-columns: 252px 1fr; min-height: 100vh; }
+.side { background: var(--nav); color: var(--nav-ink); padding: 18px 14px; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 4px; }
+.side .brandrow { color: #fff; padding: 4px 8px 16px; }
+.side .tag { background: rgba(255,255,255,.14); color: #fff; }
+.nav { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; border: 0; background: none; color: var(--nav-ink); font-weight: 600; cursor: pointer; text-align: left; width: 100%; }
+.nav:hover { background: rgba(255,255,255,.07); color: #fff; }
+.nav[aria-current="page"] { background: #fff; color: var(--nav); }
+.side .me { margin-top: auto; padding: 12px 8px 0; border-top: 1px solid rgba(255,255,255,.12); font-size: 16px; }
+.side .me b { display: block; color: #fff; }
+.side .me button { background: none; border: 0; color: var(--nav-ink); text-decoration: underline; cursor: pointer; padding: 6px 0 0; }
+.main { padding: 26px clamp(16px, 3vw, 36px) 60px; min-width: 0; max-width: 1280px; }
+.head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.head h1 { font: 800 30px/1.1 var(--font); letter-spacing: -0.02em; }
+.head p { color: var(--muted); margin-top: 3px; }
+.tools { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.tools input, .tools select { width: auto; min-width: 180px; padding: 8px 12px; }
+
+/* tiles and cards */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.tile { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; }
+.tile span { display: block; color: var(--muted); font-size: 16px; }
+.tile b { display: block; font: 700 32px/1.15 var(--font); letter-spacing: -0.02em; margin-top: 2px; }
+.tile small { color: var(--faint); font-size: 15px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; margin-top: 14px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; min-width: 0; }
+.card + .card { margin-top: 14px; } .grid2 .card + .card { margin-top: 0; }
+.card h2 { font: 700 19px/1.25 var(--font); letter-spacing: -0.01em; }
+.card .sub { color: var(--muted); font-size: 16px; margin-top: 2px; }
+.cardhead { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.seg { display: inline-flex; background: var(--row); border-radius: 10px; padding: 3px; }
+.seg button { border: 0; background: none; padding: 4px 10px; border-radius: 8px; font-size: 15px; font-weight: 600; color: var(--muted); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+
+/* charts */
+.chart { position: relative; margin-top: 6px; }
+.chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+.chart .gl { stroke: var(--grid); stroke-width: 1; }
+.chart text { fill: var(--muted); font: 500 14px var(--font); }
+.chart .bar { fill: var(--brand); }
+.chart .hit:hover + .bar, .chart .hit.on + .bar { fill: #0B5A3F; }
+.tip { position: absolute; pointer-events: none; background: var(--nav); color: #fff; border-radius: 10px; padding: 6px 10px; font-size: 15px; white-space: nowrap; transform: translate(-50%, -100%); z-index: 3; }
+.tip b { font-weight: 700; }
+table.t { width: 100%; border-collapse: collapse; font-size: 16px; }
+.t th { text-align: left; font-weight: 600; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.t td { padding: 10px; border-bottom: 1px solid var(--grid); vertical-align: middle; }
+.t tr.click { cursor: pointer; } .t tr.click:hover td { background: var(--row); }
+.t td.n, .t th.n { text-align: right; font-variant-numeric: tabular-nums; }
+.scroll { overflow-x: auto; }
+.pill { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: 14px; font-weight: 700; background: var(--soft); color: var(--soft-ink); white-space: nowrap; }
+.pill.warn { background: var(--warn-bg); color: var(--warn); } .pill.bad { background: var(--bad-bg); color: var(--bad); } .pill.off { background: #E6EAE8; color: #4A5650; }
+.meter { height: 8px; border-radius: 99px; background: var(--soft); overflow: hidden; margin-top: 6px; }
+.meter i { display: block; height: 100%; background: var(--brand); border-radius: 99px; }
+.mrow { margin-top: 12px; } .mrow div { display: flex; justify-content: space-between; font-size: 16px; }
+.list { list-style: none; } .list li { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--grid); font-size: 16px; }
+.list li:last-child { border-bottom: 0; } .list span:last-child { color: var(--muted); text-align: right; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; font-size: 16px; margin-top: 8px; } .kv dt { color: var(--muted); } .kv dd { text-align: right; font-variant-numeric: tabular-nums; }
+.empty { color: var(--muted); padding: 14px 0; font-size: 16px; }
+.drawer { position: fixed; inset: 0 0 0 auto; width: min(460px, 100%); background: var(--card); box-shadow: -10px 0 40px rgba(0,0,0,.18); z-index: 20; padding: 20px; overflow-y: auto; }
+.scrim { position: fixed; inset: 0; background: rgba(10,31,23,.35); z-index: 19; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.top-mobile { display: none; }
+
+@media (max-width: 860px) {
+  .shell { grid-template-columns: 1fr; }
+  .side { position: static; height: auto; flex-direction: row; flex-wrap: wrap; padding: 10px; gap: 4px; }
+  .side .brandrow { width: 100%; padding-bottom: 6px; }
+  .nav { width: auto; padding: 8px 12px; }
+  .side .me { width: 100%; margin-top: 6px; display: flex; gap: 10px; align-items: baseline; }
+  .grid2 { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-logo" viewBox="0 0 24 24"><path d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.6-7 10-7 10z"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></symbol>
+  <symbol id="i-clinic" viewBox="0 0 24 24"><path d="M4 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16M14 10h5a1 1 0 0 1 1 1v10M2 21h20M8 8v4M6 10h4"/></symbol>
+  <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
+  <symbol id="i-server" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></symbol>
+  <symbol id="i-log" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h7"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></symbol>
+</svg>
+
+<!-- login -->
+<div class="login" id="loginView" hidden>
+  <form class="lcard" id="lf" autocomplete="on">
+    <div class="brandrow"><span class="logo"><svg class="i"><use href="#i-logo"/></svg></span>Baari <span class="tag">Company</span></div>
+    <h1>Company login</h1>
+    <p>For the Baari team only. Clinic and patient logins do not work here.</p>
+    <div class="field"><label for="u">Username</label><input id="u" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
+    <div class="field"><label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password" required></div>
+    <button class="btn full" id="lgo" type="submit">Log in</button>
+    <div class="msg err" id="lmsg" role="alert"></div>
+  </form>
+</div>
+
+<!-- app -->
+<div class="shell" id="appView" hidden>
+  <aside class="side">
+    <div class="brandrow"><span class="logo"><svg class="i"><use href="#i-logo"/></svg></span>Baari <span class="tag">Company</span></div>
+    <nav id="nav" style="display:contents">
+      <button class="nav" data-tab="overview"><svg class="i"><use href="#i-home"/></svg>Overview</button>
+      <button class="nav" data-tab="insights"><svg class="i"><use href="#i-spark"/></svg>Insights</button>
+      <button class="nav" data-tab="clinics"><svg class="i"><use href="#i-clinic"/></svg>Clinics</button>
+      <button class="nav" data-tab="patients"><svg class="i"><use href="#i-people"/></svg>Patients</button>
+      <button class="nav" data-tab="portal"><svg class="i"><use href="#i-globe"/></svg>Patient portal</button>
+      <button class="nav" data-tab="system"><svg class="i"><use href="#i-server"/></svg>System</button>
+      <button class="nav" data-tab="settings"><svg class="i"><use href="#i-gear"/></svg>Settings and team</button>
+      <button class="nav" data-tab="activity"><svg class="i"><use href="#i-log"/></svg>Activity</button>
+    </nav>
+    <div class="me"><b id="meName"></b><span id="meRole"></span><br><button id="out" type="button">Log out</button></div>
+  </aside>
+  <main class="main" id="main" tabindex="-1"></main>
+</div>
+<div id="layer"></div>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const num = (n) => Number(n || 0).toLocaleString('en-IN');
+const rupee = (n) => '₹' + Number(n || 0).toLocaleString('en-IN');
+const compact = (n) => (n >= 100000 ? (n / 100000).toFixed(n % 100000 ? 1 : 0) + 'L' : n >= 1000 ? (n / 1000).toFixed(n % 1000 ? 1 : 0) + 'K' : String(n));
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const dshort = (iso) => { const [, m, d] = String(iso).split('-'); return `${Number(d)} ${MON[Number(m) - 1]}`; };
+const when = (s) => { if (!s) return 'never'; const d = new Date(String(s).replace(' ', 'T') + 'Z'); return isNaN(d) ? esc(s) : d.toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }); };
+const cap = (s) => String(s || '').replace(/^./, (c) => c.toUpperCase());
+let me = null, tab = 'overview', cache = {};
+
+async function api(path, opts) {
+  const r = await fetch('/api/company' + path, { credentials: 'same-origin', ...(opts || {}), headers: { 'Content-Type': 'application/json' }, body: opts && opts.body ? JSON.stringify(opts.body) : undefined });
+  if (r.status === 401 && path !== '/login') { showLogin(); throw new Error('Log in to continue.'); }
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || 'Something went wrong.');
+  return j;
+}
+const isAdmin = () => me && me.role === 'admin';
+
+/* ---------- login ---------- */
+function showLogin() { me = null; $('#appView').hidden = true; $('#loginView').hidden = false; history.replaceState(null, '', '/company/login'); }
+$('#lf').addEventListener('submit', async (e) => {
+  e.preventDefault(); const m = $('#lmsg'); m.textContent = ''; $('#lgo').disabled = true;
+  try { me = await api('/login', { method: 'POST', body: { username: $('#u').value, password: $('#pw').value } }); $('#pw').value = ''; start(); }
+  catch (err) { m.textContent = err.message; } finally { $('#lgo').disabled = false; }
+});
+$('#out').onclick = async () => { try { await api('/logout', { method: 'POST' }); } catch {} showLogin(); };
+async function boot() { try { me = await api('/me'); start(); } catch { showLogin(); } }
+function start() {
+  $('#loginView').hidden = true; $('#appView').hidden = false; history.replaceState(null, '', '/company');
+  $('#meName').textContent = me.name; $('#meRole').textContent = me.role === 'admin' ? 'Admin' : 'View only';
+  go(tab);
+}
+
+/* ---------- tabs ---------- */
+document.querySelectorAll('.nav').forEach((b) => b.addEventListener('click', () => go(b.dataset.tab)));
+async function go(t) {
+  tab = t; closeDrawer();
+  document.querySelectorAll('.nav').forEach((b) => { if (b.dataset.tab === t) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+  const main = $('#main'); main.innerHTML = '<p class="empty">Loading…</p>';
+  try { await VIEWS[t](main); } catch (err) { if (err.message !== 'Log in to continue.') main.innerHTML = `<p class="empty" role="alert">${esc(err.message)}</p>`; }
+  window.scrollTo(0, 0);
+}
+const head = (title, sub, tools = '') => `<div class="head"><div><h1>${esc(title)}</h1><p>${esc(sub)}</p></div><div class="tools">${tools}</div></div>`;
+const tile = (label, value, small = '') => `<div class="tile"><span>${esc(label)}</span><b>${value}</b>${small ? `<small>${esc(small)}</small>` : ''}</div>`;
+const healthPill = (c) => `<span class="pill ${c.health === 'warn' ? 'bad' : c.health === 'quiet' ? 'warn' : c.health === 'off' ? 'off' : ''}">${esc(c.why)}</span>`;
+
+/* ---------- bar chart (single series, brand green, thin rounded bars, hover tooltip, table view) ---------- */
+function niceMax(v) { if (v <= 4) return 4; const p = 10 ** Math.floor(Math.log10(v)); const f = v / p; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p; }
+function barChart(el, data, { unit = 'bookings', every = 7, fmt = (d) => d.label } = {}) {
+  const W = 520, H = 210, L = 40, B = 30, T = 18, R = 6, n = data.length;
+  const max = niceMax(Math.max(...data.map((d) => d.v), 0)), plotW = W - L - R, plotH = H - T - B, slot = plotW / n, bw = Math.min(24, slot - 6);
+  const y = (v) => T + plotH - (v / max) * plotH;
+  let g = '';
+  for (const t of [0, max / 2, max]) g += `<line class="gl" x1="${L}" x2="${W - R}" y1="${y(t)}" y2="${y(t)}"/><text x="${L - 6}" y="${y(t) + 4}" text-anchor="end">${compact(Math.round(t))}</text>`;
+  const top = data.reduce((m, d, i) => (d.v > data[m].v ? i : m), 0);
+  data.forEach((d, i) => {
+    const cx = L + slot * i + slot / 2, h = Math.max(d.v ? 2 : 0, (d.v / max) * plotH), x = cx - bw / 2, yy = T + plotH - h, r = Math.min(4, bw / 2, h);
+    g += `<rect class="hit" data-i="${i}" x="${L + slot * i}" y="${T}" width="${slot}" height="${plotH + B - 6}" fill="transparent"/>`;
+    if (h > 0) g += `<path class="bar" d="M${x},${T + plotH} V${yy + r} Q${x},${yy} ${x + r},${yy} H${x + bw - r} Q${x + bw},${yy} ${x + bw},${yy + r} V${T + plotH} Z" pointer-events="none"/>`;
+    if (i % every === every - 1 || i === 0 && n <= 8) g += `<text x="${cx}" y="${H - 8}" text-anchor="middle">${esc(d.label)}</text>`;
+    if (i === top && d.v > 0) g += `<text x="${cx}" y="${yy - 5}" text-anchor="middle" style="fill:var(--ink);font-weight:700">${d.v}</text>`;
+  });
+  const id = 'c' + Math.random().toString(36).slice(2, 7);
+  el.innerHTML = `<div class="cardhead" style="margin:0"><span></span><div class="seg" role="group" aria-label="View"><button type="button" aria-pressed="true" data-v="chart">Chart</button><button type="button" aria-pressed="false" data-v="table">Table</button></div></div>
+    <div class="chart" id="${id}"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(unit)} chart">${g}</svg><div class="tip" hidden></div></div>
+    <div class="scroll" hidden><table class="t"><thead><tr><th>${n > 20 ? 'Day' : 'Week'}</th><th class="n">${esc(cap(unit))}</th></tr></thead><tbody>${data.map((d) => `<tr><td>${esc(fmt(d))}</td><td class="n">${d.v}</td></tr>`).join('')}</tbody></table></div>`;
+  const box = $('#' + id), tip = $('.tip', box), svg = $('svg', box);
+  svg.addEventListener('mousemove', (e) => {
+    const h = e.target.closest('.hit'); if (!h) { tip.hidden = true; return; }
+    const d = data[+h.dataset.i], r = svg.getBoundingClientRect(), k = r.width / W;
+    tip.innerHTML = `${esc(fmt(d))}<br><b>${d.v}</b> ${esc(unit)}`; tip.hidden = false;
+    tip.style.left = ((+h.getAttribute('x') + slot / 2) * k) + 'px'; tip.style.top = (y(d.v) * k - 4) + 'px';
+  });
+  svg.addEventListener('mouseleave', () => { tip.hidden = true; });
+  el.querySelectorAll('.seg button').forEach((b) => b.addEventListener('click', () => {
+    el.querySelectorAll('.seg button').forEach((x) => x.setAttribute('aria-pressed', x === b)); const t = b.dataset.v === 'table';
+    box.hidden = t; $('.scroll', el).hidden = !t;
+  }));
+}
+
+/* ---------- views ---------- */
+const VIEWS = {};
+VIEWS.overview = async (main) => {
+  const [o, cl] = await Promise.all([api('/overview'), api('/clinics')]); const k = o.kpi;
+  main.innerHTML = head('Overview', 'How Baari is doing across every clinic and the patient portal.') +
+    `<div class="tiles">
+      ${tile('Active clinics', num(k.active), k.suspended ? `${k.suspended} suspended` : `${k.clinics} in total`)}
+      ${tile('Bookings this week', num(k.week), `${num(k.today)} today, ${num(k.next7)} coming up`)}
+      ${tile('Booked through portal', k.portal_share + '%', 'of all bookings')}
+      ${tile('Patients', num(k.patients), `${num(k.accounts)} with an account`)}
+      ${tile('No-show rate', k.no_show_rate + '%', 'past visits, all clinics')}
+      ${tile('Monthly revenue', k.mrr === null ? '<span style="font-size:19px;font-weight:600;color:var(--muted)">Not set</span>' : rupee(k.mrr), k.mrr === null ? 'Add plan prices in Settings' : `from ${k.priced} priced clinic${k.priced === 1 ? '' : 's'}`)}
+    </div>
+    <div class="grid2">
+      <section class="card"><div class="cardhead"><div><h2>Bookings made per day</h2><p class="sub">Last 30 days, all clinics</p></div></div><div id="ch1"></div></section>
+      <section class="card"><div class="cardhead"><div><h2>New patient accounts per week</h2><p class="sub">Last 8 weeks</p></div></div><div id="ch2"></div></section>
+    </div>
+    <div class="grid2">
+      <section class="card"><h2>Needs a look</h2><p class="sub">Clinics that are quiet or have many no-shows</p>
+        ${o.attention.length ? `<ul class="list">${o.attention.map((a) => `<li><a href="#" data-clinic="${a.id}" style="color:var(--ink);font-weight:600">${esc(a.name)}</a><span>${esc(a.why)}</span></li>`).join('')}</ul>` : '<p class="empty">Every active clinic is booking normally.</p>'}</section>
+      <section class="card"><h2>Plans</h2><p class="sub">Active clinics by plan</p>
+        ${k.plan_count.map((p) => `<div class="mrow"><div><span>${cap(p.plan)}</span><b>${p.n}</b></div><div class="meter"><i style="width:${k.active ? (p.n / k.active) * 100 : 0}%"></i></div></div>`).join('')}</section>
+    </div>`;
+  barChart($('#ch1'), o.bookings_per_day.map((d) => ({ label: dshort(d.day), v: d.n })), { unit: 'bookings', every: 7 });
+  barChart($('#ch2'), o.signups_per_week.map((w) => ({ label: dshort(w.start), v: w.n, end: w.end })), { unit: 'accounts', every: 1, fmt: (d) => `Week of ${d.label}` });
+  main.querySelectorAll('[data-clinic]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); openClinic(+a.dataset.clinic); }));
+};
+
+VIEWS.insights = async (main) => {
+  const d = await api('/insights'), lv = { act: ['Act now', 'bad'], watch: ['Watch', 'warn'], good: ['Good', ''] };
+  main.innerHTML = head('Insights', 'What needs your attention across every clinic, worked out from the numbers.') +
+    `<section class="card"><div class="cardhead"><div><h2>This week in short</h2><p class="sub">${d.ai_on ? 'Written by AI from totals only. No patient names or numbers are sent.' : 'Written from built-in rules. Add an AI key for a more natural summary.'}</p></div><button class="btn sm" id="sumGo" type="button">Write this week's summary</button></div><div id="sumOut"><p class="empty">Press the button to get a short summary and this week's priorities.</p></div></section>
+    <section class="card" style="margin-top:14px"><h2>Findings</h2><p class="sub">Most urgent first.</p><ul class="list" id="fnd">${d.findings.map((f) => `<li style="display:block;padding:12px 0"><span style="display:block;text-align:left"><span class="pill ${lv[f.level][1]}">${lv[f.level][0]}</span> <b style="margin-left:6px">${esc(f.title)}</b><br><span style="color:var(--muted);display:block;margin-top:3px;text-align:left">${esc(f.detail)}</span>${f.clinics.length ? `<span style="display:block;margin-top:5px;text-align:left">${f.clinics.slice(0, 4).map((c) => `<a href="#" data-clinic="${c.id}" style="font-size:15px;font-weight:600;color:var(--brand);margin-right:12px">Open ${esc(c.name)}</a>`).join('')}</span>` : ''}</span></li>`).join('')}</ul></section>
+    <section class="card" style="margin-top:14px"><h2>Ask about your platform</h2><p class="sub">${d.ai_on ? 'For example: "Which plan has the most clinics?" or "How are reminders doing?"' : 'Without an AI key: busiest clinics, no-shows, revenue and clinics at risk.'}</p>
+      <form id="askF" style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><input id="askQ" maxlength="300" placeholder="Ask a question" style="flex:1;min-width:200px" aria-label="Your question"><button class="btn" type="submit">Ask</button></form><div class="chips" style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">${['Which clinics are busiest?', 'How are no-shows?', 'Which clinics may leave?', 'What is our monthly revenue?'].map((q) => `<button type="button" class="btn ghost sm" data-q="${q}">${q}</button>`).join('')}</div><p id="askA" style="margin-top:14px;line-height:1.55" role="status"></p></section>`;
+  main.querySelectorAll('[data-clinic]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); openClinic(+a.dataset.clinic); }));
+  $('#sumGo').onclick = async () => {
+    const b = $('#sumGo'); b.disabled = true; b.textContent = 'Writing…';
+    try { const r = await api('/insights/summary', { method: 'POST', body: {} }); $('#sumOut').innerHTML = `<p style="line-height:1.55;max-width:75ch">${esc(r.summary)}</p><h2 style="font-size:17px;margin-top:12px">Priorities this week</h2><ol style="padding-left:20px;margin-top:4px">${r.priorities.map((p) => `<li style="margin:5px 0">${esc(p)}</li>`).join('')}</ol>${r.ai ? '<p class="note">Written with AI.</p>' : ''}`; }
+    catch (err) { $('#sumOut').innerHTML = `<p class="msg err">${esc(err.message)}</p>`; }
+    b.disabled = false; b.textContent = "Write this week's summary";
+  };
+  const ask = async (q) => { if (!q.trim()) return; $('#askA').textContent = 'Thinking…'; try { const r = await api('/ask', { method: 'POST', body: { question: q } }); $('#askA').textContent = r.answer; } catch (err) { $('#askA').textContent = err.message; } };
+  $('#askF').onsubmit = (e) => { e.preventDefault(); ask($('#askQ').value); };
+  main.querySelectorAll('[data-q]').forEach((b) => b.onclick = () => { $('#askQ').value = b.dataset.q; ask(b.dataset.q); });
+};
+
+VIEWS.clinics = async (main) => {
+  const list = await api('/clinics'); cache.clinics = list; let q = '', st = 'all';
+  main.innerHTML = head('Clinics', `${list.length} clinic${list.length === 1 ? '' : 's'} on Baari.`,
+    `<input id="q" type="search" placeholder="Search clinics" aria-label="Search clinics"><select id="st" aria-label="Filter"><option value="all">All clinics</option><option value="attention">Needs a look</option><option value="suspended">Suspended</option></select><a class="btn ghost sm" href="/api/company/clinics.csv" download><svg class="i"><use href="#i-down"/></svg>CSV</a>${isAdmin() ? '<button class="btn sm" id="addc" type="button">Add clinic</button>' : ''}`) +
+    `<section class="card"><div class="scroll" id="tb"></div></section>`;
+  const draw = () => {
+    const rows = list.filter((c) => (!q || (c.name + c.doctor_name + (c.location || '')).toLowerCase().includes(q)) && (st === 'all' || (st === 'suspended' ? c.status !== 'active' : c.health === 'warn' || c.health === 'quiet')));
+    $('#tb').innerHTML = rows.length ? `<table class="t"><thead><tr><th>Clinic</th><th>Plan</th><th>Status</th><th class="n">Bookings</th><th class="n">Last 30 days</th><th class="n">Portal</th><th class="n">No-shows</th><th>Joined</th></tr></thead><tbody>${rows.map((c) =>
+      `<tr class="click" tabindex="0" data-id="${c.id}"><td><b>${esc(c.name)}</b><br><span style="color:var(--muted);font-size:15px">${esc(c.doctor_name)}${c.location ? ' · ' + esc(c.location) : ''}</span></td><td>${esc(cap(c.plan))}</td><td>${healthPill(c)}</td><td class="n">${c.appts}</td><td class="n">${c.appts_30d}</td><td class="n">${c.portal}</td><td class="n">${c.no_show_rate}%</td><td>${esc(String(c.created_at || '').slice(0, 10))}</td></tr>`).join('')}</tbody></table>` : '<p class="empty">No clinics match.</p>';
+    $('#tb').querySelectorAll('tr.click').forEach((r) => { const open = () => openClinic(+r.dataset.id); r.onclick = open; r.onkeydown = (e) => { if (e.key === 'Enter') open(); }; });
+  };
+  if ($('#addc')) $('#addc').onclick = addClinicForm;
+  $('#q').oninput = (e) => { q = e.target.value.trim().toLowerCase(); draw(); }; $('#st').onchange = (e) => { st = e.target.value; draw(); }; draw();
+};
+
+async function openClinic(id) {
+  const c = await api('/clinics/' + id);
+  $('#layer').innerHTML = `<div class="scrim" id="scrim"></div><aside class="drawer" role="dialog" aria-label="${esc(c.name)}">
+    <div class="cardhead"><div><h2 style="font-size:23px">${esc(c.name)}</h2><p class="sub">${esc(c.doctor_name)}${c.location ? ' · ' + esc(c.location) : ''}</p></div><button class="btn ghost sm" id="dx" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+    <p>${healthPill(c)} <span class="pill off">Joined ${esc(String(c.created_at || '').slice(0, 10))}</span></p>
+    <div class="tiles" style="margin-top:14px;grid-template-columns:1fr 1fr">${tile('Bookings', num(c.appts), `${c.appts_30d} in 30 days`)}${tile('No-show rate', c.no_show_rate + '%', `${c.no_shows} of ${c.past} past`)}${tile('Via portal', num(c.portal))}${tile('Upcoming', num(c.upcoming))}</div>
+    <dl class="kv"><dt>Phone</dt><dd>${esc(c.phone)}</dd><dt>Reminder language</dt><dd>${esc(c.reminder_lang || 'en')}</dd><dt>Reminders sent</dt><dd>${c.reminded}</dd><dt>On the portal</dt><dd>${c.status !== 'active' ? 'Hidden' : c.listed ? 'Complete listing' : 'Missing location or services'}</dd><dt>Last booking</dt><dd>${when(c.last_booking)}</dd></dl>
+    ${c.types.length ? `<h2 style="margin-top:16px;font-size:17px">Visit types</h2><ul class="list">${c.types.map((t) => `<li><span>${esc(cap(t.k))}</span><span>${t.n}</span></li>`).join('')}</ul>` : ''}
+    <h2 style="margin-top:16px;font-size:17px">Clinic logins</h2><div id="lg"><p class="sub">Loading…</p></div>
+    <h2 style="margin-top:16px;font-size:17px">Company settings</h2>
+    ${isAdmin() ? `<form id="cf"><div class="row2"><div class="field"><label for="cp">Plan</label><select id="cp">${['basic','pro','enterprise'].map((p) => `<option value="${p}"${p === c.plan ? ' selected' : ''}>${cap(p)}</option>`).join('')}</select></div>
+      <div class="field"><label for="cs">Status</label><select id="cs"><option value="active"${c.status === 'active' ? ' selected' : ''}>Active</option><option value="suspended"${c.status !== 'active' ? ' selected' : ''}>Suspended</option></select></div></div>
+      <div class="field"><label for="cn">Internal note</label><textarea id="cn" maxlength="500" placeholder="Only the Baari team sees this">${esc(c.company_note || '')}</textarea></div>
+      <p class="note">Suspended clinics disappear from the patient portal and cannot take new online bookings. Their own staff can still log in.</p>
+      <button class="btn full" type="submit">Save changes</button><div class="msg" id="cm" role="status"></div></form>`
+      : `<p class="sub">Plan: ${esc(cap(c.plan))}. ${c.company_note ? esc(c.company_note) : 'No note.'}</p><p class="note">You have view-only access.</p>`}
+    ${c.recent.length ? `<h2 style="margin-top:16px;font-size:17px">Latest bookings</h2><ul class="list">${c.recent.map((r) => `<li><span>${esc(dshort(r.appointment_date))}, ${esc(r.appointment_time)} · ${esc(cap(r.visit_type))}</span><span>${esc(r.source === 'patient' ? 'Portal' : 'Clinic')} · ${esc(r.status)}</span></li>`).join('')}</ul>` : ''}
+  </aside>`;
+  $('#dx').onclick = closeDrawer; $('#scrim').onclick = closeDrawer; $('#dx').focus();
+  loadLogins(id);
+  const f = $('#cf');
+  if (f) f.onsubmit = async (e) => {
+    e.preventDefault(); const m = $('#cm'); m.className = 'msg';
+    if ($('#cs').value === 'suspended' && c.status === 'active' && !confirm(`Suspend ${c.name}? Patients will no longer see it or book online.`)) return;
+    try { await api('/clinics/' + id, { method: 'PUT', body: { plan: $('#cp').value, status: $('#cs').value, company_note: $('#cn').value } }); m.className = 'msg good'; m.textContent = 'Saved.'; if (tab === 'clinics' || tab === 'overview') setTimeout(() => go(tab), 600); }
+    catch (err) { m.className = 'msg err'; m.textContent = err.message; }
+  };
+}
+async function loadLogins(id) {
+  const box = $('#lg'); if (!box) return;
+  const L = await api(`/clinics/${id}/logins`);
+  box.innerHTML = (L.length ? `<ul class="list">${L.map((u) => `<li><span><b>${esc(u.name)}</b> · ${esc(u.username)} · ${esc(cap(u.role))}</span><span>${isAdmin() ? `<button class="btn ghost sm" data-r="${u.id}" data-n="${esc(u.username)}">Reset</button> <button class="btn danger sm" data-d="${u.id}" data-n="${esc(u.username)}">Remove</button>` : ''}</span></li>`).join('')}</ul>` : '<p class="empty">No logins yet. This clinic cannot sign in.</p>') +
+    (isAdmin() ? `<form id="lf2" style="margin-top:8px"><div class="row2"><div class="field"><label for="ln">Name</label><input id="ln" required maxlength="80"></div><div class="field"><label for="lu">Username</label><input id="lu" required autocapitalize="none" spellcheck="false"></div></div><div class="row2"><div class="field"><label for="lp">Password</label><input id="lp" type="password" minlength="8" autocomplete="new-password" required></div><div class="field"><label for="lr">Access</label><select id="lr"><option value="staff">Staff</option><option value="owner">Owner</option></select></div></div><button class="btn sm" style="margin-top:12px" type="submit">Add login</button><div class="msg" id="lm" role="status"></div></form>` : '');
+  const f = $('#lf2');
+  if (f) f.onsubmit = async (e) => { e.preventDefault(); try { await api(`/clinics/${id}/logins`, { method: 'POST', body: { name: $('#ln').value, username: $('#lu').value, password: $('#lp').value, role: $('#lr').value } }); loadLogins(id); } catch (err) { const m = $('#lm'); m.className = 'msg err'; m.textContent = err.message; } };
+  box.querySelectorAll('[data-r]').forEach((b) => b.onclick = async () => { const pw = prompt(`New password for ${b.dataset.n} (at least 8 characters):`); if (!pw) return; try { await api(`/logins/${b.dataset.r}/password`, { method: 'PUT', body: { password: pw } }); alert('Password reset. They are logged out.'); } catch (err) { alert(err.message); } });
+  box.querySelectorAll('[data-d]').forEach((b) => b.onclick = async () => { if (!confirm(`Remove login ${b.dataset.n}?`)) return; try { await api('/logins/' + b.dataset.d, { method: 'DELETE' }); loadLogins(id); } catch (err) { alert(err.message); } });
+}
+function addClinicForm() {
+  $('#layer').innerHTML = `<div class="scrim" id="scrim"></div><aside class="drawer" role="dialog" aria-label="Add a clinic"><div class="cardhead"><h2 style="font-size:23px">Add a clinic</h2><button class="btn ghost sm" id="dx" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+    <form id="nc"><div class="field"><label for="nn">Clinic name</label><input id="nn" required maxlength="100"></div>
+    <div class="row2"><div class="field"><label for="nd">Doctor</label><input id="nd" required maxlength="80"></div><div class="field"><label for="np">Clinic phone</label><input id="np" type="tel" required></div></div>
+    <div class="row2"><div class="field"><label for="nl">Location</label><input id="nl" placeholder="Area and city"></div><div class="field"><label for="nplan">Plan</label><select id="nplan"><option value="basic">Basic</option><option value="pro">Pro</option><option value="enterprise">Enterprise</option></select></div></div>
+    <h2 style="margin-top:18px;font-size:17px">Owner login for the clinic</h2><p class="sub">They use this to open their own clinic desk. They only ever see their own clinic.</p>
+    <div class="row2"><div class="field"><label for="on">Owner name</label><input id="on" maxlength="80" placeholder="Same as doctor if blank"></div><div class="field"><label for="ou">Username</label><input id="ou" required autocapitalize="none" spellcheck="false"></div></div>
+    <div class="field"><label for="op">Starting password</label><input id="op" type="password" minlength="8" autocomplete="new-password" required></div>
+    <p class="note">Share the username and password with the clinic yourself. They can change the password after logging in.</p>
+    <button class="btn full" type="submit">Add clinic</button><div class="msg" id="nm" role="alert"></div></form></aside>`;
+  $('#dx').onclick = closeDrawer; $('#scrim').onclick = closeDrawer; $('#nn').focus();
+  $('#nc').onsubmit = async (e) => { e.preventDefault(); try { const r = await api('/clinics', { method: 'POST', body: { name: $('#nn').value, doctor_name: $('#nd').value, phone: $('#np').value, location: $('#nl').value, plan: $('#nplan').value, owner: { name: $('#on').value, username: $('#ou').value, password: $('#op').value } } }); await go('clinics'); openClinic(r.id); } catch (err) { const m = $('#nm'); m.className = 'msg err'; m.textContent = err.message; } };
+}
+function closeDrawer() { $('#layer').innerHTML = ''; }
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDrawer(); });
+
+VIEWS.patients = async (main) => {
+  let q = '';
+  const load = async () => {
+    const r = await api('/patients?q=' + encodeURIComponent(q));
+    $('#ptiles').innerHTML = tile('Patients', num(r.total)) + tile('Visited more than once', num(r.repeat), r.total ? Math.round((r.repeat / r.total) * 100) + '% of patients' : '') + tile('With a portal account', num(r.with_account));
+    $('#ptb').innerHTML = r.patients.length ? `<table class="t"><thead><tr><th>Patient</th><th>Phone</th><th class="n">Visits</th><th class="n">Clinics</th><th class="n">No-shows</th><th class="n">Via portal</th><th>Last visit</th><th>Account</th></tr></thead><tbody>${r.patients.map((p) =>
+      `<tr><td><b>${esc(p.name)}</b></td><td>${esc(p.phone)}</td><td class="n">${p.visits}</td><td class="n">${p.clinics}</td><td class="n">${p.no_shows}</td><td class="n">${p.portal}</td><td>${esc(dshort(p.last_visit))}</td><td>${p.account ? '<span class="pill">Yes</span>' : '<span class="pill off">No</span>'}</td></tr>`).join('')}</tbody></table>${r.total > 200 ? `<p class="note">Showing the 200 most recent of ${num(r.total)}. Use search to find others.</p>` : ''}` : '<p class="empty">No patients found.</p>';
+  };
+  main.innerHTML = head('Patients', 'Everyone who has booked at any clinic. Phone numbers are hidden for privacy.', '<input id="pq" type="search" placeholder="Search by name or phone digits" aria-label="Search patients">') +
+    '<div class="tiles" id="ptiles"></div><section class="card" style="margin-top:14px"><div class="scroll" id="ptb"></div></section>';
+  let tm; $('#pq').oninput = (e) => { q = e.target.value.trim(); clearTimeout(tm); tm = setTimeout(load, 250); }; await load();
+};
+
+VIEWS.portal = async (main) => {
+  const p = await api('/portal'), L = p.listing, n = p.listed || 1;
+  const meter = (label, v) => `<div class="mrow"><div><span>${label}</span><b>${v} of ${p.listed}</b></div><div class="meter"><i style="width:${(v / n) * 100}%"></i></div></div>`;
+  main.innerHTML = head('Patient portal', 'What patients are doing on the public booking site.') +
+    `<div class="tiles">${tile('Clinics on the portal', num(p.listed))}${tile('Portal bookings', num(p.portal_bookings), `${p.portal_7d} in the last 7 days`)}${tile('Waiting for the clinic', num(p.pending), 'booked, not yet handled')}${tile('Patient accounts', num(p.accounts), `${p.accounts_30d} new in 30 days`)}${tile('Assistant questions', num(p.assistant.month), `last 30 days${p.assistant.ai_on ? ', AI on' : ', built-in rules'}`)}${tile('Emergency alerts shown', num(p.assistant.emergencies_month), 'last 30 days')}</div>
+    <div class="grid2">
+      <section class="card"><h2>Listing quality</h2><p class="sub">Clinics with fuller listings get more bookings</p>${meter('Has a location', L.location)}${meter('Lists services', L.services)}${meter('Has an offer', L.offer)}
+        ${p.gaps.length ? `<h2 style="margin-top:18px;font-size:17px">Incomplete listings</h2><ul class="list">${p.gaps.map((g) => `<li><a href="#" data-clinic="${g.id}" style="color:var(--ink);font-weight:600">${esc(g.name)}</a><span>Missing ${esc(g.missing)}</span></li>`).join('')}</ul>` : ''}</section>
+      <section class="card"><h2>Top clinics by portal bookings</h2>${p.top.length ? `<ul class="list">${p.top.map((t) => `<li><a href="#" data-clinic="${t.id}" style="color:var(--ink);font-weight:600">${esc(t.name)}</a><span>${t.n}</span></li>`).join('')}</ul>` : '<p class="empty">No portal bookings yet.</p>'}
+        <p class="note">The assistant only counts how often it is used. What patients type is never saved.</p></section>
+    </div>
+    <section class="card" style="margin-top:14px"><h2>Latest portal bookings</h2><div class="scroll">${p.recent.length ? `<table class="t"><thead><tr><th>Patient</th><th>Clinic</th><th>Visit</th><th>For</th><th>Status</th></tr></thead><tbody>${p.recent.map((r) => `<tr><td>${esc(r.who)}</td><td>${esc(r.clinic)}</td><td>${esc(cap(r.type))}</td><td>${esc(dshort(r.date))}, ${esc(r.time)}</td><td>${esc(r.status)}</td></tr>`).join('')}</tbody></table>` : '<p class="empty">Nothing yet.</p>'}</div></section>`;
+  main.querySelectorAll('[data-clinic]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); openClinic(+a.dataset.clinic); }));
+};
+
+VIEWS.system = async (main) => {
+  const s = await api('/system'), up = s.server.uptime_s, upTxt = up > 86400 ? Math.floor(up / 86400) + ' d ' + Math.floor((up % 86400) / 3600) + ' h' : up > 3600 ? Math.floor(up / 3600) + ' h ' + Math.floor((up % 3600) / 60) + ' m' : Math.floor(up / 60) + ' min';
+  const yes = (b, a, c) => `<span class="pill ${b ? '' : 'warn'}">${b ? a : c}</span>`;
+  const kv = (o) => `<dl class="kv">${o.map(([a, b]) => `<dt>${a}</dt><dd>${b}</dd>`).join('')}</dl>`;
+  main.innerHTML = head('System', 'The health of the Baari server and its connections.') +
+    `<div class="grid2" style="margin-top:0">
+      <section class="card"><h2>Server</h2>${kv([['Running for', upTxt], ['Memory', s.server.memory_mb + ' MB'], ['Database size', s.server.db_mb + ' MB'], ['Node', esc(s.server.node)], ['Computer', esc(s.server.platform)]])}</section>
+      <section class="card"><h2>Connections</h2>${kv([['WhatsApp reminders', yes(s.services.whatsapp, 'Connected', 'Manual mode')], ['AI features', yes(s.services.ai, 'On', 'Built-in rules')], ['Clinic pages', yes(!s.access.clinic_remote, 'This network only', 'Open to remote')], ['Company site', yes(!s.access.company_remote, 'This network only', 'Open to remote')], ['Last reminder', when(s.last_reminder)]])}</section>
+      <section class="card"><h2>Data</h2>${kv(Object.entries({ Clinics: s.counts.clinics, Appointments: s.counts.appointments, 'Patient accounts': s.counts.patient_accounts, 'Reminders logged': s.counts.reminders_logged, 'Clinic logins': s.counts.clinic_logins, 'Company logins': s.counts.company_logins }).map(([a, b]) => [a, num(b)]))}</section>
+      <section class="card"><h2>Logged in right now</h2>${kv([['Patients', s.sessions.patients], ['Clinic staff', s.sessions.clinic_staff], ['Company team', s.sessions.company]])}
+        ${s.whatsapp_log.length ? `<h2 style="margin-top:16px;font-size:17px">Reminder results</h2>${kv(s.whatsapp_log.map((l) => [esc(cap(l.k)), l.n]))}` : ''}</section>
+    </div>
+    <section class="card" style="margin-top:14px"><h2>Clinic logins</h2><p class="sub">Staff accounts that can open clinic desks. A login tied to a clinic sees only that clinic. "All clinics" is an older login: replace it with logins made on each clinic. Passwords are never shown.</p><div class="scroll"><table class="t"><thead><tr><th>Username</th><th>Name</th><th>Role</th><th>Sees</th><th>Created</th></tr></thead><tbody>${s.clinic_logins.map((u) => `<tr><td>${esc(u.username)}</td><td>${esc(u.name)}</td><td>${esc(cap(u.role))}</td><td>${u.clinic ? esc(u.clinic) : '<span class="pill warn">All clinics</span>'}</td><td>${when(u.created_at)}</td></tr>`).join('')}</tbody></table></div></section>`;
+};
+
+VIEWS.settings = async (main) => {
+  const [st, team] = await Promise.all([api('/settings'), api('/team')]);
+  const ro = isAdmin() ? '' : ' disabled';
+  main.innerHTML = head('Settings and team', 'Plan prices, who can open this site, and your own password.') +
+    `<div class="grid2" style="margin-top:0">
+      <section class="card"><h2>Plan prices</h2><p class="sub">Monthly price per clinic, in rupees. Used to work out monthly revenue on the Overview.</p>
+        <form id="pf">${st.plans.map((p) => `<div class="field"><label for="pr-${p}">${cap(p)}</label><input id="pr-${p}" type="number" min="0" step="1" inputmode="numeric" value="${st.prices[p] ?? ''}" placeholder="Not set"${ro}></div>`).join('')}
+        ${isAdmin() ? '<button class="btn full" type="submit">Save prices</button>' : '<p class="note">View-only access.</p>'}<div class="msg" id="pm" role="status"></div></form></section>
+      <section class="card"><h2>Your password</h2><p class="sub">At least 10 characters.</p>
+        <form id="wf"><div class="field"><label for="w1">Current password</label><input id="w1" type="password" autocomplete="current-password" required></div><div class="field"><label for="w2">New password</label><input id="w2" type="password" autocomplete="new-password" minlength="10" required></div>
+        <button class="btn full" type="submit">Change password</button><div class="msg" id="wm" role="status"></div></form></section>
+    </div>
+    <section class="card" style="margin-top:14px"><h2>Baari team</h2><p class="sub">Admins can change anything. View-only people can look but not change.</p>
+      <div class="scroll"><table class="t"><thead><tr><th>Name</th><th>Username</th><th>Access</th><th>Added</th><th></th></tr></thead><tbody>${team.map((u) => `<tr><td><b>${esc(u.name)}</b></td><td>${esc(u.username)}</td><td><span class="pill ${u.role === 'admin' ? '' : 'off'}">${u.role === 'admin' ? 'Admin' : 'View only'}</span></td><td>${when(u.created_at)}</td><td class="n">${isAdmin() ? `<button class="btn ghost sm" data-reset="${u.id}" data-name="${esc(u.username)}">Reset password</button> ${u.id !== me.id ? `<button class="btn danger sm" data-del="${u.id}" data-name="${esc(u.username)}">Remove</button>` : ''}` : ''}</td></tr>`).join('')}</tbody></table></div>
+      ${isAdmin() ? `<h2 style="margin-top:18px;font-size:17px">Add a team member</h2><form id="tf"><div class="row2"><div class="field"><label for="tn">Name</label><input id="tn" required maxlength="80"></div><div class="field"><label for="tu">Username</label><input id="tu" required autocapitalize="none" spellcheck="false"></div></div>
+        <div class="row2"><div class="field"><label for="tp">Password</label><input id="tp" type="password" autocomplete="new-password" minlength="10" required></div><div class="field"><label for="tr">Access</label><select id="tr"><option value="viewer">View only</option><option value="admin">Admin</option></select></div></div>
+        <button class="btn" style="margin-top:14px" type="submit">Add member</button><div class="msg" id="tm" role="status"></div></form>` : ''}</section>`;
+  const say = (id, ok, t) => { const m = $(id); m.className = 'msg ' + (ok ? 'good' : 'err'); m.textContent = t; };
+  $('#pf').onsubmit = async (e) => { e.preventDefault(); if (!isAdmin()) return; try { const prices = {}; st.plans.forEach((p) => { prices[p] = $('#pr-' + p).value; }); await api('/settings', { method: 'PUT', body: { prices } }); say('#pm', 1, 'Saved.'); } catch (err) { say('#pm', 0, err.message); } };
+  $('#wf').onsubmit = async (e) => { e.preventDefault(); try { await api('/password', { method: 'PUT', body: { current: $('#w1').value, next: $('#w2').value } }); $('#w1').value = $('#w2').value = ''; say('#wm', 1, 'Password changed.'); } catch (err) { say('#wm', 0, err.message); } };
+  const tf = $('#tf');
+  if (tf) tf.onsubmit = async (e) => { e.preventDefault(); try { await api('/team', { method: 'POST', body: { name: $('#tn').value, username: $('#tu').value, password: $('#tp').value, role: $('#tr').value } }); go('settings'); } catch (err) { say('#tm', 0, err.message); } };
+  main.querySelectorAll('[data-reset]').forEach((b) => b.onclick = async () => { const pw = prompt(`New password for ${b.dataset.name} (at least 10 characters):`); if (!pw) return; try { await api(`/team/${b.dataset.reset}/password`, { method: 'PUT', body: { password: pw } }); alert('Password reset. They are logged out.'); } catch (err) { alert(err.message); } });
+  main.querySelectorAll('[data-del]').forEach((b) => b.onclick = async () => { if (!confirm(`Remove ${b.dataset.name}?`)) return; try { await api('/team/' + b.dataset.del, { method: 'DELETE' }); go('settings'); } catch (err) { alert(err.message); } });
+};
+
+VIEWS.activity = async (main) => {
+  const rows = await api('/activity');
+  main.innerHTML = head('Activity', 'Who did what on this site. The latest 100 entries.') +
+    `<section class="card"><div class="scroll">${rows.length ? `<table class="t"><thead><tr><th>When</th><th>Who</th><th>What</th><th>Details</th></tr></thead><tbody>${rows.map((r) => `<tr><td style="white-space:nowrap">${when(r.created_at)}</td><td>${esc(r.who)}</td><td>${esc(r.action)}</td><td style="color:var(--muted)">${esc(r.detail || '')}</td></tr>`).join('')}</tbody></table>` : '<p class="empty">Nothing yet.</p>'}</div></section>`;
+};
+
+boot();
+</script>
+</body>
+</html>

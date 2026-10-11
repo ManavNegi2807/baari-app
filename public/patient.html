@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book a visit - Baari</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #D6EEE0; --card: #FFFFFF; --ink: #11291F; --muted: #3F5A4C; --line: #C4E0D1; --row: #ECF3EF;
+  --brand: #12805A; --on-brand: #FFFFFF; --soft: #D8F0E4; --soft-ink: #0B5A3F; --hero: #0B4A35;
+  --ok: #17683F; --bad: #AE2F1B; --bad-bg: #FBE5E1;
+  --font: "Figtree", "Segoe UI", system-ui, sans-serif;
+}
+:root[data-theme="dark"] { --bg:#0B1A14; --card:#112419; --ink:#E6F3EC; --muted:#98B5A5; --line:#21392D; --row:#183024; --brand:#4FD3A0; --on-brand:#06241A; --soft:#1B4034; --soft-ink:#9EE6C6; --hero:#0B4A35; --ok:#6FD0A0; --bad:#F59A8A; --bad-bg:#45201C; }
+@media not all {
+  :root:not([data-theme="light"]) { --bg:#0B1A14; --card:#112419; --ink:#E6F3EC; --muted:#98B5A5; --line:#21392D; --row:#183024; --brand:#4FD3A0; --on-brand:#06241A; --soft:#1B4034; --soft-ink:#9EE6C6; --hero:#0B4A35; --ok:#6FD0A0; --bad:#F59A8A; --bad-bg:#45201C; }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { color-scheme: light; }
+body { background: var(--bg); color: var(--ink); font: 400 18px/1.5 var(--font); -webkit-font-smoothing: antialiased; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; border-radius: 10px; }
+.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+[hidden] { display: none !important; }
+
+.page { max-width: 520px; margin: 0 auto; padding: 16px 16px 150px; }
+
+/* extras */
+.opt .txt .rating { display: block; margin-top: 2px; font-size: 15px; color: var(--muted); }
+.opt .rating b { color: #8A5A00; }
+.opt .txt .prof { display: inline-block; margin-top: 4px; font-size: 15px; font-weight: 600; color: var(--brand); }
+.opt .txt .plan { display: inline-block; margin-top: 4px; margin-right: 8px; padding: 2px 10px; border-radius: 99px; background: #FFF1C9; color: #6B4B00; font-size: 14px; font-weight: 700; }
+.pnote { margin-top: 8px; padding: 10px 14px; border-radius: 14px; background: var(--soft); font-size: 16px; line-height: 1.4; }
+.pnote .buy { margin-top: 10px; }
+dialog#demoPay { margin: auto; border: 0; border-radius: 22px; padding: 24px; width: min(420px, calc(100vw - 32px)); background: var(--card); color: var(--ink); box-shadow: 0 30px 80px -20px rgba(0,0,0,.5); }
+dialog#demoPay::backdrop { background: rgba(10,30,20,.55); }
+dialog#demoPay h2 { font: 800 22px/1.2 var(--font); margin-bottom: 6px; }
+dialog#demoPay .demotag { display: inline-block; background: #FFF1C9; color: #6B4B00; font-weight: 800; border-radius: 99px; padding: 3px 12px; font-size: 14px; margin-bottom: 10px; }
+dialog#demoPay .amt { font: 800 34px/1.1 var(--font); margin: 10px 0 4px; }
+dialog#demoPay .row2 { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+.pnote .err { margin-top: 6px; }
+.pnote.on { background: #FFF1C9; color: #5A3E00; font-weight: 600; }
+.pnote a { color: var(--brand); font-weight: 600; }
+.times .chip.lock span { background: transparent; border: 1.5px dashed var(--line); color: var(--muted); }
+.times .chip.lock input { cursor: not-allowed; }
+.times .chip.lock small { display: block; font-size: 12px; font-weight: 700; line-height: 1; margin-top: 2px; }
+.wlbox { background: var(--soft); border-radius: 18px; padding: 16px 18px; margin-top: 12px; }
+.wlbox p { color: var(--muted); font-size: 16px; margin-top: 4px; }
+.wlbox .btn { margin-top: 12px; }
+/* hero */
+.hero { background: var(--hero); color: #fff; border-radius: 28px; padding: 22px 22px 24px; }
+.brand { display: flex; align-items: center; gap: 14px; min-width: 0; flex: 1; }
+.logo { width: 64px; height: 64px; border-radius: 19px; background: #fff; display: grid; place-items: center; flex: none; box-shadow: 0 6px 18px rgba(0,0,0,.22); }
+.logo .mk { width: 44px; height: 44px; }
+.bw { font: 800 40px/1 var(--font); letter-spacing: -0.03em; color: #fff; min-width: 0; }
+.bw small { display: block; font: 600 15px/1.25 var(--font); letter-spacing: 0; color: rgba(255,255,255,.85); margin-top: 6px; }
+@media (max-width: 430px) { .logo { width: 54px; height: 54px; border-radius: 17px; } .logo .mk { width: 38px; height: 38px; } .bw { font-size: 34px; } .bw small { font-size: 14px; } .brand { gap: 12px; } }
+.hero h1 { font: 800 clamp(36px, 9vw, 46px)/1.05 var(--font); letter-spacing: -0.03em; margin-top: 26px; }
+.hero p { color: rgba(255,255,255,.8); margin-top: 8px; max-width: 36ch; }
+#steps { list-style: none; display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+#steps li { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px 6px 8px; border-radius: 99px; background: rgba(255,255,255,.14); font-size: 16px; font-weight: 600; color: rgba(255,255,255,.82); }
+#steps li .dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(255,255,255,.55); display: grid; place-items: center; }
+#steps li .dot .i { width: 12px; height: 12px; stroke-width: 3.5; opacity: 0; }
+#steps li.done { background: #fff; color: var(--hero); }
+#steps li.done .dot { background: var(--hero); border-color: var(--hero); }
+#steps li.done .dot .i { opacity: 1; stroke: #fff; }
+
+fieldset, .block { border: 0; margin-top: 26px; min-width: 0; }
+legend { font: 700 21px/1.2 var(--font); letter-spacing: -0.01em; padding: 0 4px 12px; }
+
+/* clinic list */
+.group { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 6px; }
+.opt { display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 16px; cursor: pointer; position: relative; }
+.opt + .opt { margin-top: 2px; }
+.opt input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.opt .ico { width: 44px; height: 44px; border-radius: 50%; background: var(--soft); color: var(--soft-ink); display: grid; place-items: center; flex: none; }
+.opt .txt { flex: 1; min-width: 0; }
+.opt .txt strong { display: block; font-weight: 700; }
+.opt .txt span { color: var(--muted); font-size: 16px; }
+.opt .txt .loc { display: block; margin-top: 2px; }
+.opt .mark { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; color: transparent; flex: none; }
+.opt .mark .i { width: 14px; height: 14px; stroke-width: 3.5; }
+.opt:has(input:checked) { background: var(--row); }
+.opt:has(input:checked) .mark { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
+.opt:has(input:focus-visible) { outline: 3px solid var(--brand); outline-offset: -2px; }
+.empty { padding: 18px 12px; color: var(--muted); }
+
+/* fields */
+.fields { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 18px; }
+.field + .field { margin-top: 18px; }
+.field label, .field .lbl { display: block; font-weight: 600; font-size: 16px; color: var(--muted); margin-bottom: 6px; }
+.field input[type="text"], .field input[type="tel"] { width: 100%; background: var(--row); border: 1.5px solid transparent; border-radius: 14px; padding: 12px 14px; min-height: 50px; font-weight: 500; }
+.field input[type="text"]:focus, .field input[type="tel"]:focus { outline: none; border-color: var(--brand); background: var(--card); }
+.field input[aria-invalid="true"] { border-color: var(--bad); background: var(--bad-bg); }
+.err { color: var(--bad); font-size: 16px; font-weight: 600; margin-top: 6px; }
+.err:empty { display: none; }
+.hint { color: var(--muted); font-size: 15px; margin-top: 6px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.chip span { display: block; padding: 9px 16px; border-radius: 99px; background: var(--row); font-weight: 600; font-size: 17px; }
+.chip input:checked + span { background: var(--brand); color: var(--on-brand); }
+.chip input:focus-visible + span { outline: 3px solid var(--brand); outline-offset: 2px; }
+
+.days { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 8px; scrollbar-width: thin; }
+.day { position: relative; flex: none; }
+.day input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.day span { display: block; width: 66px; text-align: center; padding: 10px 0; border-radius: 18px; background: var(--card); border: 1px solid var(--line); line-height: 1.15; }
+.day b { display: block; font: 800 26px/1.15 var(--font); }
+.day small { font-size: 14px; font-weight: 600; color: var(--muted); }
+.day input:checked + span { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
+.day input:checked + span small { color: var(--on-brand); opacity: .85; }
+.day input:focus-visible + span { outline: 3px solid var(--brand); outline-offset: 2px; }
+.tgroup { margin-top: 16px; }
+.tgroup h3 { font-weight: 600; font-size: 16px; color: var(--muted); margin-bottom: 8px; }
+.times .chip span { background: var(--card); border: 1px solid var(--line); border-radius: 14px; min-width: 88px; text-align: center; font-variant-numeric: tabular-nums; }
+.times .chip input:checked + span { background: var(--brand); border-color: var(--brand); }
+
+/* bottom bar */
+.bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 0 12px calc(12px + env(safe-area-inset-bottom)); pointer-events: none; }
+.bar > div { max-width: 496px; margin: 0 auto; background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 12px 12px 12px 18px; display: flex; align-items: center; gap: 14px; box-shadow: 0 8px 28px rgba(17,41,31,.16); pointer-events: auto; }
+.bar p { flex: 1; font-size: 16px; color: var(--muted); line-height: 1.3; min-width: 0; }
+.bar p b { display: block; font: 700 19px/1.25 var(--font); color: var(--ink); }
+.btn { background: var(--brand); color: var(--on-brand); border: 0; border-radius: 14px; padding: 13px 22px; font-weight: 700; cursor: pointer; white-space: nowrap; min-height: 50px; }
+.perks { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 14px 0 4px; padding: 0; color: rgba(255,255,255,.9); font-size: 16px; font-weight: 600; }
+.perks li::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #6EE7B7; margin-right: 7px; vertical-align: 1px; }
+.svc { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.svc em { font-style: normal; font-size: 14px; font-weight: 600; background: var(--row); color: var(--soft-ink); padding: 2px 9px; border-radius: 99px; }
+.offer { display: inline-block; margin-top: 7px; font-size: 15px; font-weight: 700; color: #7A4B00; background: #FFF1CC; padding: 3px 10px; border-radius: 99px; }
+.nextfree { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 9px; padding-top: 9px; border-top: 1px dashed var(--line); font-size: 16px; color: var(--muted); }
+.nextfree b { color: var(--ink); white-space: nowrap; }
+.quick { position: relative; z-index: 2; background: var(--brand); color: var(--on-brand); border: 0; border-radius: 99px; padding: 6px 14px; font-weight: 700; font-size: 15px; cursor: pointer; white-space: nowrap; }
+.assist { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 18px; margin-top: 22px; }
+.assist h2 { font: 800 21px/1.2 var(--font); letter-spacing: -0.01em; }
+.assist p { color: var(--muted); font-size: 17px; margin: 4px 0 12px; }
+.bar { z-index: 5; }
+.assist textarea { font: inherit; color: inherit; width: 100%; resize: vertical; min-height: 64px; background: var(--row); border: 1.5px solid transparent; border-radius: 14px; padding: 12px 14px; font-weight: 500; }
+.assist textarea:focus { outline: none; border-color: var(--brand); background: var(--card); }
+.assist .btn { margin-top: 10px; }
+.assist .hint { display: block; margin-top: 10px; }
+.as-card { margin-top: 14px; border-radius: 16px; padding: 14px 16px; background: var(--soft); color: var(--soft-ink); }
+.as-card.soon { background: #FFF1CC; color: #6B4300; }
+.as-card.emergency { background: var(--bad-bg); color: var(--bad); }
+.as-card b { display: block; font-size: 17px; margin-bottom: 4px; }
+.as-card p { color: inherit; margin: 0; }
+.as-card ul { margin: 8px 0 0 18px; font-size: 16px; }
+.as-card .btn, .as-card a.btn { display: inline-block; margin-top: 12px; text-decoration: none; background: var(--brand); color: var(--on-brand); }
+.near { display: inline-flex; align-items: center; gap: 8px; background: var(--card); color: var(--soft-ink); border: 1px solid var(--brand); border-radius: 99px; padding: 10px 18px; font-weight: 700; cursor: pointer; margin: 0 0 8px; }
+.near-note { margin: 0 0 10px; color: var(--muted); font-size: 16px; min-height: 0; }
+.near-note:empty { display: none; }
+.dist { color: var(--soft-ink) !important; font-weight: 700; }
+.btn:hover { filter: brightness(1.1); }
+.btn[disabled] { opacity: .5; cursor: default; filter: none; }
+.btn.quiet { background: var(--soft); color: var(--soft-ink); }
+.banner { background: var(--bad-bg); color: var(--bad); border-radius: 16px; padding: 12px 16px; margin-top: 20px; font-weight: 600; font-size: 17px; }
+
+/* confirmation */
+.ticket { background: var(--hero); color: #fff; border-radius: 28px; padding: 24px; margin-top: 16px; position: relative; }
+.ticket .ref { color: rgba(255,255,255,.75); font-size: 16px; }
+.ticket .big { font: 800 clamp(68px, 21vw, 100px)/0.95 var(--font); letter-spacing: -0.05em; margin-top: 10px; font-variant-numeric: tabular-nums; }
+.ticket .big small { font: 700 26px/1 var(--font); letter-spacing: 0; margin-left: 6px; opacity: .8; }
+.ticket .when { font: 700 23px/1.25 var(--font); margin-top: 10px; }
+.facts { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 6px 18px; margin-top: 14px; }
+.facts div { display: flex; justify-content: space-between; gap: 16px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+.facts div:last-child { border-bottom: 0; }
+.facts dt { color: var(--muted); } .facts dd { font-weight: 600; text-align: right; }
+.next { margin-top: 18px; color: var(--muted); max-width: 46ch; }
+.actions { margin-top: 20px; }
+.done-h { font: 800 35px/1.1 var(--font); letter-spacing: -0.03em; margin: 18px 4px 0; }
+
+/* ambient background: slow drifting colour, faint dot grid, soft light that follows the pointer */
+body { position: relative; isolation: isolate; }
+.bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.bg i { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .55; will-change: transform; }
+.bg i:nth-child(1) { width: 46vw; height: 46vw; left: -12vw; top: -14vw; background: #9EDDBF; animation: drift1 38s ease-in-out infinite alternate; }
+.bg i:nth-child(2) { width: 40vw; height: 40vw; right: -10vw; top: 20vh; background: #B7E8DA; animation: drift2 46s ease-in-out infinite alternate; }
+.bg i:nth-child(3) { width: 36vw; height: 36vw; left: 25vw; bottom: -18vw; background: #CFEFC9; animation: drift3 52s ease-in-out infinite alternate; }
+.bg::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(11,90,63,.16) 1.2px, transparent 1.6px); background-size: 24px 24px; -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 0, transparent 75%); mask-image: radial-gradient(ellipse at 50% 30%, #000 0, transparent 75%); }
+.bg .glow { position: absolute; left: 0; top: 0; width: 520px; height: 520px; margin: -260px 0 0 -260px; background: radial-gradient(circle, rgba(255,255,255,.75), rgba(255,255,255,0) 62%); filter: none; opacity: 0; transition: opacity .5s; will-change: transform; }
+.bg .glow.on { opacity: 1; }
+@keyframes drift1 { to { transform: translate(14vw, 10vh) scale(1.15); } }
+@keyframes drift2 { to { transform: translate(-12vw, 14vh) scale(1.2); } }
+@keyframes drift3 { to { transform: translate(10vw, -12vh) scale(1.1); } }
+/* cards respond when you point at them */
+.panel, .group, ul.sheet { transition: box-shadow .25s, border-color .25s, transform .25s; }
+.panel:hover, .group:hover, ul.sheet:hover { border-color: rgba(18,128,90,.45); box-shadow: 0 10px 30px -12px rgba(11,90,63,.35); transform: translateY(-2px); }
+/* the dark summary card catches the light as the pointer moves over it */
+.hero { position: relative; overflow: hidden; isolation: isolate; --hx: 78%; --hy: 0%; }
+.hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(420px circle at var(--hx) var(--hy), rgba(110,231,183,.28), transparent 65%); transition: background-position .2s; }
+.hero::after { content: ""; position: absolute; right: -60px; top: -80px; width: 260px; height: 260px; border-radius: 50%; z-index: -1; border: 1px solid rgba(255,255,255,.08); box-shadow: 0 0 0 36px rgba(255,255,255,.025), 0 0 0 74px rgba(255,255,255,.02); }
+/* a section settles in when you switch to it */
+section:not([hidden]) { animation: settle .38s cubic-bezier(.2,.7,.3,1) both; }
+@keyframes settle { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+button:active:not(:disabled) { transform: scale(.97); }
+@media (hover: none) { .bg .glow { display: none; } .panel:hover, .group:hover, ul.sheet:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .bg i, section:not([hidden]) { animation: none; } .panel, .group, ul.sheet { transition: none; } .panel:hover, .group:hover, ul.sheet:hover { transform: none; } .bg .glow { display: none; } }
+/* wide screens: hero on the left, the form on the right */
+.how { list-style: none; margin: 22px 0 0; padding: 0; display: none; gap: 14px; }
+.how li { display: grid; grid-template-columns: 30px 1fr; gap: 12px; align-items: start; color: rgba(255,255,255,.88); font-size: 17px; }
+.how b { display: block; color: #fff; }
+.how span { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,.16); display: grid; place-items: center; font-weight: 800; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.top a { color: rgba(255,255,255,.92); font-weight: 600; font-size: 16px; text-decoration: none; background: rgba(255,255,255,.14); padding: 7px 14px; border-radius: 99px; white-space: nowrap; }
+@media (min-width: 1000px) {
+  .page { max-width: 1120px; padding: 28px 16px 60px; }
+  #form { display: grid; grid-template-columns: 400px 1fr; column-gap: 40px; align-items: start; }
+  #form > .hero { grid-column: 1; grid-row: 1 / span 8; position: sticky; top: 24px; }
+  #form > :not(.hero) { grid-column: 2; }
+  #form > .assist { margin-top: 0; }
+  .how { display: grid; }
+  .bar { position: sticky; bottom: 0; left: auto; right: auto; padding: 0 0 14px; margin-top: 24px; }
+  .bar > div { max-width: none; }
+  #done { max-width: 620px; margin: 0 auto; }
+}
+
+/* clinic cards, membership card, compact steps */
+#steps { flex-wrap: nowrap; gap: 6px; }
+#steps li { flex: 1 1 0; justify-content: center; white-space: nowrap; font-size: 15px; padding: 7px 6px; gap: 5px; }
+.group { background: transparent; border: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.group:hover { border-color: transparent; box-shadow: none; transform: none; }
+.opt { align-items: flex-start; background: var(--card); border: 1.5px solid var(--line); border-radius: 20px; padding: 16px; transition: border-color .2s, box-shadow .2s; }
+.opt + .opt { margin-top: 0; }
+.opt:hover { border-color: rgba(18,128,90,.5); }
+.opt:has(input:checked) { background: var(--card); border-color: var(--brand); box-shadow: 0 0 0 3px rgba(18,128,90,.16); }
+.opt .ico { width: 48px; height: 48px; border-radius: 15px; background: linear-gradient(145deg, #1FA877, #0B5A3F); color: #fff; font: 800 18px/1 var(--font); letter-spacing: .02em; }
+.opt .mark { margin-top: 2px; }
+.opt .head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.opt .head strong { font-size: 19px; line-height: 1.25; min-width: 0; overflow-wrap: anywhere; }
+.opt .txt, .opt .txt > span { overflow-wrap: anywhere; }
+.opt .txt .head .rating { display: inline-block; margin: 0; white-space: nowrap; font-size: 15px; font-weight: 600; }
+.opt .txt .meta { display: block; margin-top: 2px; color: var(--muted); font-size: 16px; }
+.opt .txt .plan { display: flex; align-items: center; gap: 8px; margin: 10px 0 0; padding: 8px 12px; border-radius: 12px; border: 1px dashed #D2A233; background: linear-gradient(135deg, #FFF8DC, #FFEDB6); color: #5E4200; font-size: 15px; font-weight: 700; }
+.opt .txt .plan::before { content: "\2605"; color: #C58A00; font-size: 16px; }
+.opt .txt .prof { margin-top: 8px; }
+.opt .nextfree { margin-top: 12px; padding: 10px 12px; border-top: 0; border-radius: 14px; background: var(--row); }
+.pnote { margin-top: 12px; padding: 0; background: transparent; }
+/* priority plan card (layout after the 21st.dev "Pricing Card": heading, description, price, button, tick list) */
+.pnote, .pnote.on { background: transparent; color: inherit; font-weight: inherit; padding: 0; margin-top: 14px; }
+.pc { position: relative; overflow: hidden; border-radius: 16px; padding: 24px 22px; color: #fff; border: 1px solid #0F6B4C; background: linear-gradient(135deg, #12805A, #0B4A35); box-shadow: 0 14px 30px -14px rgba(11,74,53,.65); transition: transform .3s; }
+@media (min-width: 768px) and (hover: hover) { .pc:hover { transform: scale(1.02); } }
+.pc h3 { font: 700 26px/1.15 var(--font); letter-spacing: -0.01em; margin-bottom: 6px; padding-right: 56px; }
+.pc .pdesc { color: rgba(255,255,255,.82); font-size: 16px; line-height: 1.4; }
+.pc .pprice { display: flex; align-items: baseline; gap: 8px; margin: 18px 0 14px; }
+.pc .pprice b { font: 800 42px/1 var(--font); letter-spacing: -0.02em; }
+.pc .pprice small { color: rgba(255,255,255,.75); font-size: 16px; font-weight: 600; }
+.pc .btn { width: 100%; background: #fff; color: #0B4A35; }
+.pc .btn:hover { filter: none; background: #E3F6EC; }
+.pc .btn[disabled] { opacity: .6; }
+.pc .err { color: #FFD3CB; }
+.pc h5 { font: 700 16px/1.2 var(--font); margin: 18px 0 8px; color: rgba(255,255,255,.9); }
+.pc ul { list-style: none; display: grid; gap: 8px; margin: 0; padding: 0; font-size: 16px; color: rgba(255,255,255,.95); }
+.pc li { display: flex; gap: 10px; align-items: flex-start; }
+.pc li::before { content: ""; flex: none; width: 20px; height: 20px; margin-top: 2px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236EE7B7' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7'/%3E%3C/svg%3E") center/20px no-repeat; }
+.pc .pfoot { margin-top: 14px; color: rgba(255,255,255,.8); font-size: 15px; line-height: 1.4; }
+.pc .pfoot a { color: #fff; font-weight: 700; }
+.pc .ribbon { position: absolute; top: 18px; right: -40px; width: 150px; transform: rotate(45deg); background: #FFE08A; color: #5A3E00; text-align: center; font: 800 13px/1 var(--font); padding: 6px 0; letter-spacing: .02em; }
+/* segmented progress steps: header with step count, one bar per step, ticks on finished labels */
+.stephead { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-top: 22px; font-size: 15px; color: rgba(255,255,255,.78); }
+.stephead b { font: 700 17px/1.2 var(--font); color: #fff; }
+#steps { gap: 8px; margin-top: 10px; }
+#steps li { position: relative; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 14px 0 0; background: transparent; border-radius: 0; font-size: 15px; font-weight: 600; color: rgba(255,255,255,.62); }
+#steps li::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 6px; border-radius: 99px; background: rgba(255,255,255,.2); transition: background .3s; }
+#steps li .dot { display: none; width: 14px; height: 14px; border: 0; background: none; }
+#steps li .dot .i { width: 14px; height: 14px; stroke: #6EE7B7; stroke-width: 3.5; opacity: 1; }
+#steps li.done { background: transparent; color: #fff; }
+#steps li.done::before { background: #6EE7B7; }
+#steps li.done .dot { display: grid; background: none; border: 0; }
+#steps li.cur { color: #fff; font-weight: 800; }
+#steps li.cur::before { background: #fff; }
+@media (prefers-reduced-motion: reduce) { #steps li::before { transition: none; } }
+/* member card (layout after the 21st.dev "Membership Card": colour strip, avatar and badge, progress, card, benefits, footer) */
+.mc { border-radius: 20px; overflow: hidden; background: var(--card); border: 1px solid var(--line); box-shadow: 0 10px 28px -16px rgba(11,74,53,.5); }
+.mc .strip { height: 10px; background: linear-gradient(90deg, #12805A, #6EE7B7); }
+.mc .mh { display: flex; align-items: flex-start; gap: 14px; padding: 18px 18px 0; }
+.mc .av { width: 52px; height: 52px; border-radius: 50%; border: 1px solid var(--line); background: var(--soft); color: var(--soft-ink); display: grid; place-items: center; font: 800 20px/1 var(--font); flex: none; }
+.mc .who { flex: 1; min-width: 0; }
+.mc .who h3 { font: 700 19px/1.25 var(--font); overflow-wrap: anywhere; }
+.mc .who p { color: var(--muted); font-size: 15px; }
+.mc .who small { display: block; margin-top: 4px; color: var(--muted); font-size: 14px; overflow-wrap: anywhere; }
+.mc .badge { align-self: flex-start; padding: 4px 12px; border-radius: 99px; border: 1px solid #BFE5D0; background: var(--soft); color: var(--soft-ink); font: 800 12px/1.4 var(--font); letter-spacing: .06em; }
+.mc .mb { padding: 18px; display: grid; gap: 18px; }
+.mc .prow { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 15px; }
+.mc .prow b { display: flex; align-items: center; gap: 6px; font-weight: 700; }
+.mc .prow b::before { content: "\2605"; color: #C58A00; font-size: 18px; }
+.mc .prow span { color: var(--muted); }
+.mc .track { height: 8px; border-radius: 99px; background: var(--row); overflow: hidden; margin-top: 8px; }
+.mc .track i { display: block; height: 100%; border-radius: 99px; background: var(--brand); animation: mcgrow 1s ease-out both; }
+@keyframes mcgrow { from { width: 0; } }
+.mc .card { position: relative; border-radius: 16px; border: 2px solid #BFE5D0; padding: 16px; min-height: 130px; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(135deg, #fff, #E6F6EE); }
+.mc .card .ct { display: flex; justify-content: space-between; align-items: center; font: 800 13px/1 var(--font); letter-spacing: .06em; text-transform: uppercase; }
+.mc .card .ct svg { width: 22px; height: 22px; stroke: var(--brand); }
+.mc .card .cb { display: flex; justify-content: space-between; gap: 12px; }
+.mc .card small { display: block; color: var(--muted); font-size: 12px; letter-spacing: .04em; }
+.mc .card b { font-weight: 700; overflow-wrap: anywhere; }
+.mc h4 { display: flex; align-items: center; gap: 8px; font: 700 17px/1.2 var(--font); margin-bottom: 10px; }
+.mc ul { list-style: none; display: grid; gap: 10px; padding: 0; margin: 0; font-size: 16px; }
+.mc li { display: flex; gap: 10px; align-items: flex-start; }
+.mc li svg { flex: none; width: 18px; height: 18px; margin-top: 3px; stroke: var(--brand); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.mc .mf { border-top: 1px solid var(--line); padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 15px; }
+.mc .mf a { color: var(--brand); font-weight: 700; text-decoration: none; }
+@media (prefers-reduced-motion: reduce) { .mc .track i { animation: none; } }
+/* ---- three-step flow ---- */
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.step { margin-top: 22px; min-width: 0; }
+.sh { font: 800 26px/1.15 var(--font); letter-spacing: -0.02em; padding: 0 4px; outline: none; }
+.sub { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; color: var(--muted); font-size: 16px; padding: 4px 4px 14px; }
+.sub b { color: var(--ink); }
+.linkbtn { background: none; border: 0; padding: 0; color: var(--brand); font: 700 16px/1.4 var(--font); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.welcome { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; background: var(--soft); color: var(--soft-ink); border-radius: 14px; padding: 10px 14px; margin-bottom: 16px; font-size: 16px; }
+.field input.ok { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2312805A' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; background-size: 20px; padding-right: 44px; }
+details.assist { background: var(--row); border: 0; border-radius: 16px; padding: 0; margin-top: 14px; }
+details.assist summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 12px 14px; font-weight: 700; font-size: 16px; color: var(--soft-ink); border-radius: 16px; }
+details.assist summary::-webkit-details-marker { display: none; }
+details.assist summary::after { content: "+"; margin-left: auto; font-size: 22px; line-height: 1; }
+details.assist[open] summary::after { content: "\2212"; }
+details.assist .ab { padding: 0 14px 14px; }
+details.assist .ab p { color: var(--muted); font-size: 16px; margin: 0 0 10px; }
+details.assist textarea { background: var(--card); }
+.times .chip span em.early { display: block; font-style: normal; font-size: 12px; font-weight: 800; line-height: 1; margin-top: 3px; color: var(--brand); }
+.times .chip input:checked + span em.early { color: var(--on-brand); }
+.times .chip.first span { border-color: var(--brand); }
+/* loading placeholders */
+.sk { background: linear-gradient(90deg, var(--row) 25%, #F6FBF8 50%, var(--row) 75%); background-size: 200% 100%; animation: sk 1.2s linear infinite; }
+.sk-card { height: 150px; border-radius: 20px; }
+.sk-line { width: 90px; height: 16px; border-radius: 8px; margin-bottom: 10px; }
+.sk-chip { display: inline-block; width: 88px; height: 46px; border-radius: 14px; }
+@keyframes sk { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+/* bottom bar with Back and Continue */
+.bar > div { padding: 10px 10px 10px 12px; gap: 10px; }
+.bar .back { display: inline-flex; align-items: center; gap: 2px; padding: 0 14px 0 8px; }
+.bar #next { display: inline-flex; align-items: center; gap: 4px; padding-right: 14px; }
+.bar p { padding-left: 4px; }
+.bar p b, .bar p span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* desktop "how it works" list follows the current step */
+.how li { opacity: .55; transition: opacity .25s; }
+.how li.cur, .how li.done { opacity: 1; }
+.how li.done span { background: #6EE7B7; color: #0B4A35; }
+.how li.cur span { background: #fff; color: #0B4A35; }
+/* compact header on phones and tablets */
+@media (max-width: 999px) {
+  .hero { padding: 16px 18px 18px; border-radius: 24px; }
+  .logo { width: 48px; height: 48px; border-radius: 15px; } .logo .mk { width: 32px; height: 32px; }
+  .bw { font-size: 30px; } .bw small { font-size: 13px; margin-top: 4px; }
+  .hero h1 { font-size: 30px; margin-top: 16px; }
+  .hero p { font-size: 16px; margin-top: 4px; }
+  .hero .perks { display: none; }
+  .stephead { margin-top: 16px; }
+}
+@media (min-width: 1000px) { #form > .step { margin-top: 0; } }
+@media (max-width: 999px) {
+  body.s2 .bar p { visibility: hidden; }
+  body.s2 .cbfab, body.s3 .cbfab, body.sdone .cbfab { display: none; }
+}
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.actions .btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+/* confirmation: tick, ticket with a tear-off stub, quick actions */
+.okmark { width: 64px; height: 64px; margin: 10px 4px 0; }
+.okmark svg { width: 64px; height: 64px; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.okmark circle { fill: var(--soft); stroke: var(--brand); stroke-width: 3; stroke-dasharray: 151; stroke-dashoffset: 151; animation: draw .55s ease-out forwards; }
+.okmark path { stroke: var(--brand); stroke-width: 4.5; stroke-dasharray: 34; stroke-dashoffset: 34; animation: draw .35s .45s ease-out forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+#done .done-h { margin-top: 10px; }
+.ticket { padding: 24px 24px 0; overflow: hidden;
+  -webkit-mask: radial-gradient(circle 13px at 0 calc(100% - 76px), #0000 98%, #000) 0 0 / 51% 100% no-repeat, radial-gradient(circle 13px at 100% calc(100% - 76px), #0000 98%, #000) 100% 0 / 51% 100% no-repeat;
+          mask: radial-gradient(circle 13px at 0 calc(100% - 76px), #0000 98%, #000) 0 0 / 51% 100% no-repeat, radial-gradient(circle 13px at 100% calc(100% - 76px), #0000 98%, #000) 100% 0 / 51% 100% no-repeat; }
+.ticket .stub { margin: 22px -24px 0; padding: 0 24px; height: 76px; border-top: 2px dashed rgba(255,255,255,.3); display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.ticket .stub > div { min-width: 0; }
+.ticket .stub b { display: block; font-size: 17px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ticket .stub span { display: block; color: rgba(255,255,255,.75); font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ticket .stub .for { text-align: right; flex: none; max-width: 40%; }
+#done:not([hidden]) .ticket { animation: rise .5s .2s cubic-bezier(.2,.7,.3,1) both; }
+@keyframes rise { from { opacity: 0; transform: translateY(16px) scale(.98); } }
+.acts { display: flex; gap: 8px; margin-top: 14px; }
+.act { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 12px 6px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); color: var(--ink); font: 700 14px/1.2 var(--font); text-align: center; text-decoration: none; cursor: pointer; transition: border-color .2s; }
+.act svg { width: 24px; height: 24px; fill: none; stroke: var(--brand); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.act:hover { border-color: var(--brand); }
+.saved { margin-top: 18px; color: var(--muted); font-size: 15px; }
+.saved .linkbtn { font-size: 15px; }
+@media (prefers-reduced-motion: reduce) {
+  .sk { animation: none; }
+  .okmark circle, .okmark path { animation: none; stroke-dashoffset: 0; }
+  #done:not([hidden]) .ticket { animation: none; }
+  .how li { transition: none; }
+}
+/* ---- pictures: header illustration, empty states, waitlist, ticket mark, icons ---- */
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; }
+.hero > .top, .hero > .stephead, .hero > #steps, .hero > .how { grid-column: 1 / -1; }
+.hero > h1, .hero > p, .hero > .perks { grid-column: 1; }
+.heroart { grid-column: 2; grid-row: 2 / span 2; align-self: end; width: 104px; height: auto; margin-top: 14px; }
+@media (max-width: 999px) { .heroart { width: 92px; } }
+@media (min-width: 1000px) {
+  .hero > h1, .hero > p { grid-column: 1 / -1; }
+  .heroart { grid-row: 4; align-self: center; width: 118px; margin-top: 8px; }
+}
+.near .i { width: 20px; height: 20px; }
+#reasons .chip span { display: flex; align-items: center; gap: 7px; }
+.ri { width: 19px; height: 19px; flex: none; fill: none; stroke: var(--brand); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#reasons .chip input:checked + span .ri { stroke: var(--on-brand); }
+.emptyart { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; padding: 20px 16px; background: var(--card); border: 1px solid var(--line); border-radius: 20px; margin-top: 14px; }
+.emptyart .art { width: 140px; height: auto; margin-bottom: 6px; }
+.emptyart b { font: 700 18px/1.25 var(--font); }
+.emptyart p { color: var(--muted); font-size: 16px; max-width: 34ch; }
+#clinics .emptyart { margin-top: 0; }
+.wlbox { display: flex; gap: 14px; align-items: flex-start; }
+.wlbox .art { width: 56px; height: 56px; flex: none; }
+.wlbox > div { min-width: 0; }
+.wlbox .btn.quiet { background: var(--card); color: var(--soft-ink); border: 1.5px solid var(--brand); }
+@media (min-width: 1000px) { .cbfab { width: 56px; height: 56px; padding: 0; justify-content: center; } .cbfab .t { display: none; } .cbfab .i { width: 24px; height: 24px; } }
+@media (min-width: 1000px) and (max-width: 1260px) { .page { padding-right: 88px; } }
+.ticket > :not(.tmark) { position: relative; z-index: 1; }
+.tmark { position: absolute; top: 20px; right: 20px; width: 68px; height: 68px; fill: none; stroke: #fff; stroke-opacity: .16; stroke-width: 2.4; stroke-linejoin: round; z-index: 0; }
+.nextsteps { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 14px; }
+.nextsteps li { display: grid; grid-template-columns: 44px 1fr; gap: 12px; align-items: start; font-size: 16px; color: var(--muted); line-height: 1.45; }
+.nextsteps b { display: block; color: var(--ink); font-size: 17px; }
+.nextsteps .ni { width: 44px; height: 44px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); display: grid; place-items: center; }
+.nextsteps .ni svg { width: 24px; height: 24px; fill: none; stroke: var(--brand); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i><span class="glow"></span></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-logo" viewBox="0 0 48 48"><defs><linearGradient id="bg" x1="8" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1FA877"/><stop offset="1" stop-color="#0B5A3F"/></linearGradient></defs><path transform="translate(-1.5 .2)" d="M11 4.5v39M11 4.5h15a8.2 8.2 0 0 1 0 16.4H11m0 0h17a11.3 11.3 0 0 1 0 22.6H11" fill="none" stroke="url(#bg)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path transform="translate(27 28) scale(.86)" fill="#fff" stroke="#0B5A3F" stroke-width="1.6" stroke-linejoin="round" d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.4 4.5 4.5 0 0 1 8 2.4c0 5.8-8 11-8 11z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V7l8-4 8 4v14M9 21v-6h6v6M9 10h.01M15 10h.01"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-steth" viewBox="0 0 24 24"><path d="M5 3H4v5a5 5 0 0 0 10 0V3h-1"/><path d="M9 13v2.5a4.5 4.5 0 0 0 9 0V14"/><circle cx="18" cy="11.5" r="2.5"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.7-5.7L20 8.5"/><path d="M20 4v4.5h-4.5"/><path d="M20 12a8 8 0 0 1-13.7 5.7L4 15.5"/><path d="M4 20v-4.5h4.5"/></symbol>
+  <symbol id="i-clip" viewBox="0 0 24 24"><rect x="5" y="4.5" width="14" height="17" rx="2.5"/><path d="M9 3h6v3.5H9z"/><path d="M8.5 13.5l2.5 2.5 4.5-5"/></symbol>
+  <symbol id="i-band" viewBox="0 0 24 24"><rect x="1.5" y="8" width="21" height="8" rx="4" transform="rotate(-45 12 12)"/><path d="M10.5 10.5h.01M13.5 13.5h.01M13.5 10.5h.01M10.5 13.5h.01"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z"/><path d="M10 21.5h4"/></symbol>
+  <symbol id="i-queue" viewBox="0 0 24 24"><circle cx="5.5" cy="9.5" r="2"/><circle cx="12" cy="8" r="2.5"/><circle cx="18.5" cy="9.5" r="2"/><path d="M2 18c0-2.2 1.6-4 3.5-4s3.5 1.8 3.5 4M8 18.5c0-2.6 1.8-4.5 4-4.5s4 1.9 4 4.5M15 18c0-2.2 1.6-4 3.5-4s3.5 1.8 3.5 4"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M12 13.5v4M10 15.5h4"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.6L3.5 20.5l1.4-4.9A8.5 8.5 0 1 1 21 11.5z"/><path d="M9 11.5h6M12 8.5v6"/></symbol>
+</svg>
+<div class="page">
+  <div id="form">
+    <div class="hero">
+      <div class="top"><div class="brand"><span class="logo"><svg class="mk" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-logo"/></svg></span><span class="bw">Baari<small>Book clinic visits on WhatsApp</small></span></div><a id="acct" href="/patient/login">Log in</a></div>
+      <h1>Book a visit</h1>
+      <p id="heroSub">Pick a clinic, then a time. The clinic confirms on WhatsApp.</p>
+      <svg class="heroart" viewBox="0 0 120 110" aria-hidden="true">
+        <ellipse cx="56" cy="103" rx="46" ry="5" fill="#fff" fill-opacity=".12"/>
+        <rect x="20" y="47" width="64" height="56" rx="7" fill="#fff"/>
+        <rect x="15" y="38" width="74" height="13" rx="5" fill="#6EE7B7"/>
+        <circle cx="52" cy="25" r="12.5" fill="#fff"/>
+        <path d="M52 18.5v13M45.5 25h13" stroke="#12805A" stroke-width="4.2" stroke-linecap="round"/>
+        <rect x="28" y="60" width="12" height="11" rx="2.5" fill="#D8F0E4"/>
+        <rect x="64" y="60" width="12" height="11" rx="2.5" fill="#D8F0E4"/>
+        <rect x="45" y="75" width="14" height="28" rx="3" fill="#12805A"/>
+        <g transform="rotate(-12 95 70)"><path d="M82 59h26a3 3 0 0 1 3 3v4a3.5 3.5 0 0 0 0 7v4a3 3 0 0 1-3 3H82a3 3 0 0 1-3-3v-4a3.5 3.5 0 0 0 0-7v-4a3 3 0 0 1 3-3z" fill="#FFE08A"/><text x="95" y="74.5" text-anchor="middle" font-family="Figtree, Segoe UI, sans-serif" font-size="12.5" font-weight="800" fill="#0B4A35">12</text></g>
+        <path d="M91 14h17a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4h-9l-5.5 4.5V30H91a4 4 0 0 1-4-4v-8a4 4 0 0 1 4-4z" fill="#6EE7B7"/>
+        <path d="M94.5 22l3 3 6.5-6.5" fill="none" stroke="#0B4A35" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <ul class="perks"><li>No sign-up needed</li><li>Confirmation on WhatsApp</li><li>Reminder before your visit</li></ul>
+      <div class="stephead"><b>Your booking</b><span id="stepNo">Step 1 of 3</span></div>
+      <ul id="steps" aria-label="Progress">
+        <li><span class="dot"><svg class="i"><use href="#i-check"/></svg></span>Clinic</li>
+        <li><span class="dot"><svg class="i"><use href="#i-check"/></svg></span>Your details</li>
+        <li><span class="dot"><svg class="i"><use href="#i-check"/></svg></span>Time</li>
+      </ul>
+      <ol class="how"><li><span>1</span><div><b>Choose a clinic</b>Pick one near you and see its next free time.</div></li><li><span>2</span><div><b>Add your details</b>Your name and WhatsApp number. No sign-up needed.</div></li><li><span>3</span><div><b>Pick a time</b>The clinic confirms on WhatsApp and reminds you before the visit.</div></li></ol>
+    </div>
+
+    <section class="step" id="step1" aria-labelledby="h1s">
+      <h2 class="sh" id="h1s" tabindex="-1">Choose a clinic</h2>
+      <p class="sub">Each clinic shows its next free time.</p>
+      <button type="button" class="near" id="near"><svg class="i"><use href="#i-pin"/></svg>Find clinics near me</button>
+      <p class="near-note" id="nearNote" role="status"></p>
+      <div class="group" id="clinics" role="radiogroup" aria-label="Clinic" aria-busy="true"><span class="sr">Loading clinics</span><div class="sk sk-card"></div><div class="sk sk-card"></div><div class="sk sk-card"></div></div>
+      <div class="err" id="clinicErr" role="alert"></div>
+    </section>
+
+    <section class="step" id="step2" aria-labelledby="h2s" hidden>
+      <h2 class="sh" id="h2s" tabindex="-1">Your details</h2>
+      <p class="sub"><span>At <b class="cname"></b></span><button type="button" class="linkbtn" data-go="1">Change clinic</button></p>
+      <div class="fields">
+        <div class="welcome" id="welcome" hidden><span>Welcome back, <b id="wName"></b>. We filled in your details.</span><button type="button" class="linkbtn" id="notYou">Not you?</button></div>
+        <div class="field"><label for="name">Your name</label><input id="name" type="text" autocomplete="name"><div class="err" id="nameErr" role="alert"></div></div>
+        <div class="field"><label for="phone">WhatsApp number</label><input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="98765 43210"><div class="hint">10-digit mobile number, with or without +91.</div><div class="err" id="phoneErr" role="alert"></div><div class="pnote" id="pnote" hidden></div></div>
+        <div class="field"><span class="lbl" id="reasonLabel">Reason for visit</span>
+          <div class="chips" role="radiogroup" aria-labelledby="reasonLabel" id="reasons"></div><div class="err" id="reasonErr" role="alert"></div>
+          <details class="assist" id="assistBox">
+            <summary>Not sure which to pick? Describe what is wrong</summary>
+            <div class="ab">
+              <p>Write a few words, in English or Hindi. We will suggest the kind of visit.</p>
+              <textarea id="asText" rows="2" maxlength="600" placeholder="For example: fever for three days and body ache" aria-label="What is wrong"></textarea>
+              <div class="err" id="asErr" role="alert"></div>
+              <button type="button" class="btn quiet" id="asGo">Suggest a visit</button>
+              <div id="asOut" aria-live="polite"></div>
+              <small class="hint" id="asNote">This is not medical advice. In an emergency, call 112.</small>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="step" id="step3" aria-labelledby="h3s" hidden>
+      <h2 class="sh" id="h3s" tabindex="-1">Pick a day and time</h2>
+      <p class="sub"><span>At <b class="cname"></b></span><button type="button" class="linkbtn" data-go="1">Change clinic</button></p>
+      <div class="days" id="days" role="radiogroup" aria-label="Day"></div>
+      <div class="times" id="times" aria-live="polite"></div>
+      <div class="err" id="timeErr" role="alert" style="margin-top:12px"></div>
+    </section>
+
+    <div style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden" aria-hidden="true"><label>Website<input id="hp" type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+    <div class="banner" id="banner" role="alert" hidden></div>
+    <div class="bar" id="bar">
+  <div>
+    <button type="button" class="btn quiet back" id="back" hidden><svg class="i"><use href="#i-back"/></svg>Back</button>
+    <p id="summary"><b>Choose a clinic</b><span>Then your details and a time</span></p>
+    <button type="button" class="btn" id="next">Continue<svg class="i"><use href="#i-next"/></svg></button>
+    <button type="button" class="btn" id="submit" hidden>Book visit</button>
+  </div>
+</div>
+  </div>
+
+  <div id="done" hidden>
+    <div class="okmark" aria-hidden="true"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15.5 27l7 7 14-15"/></svg></div>
+    <h1 class="done-h">You are booked</h1>
+    <div class="ticket">
+      <svg class="tmark" viewBox="0 0 48 48" aria-hidden="true"><path d="M18 5h12v13h13v12H30v13H18V30H5V18h13z"/></svg>
+      <div class="ref" id="sRef"></div>
+      <div class="big" id="sTime"></div>
+      <div class="when" id="sDay"></div>
+      <div class="stub"><div><b id="sClinic"></b><span id="sDoc"></span></div><div class="for"><span>For</span><b id="sFor"></b></div></div>
+    </div>
+    <div class="acts">
+      <button type="button" class="act" id="addCal"><svg aria-hidden="true"><use href="#i-cal"/></svg>Add to calendar</button>
+      <a class="act" id="dirs" target="_blank" rel="noopener" hidden><svg aria-hidden="true"><use href="#i-pin"/></svg>Get directions</a>
+      <a class="act" id="share" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-share"/></svg>Share on WhatsApp</a>
+    </div>
+    <dl class="facts" id="sMeta"></dl>
+    <ol class="nextsteps" id="sNext"></ol>
+    <div class="actions"><a class="btn" id="track" href="#" hidden>Track your turn on the day</a><button class="btn quiet" id="again">Book another visit</button></div>
+    <p class="saved" id="saved" hidden><span id="savedTxt">Your name and number are saved on this phone for next time.</span> <button type="button" class="linkbtn" id="forget">Forget them</button></p>
+  </div>
+</div>
+
+
+
+<script>
+
+const API = '/api/patient';
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pad = (n) => String(n).padStart(2, '0');
+const iso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parseDay = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+const clock = (t) => { const [h, m] = t.split(':').map(Number); return { t: `${h % 12 || 12}:${pad(m)}`, ap: h < 12 ? 'am' : 'pm' }; };
+const dr = (n) => (/^dr\.?\s/i.test(n) ? n : 'Dr. ' + n);
+const REASONS = [['consultation', 'Consultation'], ['follow-up', 'Follow-up'], ['check-up', 'Check-up'], ['procedure', 'Procedure']];
+const REASON_ICON = { consultation: 'steth', 'follow-up': 'repeat', 'check-up': 'clip', procedure: 'band' };
+
+const S = { clinics: [], clinic: null, reason: '', date: '', time: '', slots: [], member: false, plan: null };
+let STEP = 1, DONE = false, slotSeq = 0;
+const SAVED_KEY = 'baari_me';
+const ART = {
+  times: '<svg class="art" viewBox="0 0 140 100" aria-hidden="true"><ellipse cx="68" cy="93" rx="44" ry="5" fill="#D8F0E4"/><rect x="34" y="16" width="64" height="66" rx="9" fill="#fff" stroke="#12805A" stroke-width="2.5"/><path d="M34 25a9 9 0 0 1 9-9h46a9 9 0 0 1 9 9v7H34z" fill="#12805A"/><path d="M50 10v12M82 10v12" stroke="#0B4A35" stroke-width="3" stroke-linecap="round"/><g fill="#D8F0E4"><rect x="45" y="39" width="10" height="9" rx="2.5"/><rect x="61" y="39" width="10" height="9" rx="2.5" fill="#12805A"/><rect x="77" y="39" width="10" height="9" rx="2.5"/><rect x="45" y="53" width="10" height="9" rx="2.5" fill="#12805A"/><rect x="61" y="53" width="10" height="9" rx="2.5"/><rect x="77" y="53" width="10" height="9" rx="2.5" fill="#12805A"/><rect x="45" y="67" width="10" height="9" rx="2.5"/><rect x="61" y="67" width="10" height="9" rx="2.5" fill="#12805A"/></g><circle cx="100" cy="74" r="17" fill="#FFE08A" stroke="#0B4A35" stroke-width="2.5"/><path d="M100 65v9.5l6 4" fill="none" stroke="#0B4A35" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  wait: '<svg class="art" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#fff"/><path d="M32 15c-8 0-13.5 6-13.5 14v9l-4 6.5h35l-4-6.5v-9C45.5 21 40 15 32 15z" fill="#fff" stroke="#12805A" stroke-width="2.5" stroke-linejoin="round"/><path d="M27.5 48.5a4.5 4.5 0 0 0 9 0" fill="none" stroke="#12805A" stroke-width="2.5" stroke-linecap="round"/><circle cx="45" cy="18" r="7.5" fill="#FFE08A" stroke="#0B4A35" stroke-width="2"/><path d="M45 14.5v7M41.5 18h7" stroke="#0B4A35" stroke-width="2.2" stroke-linecap="round"/></svg>',
+  clinic: '<svg class="art" viewBox="0 0 140 100" aria-hidden="true"><ellipse cx="70" cy="91" rx="46" ry="5" fill="#D8F0E4"/><rect x="38" y="38" width="64" height="50" rx="7" fill="#fff" stroke="#12805A" stroke-width="2.5"/><rect x="33" y="29" width="74" height="12" rx="5" fill="#6EE7B7" stroke="#12805A" stroke-width="2.5"/><circle cx="70" cy="17" r="11" fill="#fff" stroke="#12805A" stroke-width="2.5"/><path d="M70 11.5v11M64.5 17h11" stroke="#12805A" stroke-width="3.5" stroke-linecap="round"/><rect x="46" y="50" width="12" height="10" rx="2.5" fill="#D8F0E4"/><rect x="82" y="50" width="12" height="10" rx="2.5" fill="#D8F0E4"/><rect x="62" y="63" width="16" height="25" rx="3" fill="#12805A"/><rect x="88" y="64" width="32" height="15" rx="4" fill="#FFE08A" stroke="#0B4A35" stroke-width="2"/><text x="104" y="75" text-anchor="middle" font-family="Figtree, Segoe UI, sans-serif" font-size="9.5" font-weight="800" fill="#0B4A35">Soon</text></svg>',
+  offline: '<svg class="art" viewBox="0 0 140 100" aria-hidden="true"><ellipse cx="70" cy="91" rx="40" ry="5" fill="#D8F0E4"/><path d="M44 74h50a16 16 0 0 0 1.5-31.9 22 22 0 0 0-42.3-4.6A18.5 18.5 0 0 0 44 74z" fill="#fff" stroke="#12805A" stroke-width="2.5" stroke-linejoin="round"/><path d="M60 52l20 16M80 52L60 68" stroke="#0B4A35" stroke-width="3" stroke-linecap="round"/></svg>'
+};
+const emptyArt = (art, title, text) => `<div class="emptyart">${ART[art]}<b>${title}</b><p>${text}</p></div>`;
+const reduceMotion = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const T0 = Date.now();
+
+function setErr(id, msg, inputId) {
+  $(id).textContent = msg || '';
+  if (inputId) $(inputId).setAttribute('aria-invalid', msg ? 'true' : 'false');
+}
+
+/* clinics */
+function km(a, b, c, d) { const r = Math.PI / 180, x = (c - a) * r, y = (d - b) * r; const h = Math.sin(x / 2) ** 2 + Math.cos(a * r) * Math.cos(c * r) * Math.sin(y / 2) ** 2; return 6371 * 2 * Math.asin(Math.sqrt(h)); }
+function slotWords(s) {
+  const d = parseDay(s.date), t = iso(new Date()), tm = iso(new Date(Date.now() + 864e5));
+  const c = clock(s.time);
+  const day = s.date === t ? 'Today' : s.date === tm ? 'Tomorrow' : d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+  return `${day}, ${c.t} ${c.ap}`;
+}
+async function quickBook(id) {
+  const c = S.clinics.find((x) => x.id === id); if (!c || !c.next_slot) return;
+  const r = document.querySelector(`input[name="clinic"][value="${id}"]`); if (r) r.checked = true;
+  const wait = chooseClinic(id, c.next_slot.date, c.next_slot.time);
+  goStep(2);
+  await wait;
+}
+function initials(n) { const w = String(n || '').replace(/^dr\.?\s+/i, '').split(/\s+/).filter(Boolean); return ((w[0] || '?')[0] + (w.length > 1 ? w[1][0] : '')).toUpperCase(); }
+function renderClinics() {
+  const picked = S.clinic ? S.clinic.id : null;
+  $('clinics').innerHTML = S.clinics.map((c) => `<label class="opt"><input type="radio" name="clinic" value="${c.id}"${c.id === picked ? ' checked' : ''}><span class="ico" aria-hidden="true">${esc(initials(c.name))}</span><span class="txt"><span class="head"><strong>${esc(c.name)}</strong>${c.rating_avg ? `<span class="rating"><b>★ ${c.rating_avg.toFixed(1)}</b> (${c.rating_count})</span>` : ''}</span><span class="meta">${esc(dr(c.doctor_name))}, ${esc(c.phone)}</span>${c.location ? `<span class="loc">${esc(c.location)}</span>` : ''}${c.dist != null ? `<span class="loc dist">${c.dist < 1 ? 'Less than 1 km away' : c.dist.toFixed(1) + ' km away'}</span>` : ''}${c.services ? `<span class="svc">${c.services.split(',').map((x) => x.trim()).filter(Boolean).slice(0, 4).map((x) => `<em>${esc(x)}</em>`).join('')}</span>` : ''}${c.offer ? `<span class="offer">${esc(c.offer)}</span>` : ''}${c.plan_price !== undefined ? `<span class="plan">${esc(c.plan_name)}: Rs ${c.plan_price} / ${c.plan_days} days</span>` : ''}<a class="prof" href="/patient/clinic/${c.id}">Profile and reviews</a>${c.next_slot ? `<span class="nextfree"><span>Next free: <b>${slotWords(c.next_slot)}</b></span><button type="button" class="quick" data-quick="${c.id}">Book this</button></span>` : ''}</span><span class="mark"><svg class="i"><use href="#i-check"/></svg></span></label>`).join('');
+}
+$('near').addEventListener('click', () => {
+  if (!navigator.geolocation) { $('nearNote').textContent = 'Your browser cannot share location. Pick a clinic from the list.'; return; }
+  $('nearNote').textContent = 'Finding clinics near you...';
+  navigator.geolocation.getCurrentPosition((pos) => {
+    const { latitude: la, longitude: lo } = pos.coords;
+    S.clinics.forEach((c) => { c.dist = c.latitude != null && c.longitude != null ? km(la, lo, c.latitude, c.longitude) : null; });
+    S.clinics.sort((x, y) => (x.dist == null) - (y.dist == null) || (x.dist || 0) - (y.dist || 0));
+    renderClinics();
+    const n = S.clinics.filter((c) => c.dist != null).length;
+    $('nearNote').textContent = n ? 'Nearest clinic is at the top.' : 'These clinics have not added a map location yet.';
+  }, () => { $('nearNote').textContent = 'Could not get your location. Allow location access, or pick a clinic from the list.'; }, { timeout: 10000 });
+});
+async function loadClinics() {
+  try {
+    const res = await fetch(API + '/clinics');
+    S.clinics = await res.json();
+  } catch { S.clinics = []; $('clinics').removeAttribute('aria-busy'); $('clinics').innerHTML = emptyArt('offline', 'Could not load clinics', 'Check your connection and reload the page.'); return; }
+  $('clinics').removeAttribute('aria-busy');
+  if (!S.clinics.length) { $('clinics').innerHTML = emptyArt('clinic', 'No clinics yet', 'No clinic is taking online bookings yet. Check back soon.'); return; }
+  renderClinics();
+  const wanted = Number(new URLSearchParams(location.search).get('clinic'));
+  const pick = S.clinics.find((c) => c.id === wanted) || (S.clinics.length === 1 ? S.clinics[0] : null);
+  if (pick) { document.querySelector(`input[name="clinic"][value="${pick.id}"]`).checked = true; chooseClinic(pick.id); if (pick.id === wanted) goStep(2); }
+}
+$('clinics').addEventListener('click', (e) => { const b = e.target.closest('[data-quick]'); if (b) { e.preventDefault(); quickBook(Number(b.dataset.quick)); } });
+$('clinics').addEventListener('change', (e) => { if (e.target.name === 'clinic') chooseClinic(Number(e.target.value)); });
+
+function chooseClinic(id, keepDate, keepTime) {
+  S.clinic = S.clinics.find((c) => c.id === id);
+  setErr('clinicErr', '');
+  S.member = false; S.plan = null; S.paidUntil = null; renderPlanNote();
+  document.querySelectorAll('.cname').forEach((el) => { el.textContent = S.clinic ? S.clinic.name : ''; });
+  const loaded = renderDays(keepDate, keepTime);
+  update();
+  checkMember();
+  return loaded;
+}
+/* priority plan: shows the clinic's plan, and (only when a full number is typed) whether this number is a member */
+const norm10 = (v) => { let d = String(v || '').replace(/\D/g, ''); if (d.length > 10 && d.startsWith('91')) d = d.slice(2); if (d.length > 10 && d.startsWith('0')) d = d.slice(1); return d; };
+const phoneDigits = () => norm10($('phone').value);
+let memSeq = 0;
+async function checkMember() {
+  const seq = ++memSeq, c = S.clinic; if (!c) return;
+  const d = phoneDigits(), ph = /^[6-9]\d{9}$/.test(d) ? d : '';
+  let j; try { const r = await fetch(`${API}/clinics/${c.id}/plan${ph ? '?phone=' + ph : ''}`); if (!r.ok) return; j = await r.json(); } catch { return; }
+  if (seq !== memSeq || S.clinic !== c) return;
+  const was = S.member; S.plan = j.plan; S.member = !!j.member; renderPlanNote();
+  if (was !== S.member) { const keep = S.date, keepT = S.time; await renderDays(keep, keepT); }
+}
+function renderPlanNote() {
+  const n = $('pnote'), p = S.plan;
+  if (!p) { n.hidden = true; return; }
+  n.hidden = false; n.className = 'pnote' + (S.member ? ' on' : '');
+  const until = S.paidUntil ? esc(parseDay(S.paidUntil).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })) : '';
+  const list = `<h5>${S.member ? 'Your perks' : 'Members get'}</h5><ul><li>Reserved times only members can book</li><li>Book up to ${7 + p.extra_days} days ahead</li><li>Called up to ${p.skip_minutes} minutes earlier on the day</li></ul>`;
+  const nm = $('name').value.trim(), d10 = phoneDigits();
+  const left = S.paidUntil ? Math.min(p.days, Math.max(0, Math.round((parseDay(S.paidUntil) - new Date().setHours(0, 0, 0, 0)) / 86400000) + 1)) : null;
+  const pct = left === null ? 0 : Math.min(100, Math.round((left / p.days) * 100));
+  const zap = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg>';
+  const mem = `<div class="mc"><div class="strip"></div><div class="mh"><span class="av" aria-hidden="true">${esc((nm || 'M')[0].toUpperCase())}</span><div class="who"><h3>${esc(nm || 'Priority member')}</h3>${d10 ? `<p>+91 ${esc(d10.slice(0, 5))} •••••</p>` : ''}<small>Priority member at ${esc(S.clinic.name)}</small></div><span class="badge">PRIORITY</span></div><div class="mb">${left !== null ? `<div><div class="prow"><b>${left} day${left === 1 ? '' : 's'} left</b><span>of ${p.days} days</span></div><div class="track" role="progressbar" aria-valuemin="0" aria-valuemax="${p.days}" aria-valuenow="${left}"><i style="width:${pct}%"></i></div></div>` : ''}<div class="card"><div class="ct"><span>Priority membership</span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6l8-3z"/></svg></div><div class="cb"><div><small>MEMBER NAME</small><b>${esc(nm || 'Priority member')}</b></div><div><small>${S.paidUntil ? 'VALID UNTIL' : 'STATUS'}</small><b>${S.paidUntil ? until : 'Active'}</b></div></div></div><div><h4>Membership benefits</h4><ul><li>${zap}<span>Reserved times only members can book</span></li><li>${zap}<span>Book up to ${7 + p.extra_days} days ahead</span></li><li>${zap}<span>Called up to ${p.skip_minutes} minutes earlier on the day</span></li></ul></div></div><div class="mf"><span>${S.paidUntil ? '<b>Payment received.</b>' : 'Priority member'}</span><a href="/patient/clinic/${S.clinic.id}">What it includes</a></div></div>`;
+  n.innerHTML = S.member
+    ? mem
+    : `<div class="pc"><h3>${esc(p.name)}</h3><p class="pdesc">${esc(S.clinic.name)} has a priority plan for ${p.days} days.</p><div class="pprice"><b>Rs ${p.price}</b><small>for ${p.days} days</small></div>${p.online ? `<button type="button" class="btn" id="buyPlan">Pay Rs ${p.price} online${p.demo ? ' (demo)' : ''}</button><div class="err" id="payErr" role="alert"></div>` : ''}${list}<p class="pfoot">${p.online ? 'Enter your name and number above, then pay online. The plan is for that mobile number.' + (p.demo ? ' <b>Demo mode: no real money is charged.</b>' : '') : 'Ask at the clinic desk to join.'} <a href="/patient/clinic/${S.clinic.id}">See what it includes</a></p></div>`;
+}
+function loadRzp() {
+  return new Promise((resolve, reject) => {
+    if (window.Razorpay) return resolve();
+    const sc = document.createElement('script'); sc.src = 'https://checkout.razorpay.com/v1/checkout.js'; sc.onload = resolve; sc.onerror = () => reject(new Error('Could not load the payment window. Check your connection and try again.'));
+    document.head.appendChild(sc);
+  });
+}
+function demoCheckout(o) {
+  return new Promise((resolve, reject) => {
+    let dlg = $('demoPay');
+    if (!dlg) { dlg = document.createElement('dialog'); dlg.id = 'demoPay'; document.body.appendChild(dlg); }
+    dlg.innerHTML = `<span class="demotag">Demo payment</span><h2>${esc(o.clinic_name)}</h2><p class="hint">${esc(o.plan_name)} for ${esc(o.name)}, +91 ${esc(o.phone)}</p><div class="amt">Rs ${o.amount / 100}</div><p class="hint">This is a pretend checkout. No money is taken.</p><div class="err" id="demoErr" role="alert"></div><div class="row2"><button type="button" class="btn" id="demoGo">Pay Rs ${o.amount / 100} (demo)</button><button type="button" class="btn quiet" id="demoNo">Cancel</button></div>`;
+    let finished = false;
+    dlg.addEventListener('close', () => { if (!finished) reject(new Error('')); }, { once: true });
+    $('demoNo').onclick = () => dlg.close();
+    $('demoGo').onclick = async () => {
+      $('demoGo').disabled = true; $('demoGo').textContent = 'Paying...';
+      try {
+        const v = await fetch(API + '/plan/verify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ order_id: o.order_id, demo: true }) });
+        const j = await v.json().catch(() => ({})); if (!v.ok) throw new Error(j.error || 'The demo payment failed.');
+        finished = true; dlg.close(); resolve(j);
+      } catch (e) { $('demoErr').textContent = e.message; $('demoGo').disabled = false; $('demoGo').textContent = 'Try again'; }
+    };
+    dlg.showModal();
+  });
+}
+async function buyPlan() {
+  const err = (m) => { const e = $('payErr'); if (e) e.textContent = m || ''; };
+  err('');
+  const name = $('name').value.trim(), digits = phoneDigits();
+  if (name.length < 2) return err('Enter your name above first.');
+  if (!/^[6-9]\d{9}$/.test(digits)) return err('Enter your 10-digit mobile number above first.');
+  const btn = $('buyPlan'), label = btn.textContent; btn.disabled = true; btn.textContent = 'Opening payment...';
+  try {
+    const r = await fetch(API + '/plan/order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ clinic_id: S.clinic.id, name, phone: digits, website: $('hp').value, open_ms: Date.now() - T0 }) });
+    const o = await r.json().catch(() => ({})); if (!r.ok) throw new Error(o.error || 'Could not start the payment.');
+    if (o.demo) {
+      const done = await demoCheckout(o);
+      S.paidUntil = done.expires_on; await checkMember(); await loadSlots();
+      return;
+    }
+    await loadRzp();
+    const done = await new Promise((resolve, reject) => {
+      const rz = new window.Razorpay({ key: o.key_id, amount: o.amount, currency: o.currency, name: o.clinic_name, description: o.plan_name, order_id: o.order_id, prefill: { name: o.name, contact: '91' + o.phone }, theme: { color: '#12805A' },
+        handler: async (resp) => {
+          try {
+            const v = await fetch(API + '/plan/verify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ order_id: resp.razorpay_order_id, payment_id: resp.razorpay_payment_id, signature: resp.razorpay_signature }) });
+            const j = await v.json().catch(() => ({})); if (!v.ok) throw new Error(j.error || 'We could not confirm the payment.'); resolve(j);
+          } catch (e) { reject(e); }
+        },
+        modal: { ondismiss: () => reject(new Error('')) } });
+      rz.on('payment.failed', (f) => err((f.error && f.error.description) || 'The payment did not go through. You can try again.'));
+      rz.open();
+    });
+    S.paidUntil = done.expires_on; await checkMember(); await loadSlots();
+  } catch (e) { err(e.message); const b2 = $('buyPlan'); if (b2) { b2.disabled = false; b2.textContent = label; } }
+}
+$('pnote').addEventListener('click', (e) => { if (e.target.closest('#buyPlan')) buyPlan(); });
+
+/* reasons */
+$('reasons').innerHTML = REASONS.map(([v, l]) => `<label class="chip"><input type="radio" name="reason" value="${v}"><span><svg class="ri" aria-hidden="true"><use href="#i-${REASON_ICON[v]}"/></svg>${l}</span></label>`).join('');
+$('reasons').addEventListener('change', (e) => { S.reason = e.target.value; setErr('reasonErr', ''); update(); });
+
+/* days */
+function renderDays(keep, keepTime) {
+  const now = new Date();
+  const lastSlotPassed = now.getHours() * 60 + now.getMinutes() > 16 * 60 + 15;
+  const start = lastSlotPassed ? 1 : 0;
+  const days = [];
+  const span = 7 + (S.member && S.plan ? S.plan.extra_days : 0);
+  for (let i = start; i < start + span; i++) { const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i); days.push(d); }
+  $('days').innerHTML = days.map((d, i) => `<label class="day"><input type="radio" name="day" value="${iso(d)}" ${i === 0 ? 'checked' : ''}><span><small>${i === 0 && !lastSlotPassed ? 'Today' : d.toLocaleDateString('en-IN', { weekday: 'short' })}</small><b>${d.getDate()}</b><small>${d.toLocaleDateString('en-IN', { month: 'short' })}</small></span></label>`).join('');
+  S.date = iso(days[0]); S.time = '';
+  if (keep && days.some((d) => iso(d) === keep)) { S.date = keep; S.time = keepTime || ''; const inp = document.querySelector(`input[name="day"][value="${keep}"]`); if (inp) { inp.checked = true; inp.closest('.day').scrollIntoView({ block: 'nearest', inline: 'center' }); } }
+  return loadSlots();
+}
+$('days').addEventListener('change', (e) => { S.date = e.target.value; S.time = ''; loadSlots(); });
+
+/* slots */
+async function loadSlots() {
+  if (!S.clinic) { $('times').innerHTML = ''; return; }
+  const seq = ++slotSeq;
+  $('times').innerHTML = '<div class="tgroup" aria-busy="true"><span class="sr">Loading times</span><div class="sk sk-line"></div><div class="chips">' + '<span class="sk sk-chip"></span>'.repeat(6) + '</div></div>';
+  try {
+    const d = phoneDigits(), res = await fetch(`${API}/clinics/${S.clinic.id}/slots?date=${S.date}${/^[6-9]\d{9}$/.test(d) ? '&phone=' + d : ''}`);
+    if (!res.ok) throw new Error();
+    const got = (await res.json()).slots;
+    if (seq !== slotSeq) return;
+    S.slots = got;
+  } catch { if (seq !== slotSeq) return; $('times').innerHTML = emptyArt('offline', 'Could not load times', 'Try another day, or reload the page.'); S.slots = []; update(); return; }
+  renderSlots(); update();
+}
+function renderSlots() {
+  const now = new Date();
+  const isToday = S.date === iso(now);
+  const cutoff = now.getHours() * 60 + now.getMinutes() + 15;
+  const open = S.slots.filter((s) => s.available).map((s) => s.time).filter((t) => { const [h, m] = t.split(':').map(Number); return !isToday || h * 60 + m >= cutoff; });
+  const locked = S.slots.filter((s) => s.members_only).map((s) => s.time).filter((t) => { const [h, m] = t.split(':').map(Number); return !isToday || h * 60 + m >= cutoff; });
+  const WL = '<div class="wlbox">' + ART.wait + '<div><b>Join the waitlist for this day</b><p>If someone cancels, the first free time is held for you. Keep the waitlist page open to see it.</p><div class="err" id="wlErr" role="alert"></div><button type="button" class="btn quiet" id="wlGo">Join the waitlist</button></div></div>';
+  if (!open.length && !locked.length) { $('times').innerHTML = emptyArt('times', 'No times left on this day', 'Pick another day, or join the waitlist below.') + WL; $('wlGo').addEventListener('click', joinWaitlist); return; }
+  const first = open.slice().sort()[0];
+  if (S.time && !open.includes(S.time)) S.time = '';
+  const group = (label, list) => list.length ? `<div class="tgroup"><h3>${label}</h3><div class="chips" role="radiogroup" aria-label="${label} times">${list.map((t) => { const c = clock(t); return locked.includes(t) ? `<label class="chip lock" title="Kept for priority members"><input type="radio" name="time" value="${t}" disabled><span>${c.t} ${c.ap}<small>Members</small></span></label>` : `<label class="chip${t === first ? ' first' : ''}"><input type="radio" name="time" value="${t}"${t === S.time ? ' checked' : ''}><span>${c.t} ${c.ap}${t === first ? '<em class="early">Earliest</em>' : ''}</span></label>`; }).join('')}</div></div>` : '';
+  const all = open.concat(locked).sort();
+  $('times').innerHTML = group('Morning', all.filter((t) => t < '12:00')) + group('Afternoon', all.filter((t) => t >= '12:00')) + (!open.length ? '<div class="empty" style="margin-top:10px">The free times left on this day are kept for priority members. Pick another day, or join the waitlist.</div>' + WL : '');
+  if ($('wlGo')) $('wlGo').addEventListener('click', joinWaitlist);
+}
+$('times').addEventListener('change', (e) => { if (e.target.name === 'time') { S.time = e.target.value; setErr('timeErr', ''); update(); } });
+
+/* waitlist */
+async function joinWaitlist() {
+  setErr('wlErr', '');
+  const name = $('name').value.trim(), digits = norm10($('phone').value);
+  let msg = '';
+  if (name.length < 2) msg = 'Enter your name above first.';
+  else if (!/^[6-9]\d{9}$/.test(digits)) msg = 'Enter your 10-digit mobile number above first.';
+  else if (!S.reason) msg = 'Choose a reason for the visit above first.';
+  if (msg) { setErr('wlErr', msg); return; }
+  $('wlGo').disabled = true;
+  try {
+    const res = await fetch(API + '/waitlist', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ clinic_id: S.clinic.id, date: S.date, name, phone: digits, visit_type: S.reason, website: $('hp').value, open_ms: Date.now() - T0 }) });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Could not join the waitlist.');
+    location.href = '/patient/visit?w=' + data.token;
+  } catch (e) { setErr('wlErr', e.message); $('wlGo').disabled = false; }
+}
+
+/* summary bar */
+function stepState() {
+  document.querySelectorAll('#steps li').forEach((li, i) => { const k = i + 1; li.classList.toggle('done', k < STEP); li.classList.toggle('cur', k === STEP); if (k === STEP) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current'); });
+  document.querySelectorAll('.how li').forEach((li, i) => { const k = i + 1; li.classList.toggle('done', k < STEP); li.classList.toggle('cur', k === STEP); });
+  const sn = $('stepNo'); if (sn) sn.textContent = 'Step ' + STEP + ' of 3';
+}
+function update() {
+  stepState();
+  const sum = $('summary'), c = S.clinic;
+  $('submit').disabled = !c;
+  if (!c) { sum.innerHTML = '<b>Choose a clinic</b><span>3 quick steps</span>'; return; }
+  if (STEP === 3 && S.time) { const k = clock(S.time); sum.innerHTML = `<b>${k.t} ${k.ap}</b><span>${parseDay(S.date).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })}</span>`; }
+  else if (STEP === 3) sum.innerHTML = '<b>Pick a time</b><span>Then book</span>';
+  else if (STEP === 2) sum.innerHTML = `<b>${esc(c.name)}</b><span>Add your name and number</span>`;
+  else sum.innerHTML = `<b>${esc(c.name)}</b><span>${c.next_slot ? 'Next free: ' + slotWords(c.next_slot) : esc(dr(c.doctor_name))}</span>`;
+}
+
+/* steps: one screen each; the phone's Back button goes to the previous step */
+function goStep(n, push = true) {
+  n = Math.max(1, Math.min(3, n));
+  if (n > 1 && !S.clinic) n = 1;
+  const changed = n !== STEP;
+  STEP = n;
+  document.body.classList.remove('s1', 's2', 's3'); document.body.classList.add('s' + n);
+  [1, 2, 3].forEach((i) => { $('step' + i).hidden = i !== n; });
+  $('back').hidden = n === 1; $('next').hidden = n === 3; $('submit').hidden = n !== 3;
+  if (push && changed) history.pushState({ step: n }, '');
+  update();
+  if (changed) {
+    window.scrollTo({ top: 0, behavior: reduceMotion() ? 'auto' : 'smooth' });
+    $('h' + n + 's').focus({ preventScroll: true });
+  }
+}
+function focusErr(el) { el.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'center' }); if (el.tagName === 'INPUT') el.focus({ preventScroll: true }); }
+history.replaceState({ step: 1 }, '');
+addEventListener('popstate', (e) => { if (DONE) return; goStep(e.state && e.state.step ? e.state.step : 1, false); });
+$('next').addEventListener('click', () => {
+  if (STEP === 1) { if (!S.clinic) { setErr('clinicErr', 'Choose a clinic to continue.'); focusErr($('clinicErr')); return; } goStep(2); return; }
+  if (STEP === 2) { const bad = checkDetails(); if (bad) { focusErr(bad); return; } goStep(3); }
+});
+$('back').addEventListener('click', () => { if (history.state && history.state.step > 1) history.back(); else goStep(STEP - 1); });
+document.addEventListener('click', (e) => { const g = e.target.closest('[data-go]'); if (g) goStep(Number(g.dataset.go)); });
+['name', 'phone'].forEach((id) => $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $('next').click(); } }));
+
+/* green tick once a field is right */
+function markOk() {
+  $('name').classList.toggle('ok', $('name').value.trim().length >= 2);
+  $('phone').classList.toggle('ok', /^[6-9]\d{9}$/.test(phoneDigits()));
+}
+
+/* clear messages as soon as the patient fixes a field */
+$('name').addEventListener('input', () => { setErr('nameErr', '', 'name'); markOk(); if (S.member) renderPlanNote(); });
+let phT = null;
+$('phone').addEventListener('input', () => { setErr('phoneErr', '', 'phone'); markOk(); clearTimeout(phT); phT = setTimeout(() => { if (S.clinic) { const was = S.member; checkMember().then(() => { if (was === S.member) loadSlots(); }); } }, 500); });
+
+/* submit */
+function checkDetails() {
+  let first = null;
+  const flag = (id, msg, input) => { setErr(id, msg, input); if (msg && !first) first = input ? $(input) : $(id); };
+  flag('nameErr', $('name').value.trim().length < 2 ? 'Enter your name.' : '', 'name');
+  flag('phoneErr', /^[6-9]\d{9}$/.test(phoneDigits()) ? '' : 'Enter a 10-digit mobile number that starts with 6, 7, 8 or 9.', 'phone');
+  flag('reasonErr', S.reason ? '' : 'Choose a reason for the visit.');
+  return first;
+}
+function validate() {
+  const bad = checkDetails();
+  if (bad) { goStep(2); focusErr(bad); return null; }
+  if (!S.time) { setErr('timeErr', 'Pick a time.'); focusErr($('timeErr')); return null; }
+  const digits = phoneDigits();
+  return { name: $('name').value.trim(), phone: '+91 ' + digits.slice(0, 5) + ' ' + digits.slice(5) };
+}
+$('submit').addEventListener('click', async () => {
+  $('banner').hidden = true;
+  const v = validate(); if (!v) return;
+  $('submit').disabled = true; $('submit').textContent = 'Booking...';
+  try {
+    const res = await fetch(API + '/book', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ clinic_id: S.clinic.id, patient_name: v.name, patient_phone: v.phone, appointment_date: S.date, appointment_time: S.time, visit_type: S.reason, website: $('hp').value, open_ms: Date.now() - T0 }) });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'The booking did not go through.');
+    showDone(data.appointment_id || data.id, v, data.visit_token);
+  } catch (err) {
+    $('banner').textContent = err.message + ' Your details are still here. Try again.';
+    $('banner').hidden = false;
+    $('banner').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    $('submit').disabled = false; $('submit').textContent = 'Book visit';
+  }
+});
+
+function icsFile(o) {
+  const t = (x) => String(x).replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/([,;])/g, '\\$1');
+  const [h, m] = o.time.split(':').map(Number), end = h * 60 + m + 30, day = o.date.replace(/-/g, '');
+  const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Baari//Clinic visit//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'BEGIN:VEVENT',
+    `UID:baari-${o.id}@baari`, `DTSTAMP:${stamp}`, `DTSTART:${day}T${pad(h)}${pad(m)}00`, `DTEND:${day}T${pad(Math.floor(end / 60))}${pad(end % 60)}00`,
+    `SUMMARY:${t(o.title)}`, o.location ? `LOCATION:${t(o.location)}` : '', `DESCRIPTION:${t(o.desc)}`,
+    'BEGIN:VALARM', 'TRIGGER:-PT1H', 'ACTION:DISPLAY', 'DESCRIPTION:Clinic visit in 1 hour', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].filter(Boolean).join('\r\n');
+}
+function showDone(id, v, visitToken) {
+  DONE = true; history.replaceState({ done: true }, '');
+  document.body.classList.remove('s1', 's2', 's3'); document.body.classList.add('sdone');
+  const c = clock(S.time), cl = S.clinic;
+  const dayLong = parseDay(S.date).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' });
+  $('form').hidden = true; $('bar').hidden = true; $('done').hidden = false;
+  $('sRef').textContent = 'Booking number ' + id;
+  $('sTime').innerHTML = `${c.t}<small>${c.ap}</small>`;
+  $('sDay').textContent = dayLong;
+  $('sClinic').textContent = cl.name; $('sDoc').textContent = dr(cl.doctor_name); $('sFor').textContent = v.name.split(' ')[0];
+  const reason = (REASONS.find((r) => r[0] === S.reason) || [, S.reason])[1];
+  $('sMeta').innerHTML = `<div><dt>For</dt><dd>${esc(v.name)}, ${esc(reason)}</dd></div>${cl.location ? `<div><dt>Location</dt><dd>${esc(cl.location)}</dd></div>` : ''}<div><dt>Clinic phone</dt><dd>${esc(cl.phone)}</dd></div>`;
+  const track = visitToken ? location.origin + '/patient/visit?t=' + visitToken : '';
+  if (visitToken) { $('track').href = '/patient/visit?t=' + visitToken; $('track').hidden = false; }
+  const step = (icon, title, text) => `<li><span class="ni"><svg aria-hidden="true"><use href="#i-${icon}"/></svg></span><div><b>${title}</b>${text}</div></li>`;
+  $('sNext').innerHTML = step('chat', 'Confirm on WhatsApp', `The clinic messages you at ${esc(v.phone)}. Reply YES to keep the visit or NO to cancel it.`)
+    + step('bell', 'Get a reminder', 'The clinic reminds you before your visit. Quote booking number ' + id + ' if you call them.')
+    + (visitToken ? step('queue', 'Track your turn', 'On the day, the button below shows your place in line. Save it.') : '');
+  /* quick actions */
+  const when = `${dayLong} at ${c.t} ${c.ap}`;
+  $('addCal').onclick = () => {
+    const ics = icsFile({ id, date: S.date, time: S.time, title: 'Clinic visit: ' + cl.name, location: cl.location || '', desc: `${dr(cl.doctor_name)}. Booking number ${id}. Clinic phone ${cl.phone}.${track ? ' Your place in line on the day: ' + track : ''}` });
+    const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }));
+    const a = document.createElement('a'); a.href = url; a.download = 'clinic-visit.ics'; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  };
+  const dest = cl.latitude != null && cl.longitude != null ? `${cl.latitude},${cl.longitude}` : (cl.location ? `${cl.name}, ${cl.location}` : '');
+  if (dest) { $('dirs').href = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(dest); $('dirs').hidden = false; }
+  $('share').href = 'https://wa.me/?text=' + encodeURIComponent(`My clinic visit: ${cl.name} (${dr(cl.doctor_name)}), ${when}. Booking number ${id}.${cl.location ? ' ' + cl.location + '.' : ''}`);
+  /* remember the patient on this phone */
+  let kept = false; try { localStorage.setItem(SAVED_KEY, JSON.stringify({ name: v.name, phone: phoneDigits() })); kept = true; } catch {}
+  $('saved').hidden = !kept;
+  window.scrollTo(0, 0);
+  $('done').querySelector('h1').setAttribute('tabindex', '-1');
+  $('done').querySelector('h1').focus({ preventScroll: true });
+}
+$('forget').addEventListener('click', () => { try { localStorage.removeItem(SAVED_KEY); } catch {} $('savedTxt').textContent = 'Done. Your name and number will not be filled in next time.'; $('forget').hidden = true; });
+$('again').addEventListener('click', () => location.reload());
+
+loadClinics();
+/* describe-your-problem helper */
+const VISIT_NAMES = { consultation: 'Consultation', 'follow-up': 'Follow-up', 'check-up': 'Check-up', procedure: 'Procedure' };
+fetch(API + '/features').then((r) => r.json()).then((f) => { if (f && f.ai) $('asNote').textContent = 'Suggestions use an AI service. This is not medical advice. In an emergency, call 112.'; }).catch(() => {});
+$('asGo').addEventListener('click', async () => {
+  const text = $('asText').value.trim(); setErr('asErr', '');
+  if (text.length < 4) { setErr('asErr', 'Write a few words about what is wrong.'); return; }
+  $('asGo').disabled = true; $('asOut').innerHTML = '';
+  try {
+    const res = await fetch(API + '/assist', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) });
+    const r = await res.json(); if (!res.ok) throw new Error(r.error || 'Could not get a suggestion. Try again.');
+    const tips = (r.tips || []).length ? `<ul>${r.tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : '';
+    if (r.urgency === 'emergency') {
+      $('asOut').innerHTML = `<div class="as-card emergency"><b>This may be urgent</b><p>${esc(r.summary)}</p>${tips}<a class="btn" href="tel:112">Call 112</a></div>`;
+    } else {
+      $('asOut').innerHTML = `<div class="as-card ${r.urgency === 'soon' ? 'soon' : ''}"><b>${r.urgency === 'soon' ? 'Book soon. Suggested visit: ' : 'Suggested visit: '}${esc(VISIT_NAMES[r.visit_type] || r.visit_type)}</b><p>${esc(r.summary)}</p>${tips}<button type="button" class="btn" id="asUse">Use this reason</button></div>`;
+      $('asUse').addEventListener('click', () => {
+        const radio = document.querySelector(`input[name="reason"][value="${r.visit_type}"]`);
+        if (radio) { radio.checked = true; S.reason = r.visit_type; setErr('reasonErr', ''); update(); }
+        $('assistBox').open = false; $('reasons').scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'center' });
+      });
+    }
+  } catch (er) { setErr('asErr', er.message); }
+  $('asGo').disabled = false;
+});
+function savedMe() { try { const v = JSON.parse(localStorage.getItem(SAVED_KEY) || 'null'); return v && v.name && v.phone ? v : null; } catch { return null; } }
+function fillMe(name, phone) {
+  if (!$('name').value) $('name').value = name;
+  if (!$('phone').value) $('phone').value = phone;
+  $('name').dispatchEvent(new Event('input', { bubbles: true }));
+  $('phone').dispatchEvent(new Event('input', { bubbles: true }));
+}
+(async () => {
+  let me = null;
+  try { const r = await fetch('/api/patient/me', { credentials: 'same-origin' }); me = r.ok ? await r.json() : null; } catch {}
+  if (me && me.name) {
+    const a = document.getElementById('acct'); a.href = '/patient/profile'; a.textContent = 'Hi, ' + me.name.split(' ')[0];
+    fillMe(me.name, me.phone); return;
+  }
+  const saved = savedMe();
+  if (!saved || $('name').value || $('phone').value) return;
+  fillMe(saved.name, saved.phone);
+  const first = saved.name.split(' ')[0];
+  $('wName').textContent = first; $('welcome').hidden = false;
+  $('heroSub').textContent = `Welcome back, ${first}. Pick a clinic, then a time.`;
+})();
+$('notYou').addEventListener('click', () => {
+  try { localStorage.removeItem(SAVED_KEY); } catch {}
+  $('name').value = ''; $('phone').value = '';
+  $('name').dispatchEvent(new Event('input', { bubbles: true })); $('phone').dispatchEvent(new Event('input', { bubbles: true }));
+  $('welcome').hidden = true; $('heroSub').textContent = 'Pick a clinic, then a time. The clinic confirms on WhatsApp.';
+  $('name').focus();
+});
+
+goStep(1, false);
+
+/* pointer light: one cheap update per frame */
+(() => {
+  const g = document.querySelector('.bg .glow'); if (!g) return;
+  let x = 0, y = 0, raf = 0, hero = null;
+  addEventListener('pointermove', (e) => {
+    if (e.pointerType === 'touch') return;
+    x = e.clientX; y = e.clientY; hero = e.target.closest ? e.target.closest('.hero') : null;
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0; g.classList.add('on'); g.style.transform = `translate(${x}px, ${y}px)`;
+      if (hero) { const r = hero.getBoundingClientRect(); hero.style.setProperty('--hx', (x - r.left) + 'px'); hero.style.setProperty('--hy', (y - r.top) + 'px'); }
+    });
+  }, { passive: true });
+  document.addEventListener('pointerleave', () => g.classList.remove('on'));
+})();
+</script>
+<style>
+.cbfab { position: fixed; right: 18px; bottom: 18px; z-index: 30; display: inline-flex; align-items: center; gap: 8px; background: var(--hero); color: #fff; border: 0; border-radius: 99px; padding: 13px 20px; font: 700 17px var(--font); cursor: pointer; box-shadow: 0 10px 30px -8px rgba(11,74,53,.6); }
+.cbfab:hover { filter: brightness(1.12); }
+.cbfab .i { width: 20px; height: 20px; }
+.cbp { position: fixed; right: 18px; bottom: 18px; z-index: 31; width: min(390px, calc(100vw - 24px)); height: min(580px, calc(100vh - 36px)); background: var(--card); border: 1px solid var(--line); border-radius: 24px; box-shadow: 0 24px 60px -16px rgba(11,74,53,.55); display: flex; flex-direction: column; overflow: hidden; }
+.cbp[hidden] { display: none; }
+.cbh { background: var(--hero); color: #fff; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.cbh b { font: 800 19px var(--font); display: block; } .cbh span { font-size: 15px; color: rgba(255,255,255,.78); }
+.cbh button { background: rgba(255,255,255,.16); color: #fff; border: 0; border-radius: 50%; width: 34px; height: 34px; cursor: pointer; font-size: 20px; line-height: 1; }
+.cbm { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; background: var(--row); }
+.cbm .m { max-width: 86%; padding: 10px 13px; border-radius: 16px; font-size: 17px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+.cbm .bot { background: var(--card); border: 1px solid var(--line); align-self: flex-start; border-bottom-left-radius: 5px; }
+.cbm .me { background: var(--brand); color: var(--on-brand); align-self: flex-end; border-bottom-right-radius: 5px; }
+.cbm .em { background: var(--bad-bg, #FBE5E1); color: var(--bad, #AE2F1B); border: 1px solid currentColor; font-weight: 600; }
+.cbm .em a { color: inherit; font-weight: 800; }
+.cbc { align-self: flex-start; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 9px 11px; display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 86%; font-size: 16px; }
+.cbc small { display: block; color: var(--muted); }
+.cbc button { background: var(--brand); color: var(--on-brand); border: 0; border-radius: 10px; padding: 7px 12px; font: 700 15px var(--font); cursor: pointer; white-space: nowrap; }
+.cbq { display: flex; gap: 6px; padding: 8px 12px 0; flex-wrap: wrap; background: var(--card); }
+.cbq button { background: var(--soft); color: var(--soft-ink); border: 0; border-radius: 99px; padding: 6px 11px; font: 600 15px var(--font); cursor: pointer; }
+.cbf { display: flex; gap: 8px; padding: 10px 12px 4px; background: var(--card); }
+.cbf input { flex: 1; min-width: 0; border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 12px; font: 18px var(--font); background: var(--card); color: var(--ink); }
+.cbf input:focus { outline: none; border-color: var(--brand); }
+.cbf button { background: var(--brand); color: var(--on-brand); border: 0; border-radius: 12px; padding: 0 16px; font: 700 17px var(--font); cursor: pointer; }
+.cbn { padding: 2px 14px 10px; font-size: 14px; color: var(--muted); background: var(--card); }
+@media (max-width: 999px) { .cbfab { bottom: 98px; right: 14px; width: 54px; height: 54px; padding: 0; justify-content: center; } .cbfab .t { display: none; } .cbfab .i { width: 24px; height: 24px; } .cbp { right: 6px; bottom: 6px; height: min(78vh, 600px); } }
+@media (prefers-reduced-motion: no-preference) { .cbm .m, .cbc { animation: cbin .2s ease both; } @keyframes cbin { from { opacity: 0; transform: translateY(6px); } } }
+</style>
+<button class="cbfab" id="cbOpen" type="button" aria-haspopup="dialog" aria-label="Ask Baari" title="Ask Baari"><svg class="i" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span class="t">Ask Baari</span></button>
+<section class="cbp" id="cbPanel" role="dialog" aria-label="Baari helper" hidden>
+  <div class="cbh"><div><b>Baari helper</b><span>Find a clinic or a free time</span></div><button id="cbClose" type="button" aria-label="Close chat">&times;</button></div>
+  <div class="cbm" id="cbMsgs" aria-live="polite"></div>
+  <div class="cbq" id="cbChips"><button type="button">Earliest appointment</button><button type="button">Clinics with an offer</button><button type="button">How do I cancel?</button></div>
+  <form class="cbf" id="cbForm"><input id="cbIn" maxlength="300" placeholder="Ask about a clinic or time" aria-label="Your message" autocomplete="off"><button type="submit">Send</button></form>
+  <div class="cbn" id="cbNote">Not medical advice. In an emergency call 112.</div>
+</section>
+<script>
+(function () {
+  var panel = document.getElementById('cbPanel'), open = document.getElementById('cbOpen'), msgs = document.getElementById('cbMsgs'), input = document.getElementById('cbIn'), hist = [], busy = false, started = false;
+  function add(cls, text) { var d = document.createElement('div'); d.className = 'm ' + cls; d.textContent = text; msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight; return d; }
+  function emergency(text) { var d = add('bot em', text + ' '); var a = document.createElement('a'); a.href = 'tel:112'; a.textContent = 'Call 112'; d.appendChild(a); }
+  function cards(list) {
+    (list || []).forEach(function (c) {
+      var w = document.createElement('div'); w.className = 'cbc';
+      var t = document.createElement('div'), n = document.createElement('b'), s = document.createElement('small');
+      n.textContent = c.name; s.textContent = c.next_slot ? 'Next free: ' + (typeof slotWords === 'function' ? slotWords(c.next_slot) : c.next_slot.date + ' ' + c.next_slot.time) : 'No free time this week';
+      t.appendChild(n); t.appendChild(s); w.appendChild(t);
+      if (c.next_slot && typeof quickBook === 'function') { var b = document.createElement('button'); b.type = 'button'; b.textContent = 'Book this'; b.onclick = function () { panel.hidden = true; open.hidden = false; quickBook(c.id); }; w.appendChild(b); }
+      msgs.appendChild(w);
+    });
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+  function show() {
+    panel.hidden = false; open.hidden = true;
+    if (!started) { started = true; add('bot', 'Hi! I can find a clinic by area or service, show the earliest free time, and point out offers. What do you need?');
+      fetch('/api/patient/features').then(function (r) { return r.json(); }).then(function (f) { if (f.ai) document.getElementById('cbNote').textContent = 'Not medical advice. In an emergency call 112. Messages are processed by an AI service. Do not share personal details.'; }).catch(function () {}); }
+    input.focus();
+  }
+  function hide() { panel.hidden = true; open.hidden = false; open.focus(); }
+  async function send(text) {
+    text = String(text || '').trim(); if (!text || busy) return;
+    busy = true; add('me', text); hist.push({ role: 'user', content: text }); input.value = '';
+    var wait = add('bot', '…');
+    try {
+      var r = await fetch('/api/patient/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: hist.slice(-8) }) });
+      var j = await r.json(); wait.remove();
+      if (!r.ok) { add('bot', j.error || 'Something went wrong. Please try again.'); }
+      else { hist.push({ role: 'assistant', content: j.reply }); if (j.emergency) emergency(j.reply); else add('bot', j.reply); cards(j.clinics); }
+    } catch (e) { wait.remove(); add('bot', 'I could not reach the server. Check your connection and try again.'); }
+    busy = false;
+  }
+  open.addEventListener('click', show); document.getElementById('cbClose').addEventListener('click', hide);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !panel.hidden) hide(); });
+  document.getElementById('cbForm').addEventListener('submit', function (e) { e.preventDefault(); send(input.value); });
+  document.getElementById('cbChips').addEventListener('click', function (e) { if (e.target.tagName === 'BUTTON') send(e.target.textContent); });
+})();
+</script>
+</body>
+</html>

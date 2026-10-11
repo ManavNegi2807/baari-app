@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Baari</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #D6EEE0; --card: #FFFFFF; --ink: #11291F; --muted: #3F5A4C; --line: #C4E0D1; --row: #ECF3EF;
+  --brand: #12805A; --on-brand: #FFFFFF; --soft: #D8F0E4; --soft-ink: #0B5A3F; --hero: #0B4A35;
+  --bad: #AE2F1B; --bad-bg: #FBE5E1; --warn-bg: #FFF1CF; --warn-ink: #7A4B00;
+  --font: "Figtree", "Segoe UI", system-ui, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { color-scheme: light; }
+body { background: var(--bg); color: var(--ink); font: 400 18px/1.5 var(--font); -webkit-font-smoothing: antialiased; min-height: 100vh; }
+button, input, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; border-radius: 10px; }
+[hidden] { display: none !important; }
+a { color: var(--brand); font-weight: 600; }
+.page { max-width: 520px; margin: 0 auto; padding: 16px 16px 60px; }
+.hero { background: var(--hero); color: #fff; border-radius: 28px; padding: 22px 22px 26px; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 14px; min-width: 0; text-decoration: none; color: #fff; }
+.logo { width: 54px; height: 54px; border-radius: 17px; background: #fff; display: grid; place-items: center; flex: none; box-shadow: 0 6px 18px rgba(0,0,0,.22); }
+.logo svg { width: 38px; height: 38px; }
+.bw { font: 800 34px/1 var(--font); letter-spacing: -0.03em; }
+.top a.back { color: rgba(255,255,255,.92); font-weight: 600; font-size: 16px; text-decoration: none; background: rgba(255,255,255,.14); padding: 7px 14px; border-radius: 99px; white-space: nowrap; }
+.hero h1 { font: 800 clamp(30px, 8vw, 40px)/1.1 var(--font); letter-spacing: -0.03em; margin-top: 24px; }
+.hero p { color: rgba(255,255,255,.85); margin-top: 8px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 22px; margin-top: 14px; }
+.card h2 { font: 800 22px/1.2 var(--font); letter-spacing: -0.01em; margin-bottom: 8px; }
+.card p + p { margin-top: 8px; }
+.pri { display: inline-block; padding: 3px 12px; border-radius: 99px; background: #FFF1C9; color: #6B4B00; font-size: 15px; font-weight: 800; margin-top: 10px; }
+.plancard { border-color: #E8D08A; background: #FFFAEC; }
+.plancard ul { margin: 10px 0 0 22px; }
+.plancard li { margin-top: 6px; }
+.muted { color: var(--muted); }
+.big { font: 800 64px/1 var(--font); letter-spacing: -0.04em; color: var(--brand); }
+.bigrow { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.facts { display: grid; gap: 10px; margin-top: 14px; }
+.facts div { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--line); padding-top: 10px; }
+.facts dt { color: var(--muted); }
+.facts dd { font-weight: 700; text-align: right; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 0 22px; border-radius: 16px; border: 0; background: var(--brand); color: var(--on-brand); font-weight: 700; font-size: 18px; text-decoration: none; cursor: pointer; margin-top: 16px; }
+.btn.quiet { background: var(--soft); color: var(--soft-ink); }
+.btn[disabled] { opacity: .6; cursor: default; }
+.link { background: none; border: 0; color: var(--brand); font-weight: 700; text-decoration: underline; cursor: pointer; padding: 8px 0; margin-top: 8px; }
+.pill { display: inline-block; background: var(--soft); color: var(--soft-ink); border-radius: 99px; padding: 4px 12px; font-weight: 700; font-size: 15px; }
+.pill.warn { background: var(--warn-bg); color: var(--warn-ink); }
+.turn { background: var(--brand); color: #fff; border: 0; }
+.turn h2 { font-size: 30px; }
+.turn p { color: rgba(255,255,255,.92); }
+.stars { display: inline-flex; gap: 2px; font-size: 26px; line-height: 1; color: #E0A82E; letter-spacing: 1px; }
+.stars.s0 { color: var(--line); }
+.rate { display: flex; gap: 6px; margin: 12px 0; }
+.rate button { background: none; border: 0; font-size: 40px; line-height: 1; color: var(--line); cursor: pointer; padding: 2px 4px; }
+.rate button.on { color: #E0A82E; }
+textarea { width: 100%; border: 2px solid var(--line); background: var(--row); border-radius: 14px; padding: 12px 14px; resize: vertical; min-height: 84px; }
+.err { color: var(--bad); font-weight: 600; margin-top: 8px; min-height: 1.2em; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.chips span { background: var(--row); border-radius: 99px; padding: 4px 12px; font-size: 16px; font-weight: 600; }
+.rev { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 12px; }
+.rev small { color: var(--muted); }
+.note { font-size: 16px; color: var(--muted); margin-top: 14px; }
+.hold { background: var(--warn-bg); color: var(--warn-ink); border-radius: 14px; padding: 10px 14px; font-weight: 700; margin-top: 12px; }
+.fu { background: var(--soft); border-color: transparent; }
+@media (max-width: 430px) { .bw { font-size: 30px; } .logo { width: 48px; height: 48px; border-radius: 15px; } .logo svg { width: 34px; height: 34px; } .big { font-size: 56px; } }
+@media (prefers-reduced-motion: no-preference) { .hero, .card { animation: rise .25s ease-out both; } @keyframes rise { from { opacity: 0; transform: translateY(6px); } } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-logo" viewBox="0 0 48 48"><defs><linearGradient id="bg" x1="8" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1FA877"/><stop offset="1" stop-color="#0B5A3F"/></linearGradient></defs><path transform="translate(-1.5 .2)" d="M11 4.5v39M11 4.5h15a8.2 8.2 0 0 1 0 16.4H11m0 0h17a11.3 11.3 0 0 1 0 22.6H11" fill="none" stroke="url(#bg)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></symbol></svg>
+<div class="page">
+  <div class="hero">
+    <div class="top"><a class="brand" href="/patient"><span class="logo"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#i-logo"/></svg></span><span class="bw">Baari</span></a><a class="back" href="/patient">Book a visit</a></div>
+    <h1 id="h">Loading...</h1>
+    <p id="sub"></p>
+  </div>
+  <div id="out" aria-live="polite"></div>
+</div>
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pad = (n) => String(n).padStart(2, '0');
+const clock = (t) => { const [h, m] = t.split(':').map(Number); return `${h % 12 || 12}:${pad(m)} ${h < 12 ? 'am' : 'pm'}`; };
+const dayWords = (s, long) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d).toLocaleDateString('en-IN', long ? { weekday: 'long', day: 'numeric', month: 'long' } : { weekday: 'short', day: 'numeric', month: 'short' }); };
+const dr = (n) => (/^dr\.?\s/i.test(n) ? n : 'Dr. ' + n);
+const stars = (n) => `<span class="stars" role="img" aria-label="${n} out of 5 stars">${'★'.repeat(Math.round(n))}<span class="s0">${'★'.repeat(5 - Math.round(n))}</span></span>`;
+const head = (h, sub) => { $('h').textContent = h; $('sub').textContent = sub || ''; document.title = h + ' - Baari'; };
+async function getJSON(url, opts) { const r = await fetch(url, opts); const j = await r.json().catch(() => ({})); if (!r.ok) throw Object.assign(new Error(j.error || 'Something went wrong.'), { status: r.status }); return j; }
+const post = (url, body) => getJSON(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}) });
+let timer = null;
+const later = (fn, ms) => { clearTimeout(timer); timer = setTimeout(fn, ms); };
+function gone(msg) { head('Page not found', msg || 'This link is not valid. Check that you copied the whole link.'); $('out').innerHTML = '<div class="card"><a class="btn" href="/patient">Book a visit</a></div>'; }
+
+/* ---------- visit status ---------- */
+async function visit(t) {
+  let v;
+  try { v = await getJSON('/api/patient/visit/' + t); } catch (e) { return e.status === 404 ? gone() : (head('Could not load', 'Check your connection. We will try again.'), later(() => visit(t), 10000)); }
+  const when = `${dayWords(v.date, true)} at ${clock(v.time)}`;
+  const facts = `<dl class="facts"><div><dt>Clinic</dt><dd>${esc(v.clinic_name)}</dd></div><div><dt>Doctor</dt><dd>${esc(dr(v.doctor_name))}</dd></div><div><dt>Time</dt><dd>${esc(when)}</dd></div>${v.location ? `<div><dt>Where</dt><dd>${esc(v.location)}</dd></div>` : ''}</dl>`;
+  const call = `<a class="link" href="tel:${esc(String(v.clinic_phone).replace(/[^\d+]/g, ''))}">Call the clinic</a>`;
+  let html = '';
+  if (v.state === 'your-turn') {
+    head(`Hi ${v.first_name}`, 'The doctor is ready for you.');
+    html = `<div class="card turn"><h2>It is your turn</h2><p>Please go in to ${esc(dr(v.doctor_name))} now.</p></div><div class="card">${facts}</div>`;
+  } else if (v.state === 'today') {
+    head(`Hi ${v.first_name}`, 'This page updates by itself.');
+    const next = v.ahead === 0;
+    html = `<div class="card"><h2>${next ? 'You are next' : 'Your place in line'}</h2>${next ? '<p class="muted">Please be ready. The clinic will call you in.</p>' : `<div class="bigrow"><span class="big">${v.ahead}</span><span class="muted">${v.ahead === 1 ? 'person' : 'people'} before you</span></div><p class="muted">About ${v.eta_minutes} minutes. This is an estimate and can change.</p>`}${v.priority ? `<p><span class="pri">Priority member</span></p><p class="muted">You can be called up to ${v.skip_minutes} minutes before your booked time.</p>` : ''}${facts}<p class="note">Please arrive 10 minutes early and tell the reception your name.</p>${call}</div>`;
+    later(() => visit(t), 15000);
+  } else if (v.state === 'upcoming') {
+    head(`Hi ${v.first_name}`, 'Your visit is booked.');
+    html = `<div class="card"><h2>Your visit</h2>${facts}<p class="note">On the day of your visit, open this page again to see your place in line. Save this page or add it to your home screen.</p>${call}</div>`;
+  } else if (v.state === 'done') {
+    head(`Thank you, ${v.first_name}`, 'We hope the visit went well.');
+    html = '<div class="card"><h2>Visit complete</h2>' + facts + '</div>';
+  } else if (v.state === 'cancelled') {
+    head('Visit cancelled', 'This booking was cancelled.');
+    html = `<div class="card"><p>You can book a new time whenever you like.</p><a class="btn" href="/patient?clinic=${v.clinic_id}">Book again</a></div>`;
+  } else {
+    head('Visit closed', 'This booking has finished.');
+    html = `<div class="card">${facts}<a class="btn quiet" href="/patient?clinic=${v.clinic_id}">Book another visit</a></div>`;
+  }
+  if (v.follow_up) html += `<div class="card fu"><h2>Follow-up suggested</h2><p>${esc(dr(v.doctor_name))} suggested a follow-up visit around <b>${esc(dayWords(v.follow_up.date, true))}</b>.</p>${v.follow_up.note ? `<p class="muted">${esc(v.follow_up.note)}</p>` : ''}<a class="btn" href="/patient?clinic=${v.clinic_id}">Book a follow-up</a></div>`;
+  if (v.can_review) html += `<div class="card" id="rvCard"><h2>How was your visit?</h2><p class="muted">Your rating helps other patients. Your name is not shown.</p><div class="rate" id="stars" role="radiogroup" aria-label="Rating">${[1, 2, 3, 4, 5].map((n) => `<button type="button" data-n="${n}" role="radio" aria-checked="false" aria-label="${n} star${n > 1 ? 's' : ''}">★</button>`).join('')}</div><textarea id="rvText" maxlength="300" placeholder="Anything to add? (optional)" aria-label="Comment"></textarea><div class="err" id="rvErr" role="alert"></div><button class="btn" id="rvGo" type="button">Send rating</button></div>`;
+  else if (v.reviewed) html += `<div class="card"><h2>Your rating</h2>${stars(v.reviewed)}<p class="muted">Thank you for your feedback.</p></div>`;
+  $('out').innerHTML = html;
+  if (v.can_review) wireReview(t);
+}
+function wireReview(t) {
+  let n = 0;
+  $('stars').addEventListener('click', (e) => { const b = e.target.closest('button[data-n]'); if (!b) return; n = Number(b.dataset.n); document.querySelectorAll('#stars button').forEach((x) => { const on = Number(x.dataset.n) <= n; x.classList.toggle('on', on); x.setAttribute('aria-checked', String(Number(x.dataset.n) === n)); }); $('rvErr').textContent = ''; });
+  $('rvGo').addEventListener('click', async () => {
+    if (!n) { $('rvErr').textContent = 'Choose 1 to 5 stars.'; return; }
+    $('rvGo').disabled = true;
+    try { await post(`/api/patient/visit/${t}/review`, { rating: n, comment: $('rvText').value }); $('rvCard').innerHTML = `<h2>Thank you</h2>${stars(n)}<p class="muted">Your rating was saved.</p>`; }
+    catch (e) { $('rvErr').textContent = e.message; $('rvGo').disabled = false; }
+  });
+}
+
+/* ---------- waitlist status ---------- */
+let lastWl = '';
+async function waitlist(t) {
+  let w;
+  try { w = await getJSON('/api/patient/waitlist/' + t); } catch (e) { return e.status === 404 ? gone() : (head('Could not load', 'Check your connection. We will try again.'), later(() => waitlist(t), 10000)); }
+  const facts = `<dl class="facts"><div><dt>Clinic</dt><dd>${esc(w.clinic_name)}</dd></div><div><dt>Day</dt><dd>${esc(dayWords(w.date, true))}</dd></div></dl>`;
+  let html = '';
+  if (w.status === 'waiting') {
+    head(`Hi ${w.name}`, 'You are on the waitlist.');
+    html = `<div class="card"><h2>Waiting for a free time</h2><div class="bigrow"><span class="big">${w.position}</span><span class="muted">in line</span></div>${w.priority ? '<p><span class="pri">Priority member: you are ahead of other patients</span></p>' : ''}<p class="muted">Keep this page open. If someone cancels, the first free time appears here and is held for you for 30 minutes.</p>${facts}<button class="btn quiet" id="notify" type="button" hidden>Tell me on this phone when a time opens</button><button class="link" id="leave" type="button">Leave the waitlist</button></div>`;
+    later(() => waitlist(t), 15000);
+  } else if (w.status === 'offered') {
+    head('A time opened up', 'It is held for you.');
+    html = `<div class="card turn"><h2>${esc(clock(w.offer_time))} on ${esc(dayWords(w.date))}</h2><p>${esc(w.clinic_name)}, ${esc(dr(w.doctor_name))}</p></div><div class="card"><div class="hold">Held for you for ${w.minutes_left} more minute${w.minutes_left === 1 ? '' : 's'}</div><button class="btn" id="claim" type="button">Book this time</button><div class="err" id="wErr" role="alert"></div><button class="link" id="leave" type="button">No thanks, remove me</button></div>`;
+    later(() => waitlist(t), 15000);
+    if (lastWl !== 'offered') { try { if (window.Notification && Notification.permission === 'granted') new Notification('A time opened at ' + w.clinic_name, { body: clock(w.offer_time) + ' is held for you.' }); } catch {} if (navigator.vibrate) navigator.vibrate(200); }
+  } else if (w.status === 'booked') {
+    head('You are booked', 'The waitlist worked.');
+    html = `<div class="card"><p>Your visit is booked.</p>${w.visit_token ? `<a class="btn" href="/patient/visit?t=${w.visit_token}">See my visit</a>` : ''}</div>`;
+  } else {
+    head(w.status === 'cancelled' ? 'Removed from waitlist' : 'Waitlist ended', w.status === 'cancelled' ? '' : 'No time opened up in time, or the day has passed.');
+    html = `<div class="card"><a class="btn" href="/patient?clinic=${w.clinic_id}">Pick another day</a></div>`;
+  }
+  lastWl = w.status;
+  $('out').innerHTML = html;
+  const leave = $('leave'), claim = $('claim'), nt = $('notify');
+  if (leave) leave.addEventListener('click', async () => { try { await post(`/api/patient/waitlist/${t}/cancel`); } catch {} waitlist(t); });
+  if (claim) claim.addEventListener('click', async () => { claim.disabled = true; try { const r = await post(`/api/patient/waitlist/${t}/claim`); location.href = '/patient/visit?t=' + r.visit_token; } catch (e) { $('wErr').textContent = e.message; claim.disabled = false; waitlist(t); } });
+  if (nt && window.Notification && Notification.permission === 'default') { nt.hidden = false; nt.addEventListener('click', async () => { try { await Notification.requestPermission(); } catch {} nt.hidden = true; }); }
+}
+
+/* ---------- clinic profile ---------- */
+async function profile(id) {
+  let c;
+  try { c = await getJSON(`/api/patient/clinics/${id}/profile`); } catch (e) { return gone('This clinic is not available.'); }
+  head(c.name, dr(c.doctor_name) + (c.location ? ', ' + c.location : ''));
+  const facts = [['Fees', c.fees], ['Languages', c.languages], ['Phone', c.phone]].filter((x) => x[1]).map(([k, v]) => `<div><dt>${k}</dt><dd>${k === 'Phone' ? `<a href="tel:${esc(String(v).replace(/[^\d+]/g, ''))}">${esc(v)}</a>` : esc(v)}</dd></div>`).join('');
+  const svc = c.services ? `<div class="chips">${c.services.split(',').map((x) => x.trim()).filter(Boolean).slice(0, 8).map((x) => `<span>${esc(x)}</span>`).join('')}</div>` : '';
+  let html = `<div class="card">${c.rating_count ? `<div class="bigrow">${stars(c.rating_avg)}<b>${c.rating_avg.toFixed(1)}</b><span class="muted">${c.rating_count} rating${c.rating_count > 1 ? 's' : ''} from real visits</span></div>` : '<p class="muted">No ratings yet.</p>'}${c.offer ? `<p style="margin-top:12px"><span class="pill warn">${esc(c.offer)}</span></p>` : ''}${c.about ? `<p style="margin-top:12px">${esc(c.about)}</p>` : ''}${svc}<dl class="facts">${facts}</dl>${c.map_url ? `<a class="link" href="${esc(c.map_url)}" target="_blank" rel="noopener">Open in maps</a>` : ''}<br><a class="btn" href="/patient?clinic=${c.id}">Book a visit</a></div>`;
+  if (c.plan) html += `<div class="card plancard"><h2>${esc(c.plan.name)}: Rs ${c.plan.price} for ${c.plan.days} days</h2><p class="muted">${c.plan.online ? 'Pay online with UPI or card, or pay at the clinic desk.' : 'Pay at the clinic desk (cash or UPI).'} It is linked to your mobile number. Emergencies are always seen first, whatever the plan.</p><ul>${c.plan.reserved ? `<li>${c.plan.reserved} reserved ${c.plan.reserved === 1 ? 'time' : 'times'} every day that only members can book</li>` : ''}${c.plan.extra_days ? `<li>Book up to ${7 + c.plan.extra_days} days ahead instead of 7</li>` : ''}<li>Called up to ${c.plan.skip_minutes} minutes earlier on the day</li><li>First offer when a cancelled time opens up</li></ul>${c.plan.online ? `<p style="margin-top:14px"><a class="btn" href="/patient?clinic=${c.id}">Buy it online</a></p>` : '<p class="muted" style="margin-top:12px">Ask at the clinic desk to join.</p>'}</div>`;
+  if (c.reviews.length) html += `<div class="card"><h2>What patients say</h2>${c.reviews.map((r) => `<div class="rev">${stars(r.rating)} <small>${esc(dayWords(r.date))}</small>${r.comment ? `<p>${esc(r.comment)}</p>` : ''}</div>`).join('')}</div>`;
+  $('out').innerHTML = html;
+}
+
+const q = new URLSearchParams(location.search), m = location.pathname.match(/\/patient\/clinic\/(\d+)/);
+if (m) profile(m[1]); else if (q.get('t')) visit(q.get('t')); else if (q.get('w')) waitlist(q.get('w')); else gone();
+</script>
+</body>
+</html>

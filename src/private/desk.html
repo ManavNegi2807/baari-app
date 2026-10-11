@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baari - Clinic desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #D6EEE0; --card: #FFFFFF; --ink: #11291F; --muted: #3F5A4C; --line: #C4E0D1; --row: #ECF3EF;
+  --brand: #12805A; --on-brand: #FFFFFF; --soft: #D8F0E4; --soft-ink: #0B5A3F;
+  --hero: #0B4A35; --bar: #0F6B4B;
+  --ok-bg: #DDF3E6; --ok: #17683F; --wait-bg: #FCEFD6; --wait: #86500A; --bad-bg: #FBE5E1; --bad: #AE2F1B; --idle-bg: #E6EEE9; --idle: #55695E;
+  --bubble: #DDF0DA;
+  --font: "Figtree", "Segoe UI", system-ui, sans-serif;
+}
+:root[data-theme="dark"] { --bg:#0B1A14; --card:#112419; --ink:#E6F3EC; --muted:#98B5A5; --line:#21392D; --row:#183024; --brand:#4FD3A0; --on-brand:#06241A; --soft:#1B4034; --soft-ink:#9EE6C6; --hero:#0B4A35; --bar:#0B4A35;
+  --ok-bg:#183A2B; --ok:#6FD0A0; --wait-bg:#3F3217; --wait:#E8B35E; --bad-bg:#45201C; --bad:#F59A8A; --idle-bg:#1D332A; --idle:#98B5A5; --bubble:#1D3A2A; }
+@media not all {
+  :root:not([data-theme="light"]) { --bg:#0B1A14; --card:#112419; --ink:#E6F3EC; --muted:#98B5A5; --line:#21392D; --row:#183024; --brand:#4FD3A0; --on-brand:#06241A; --soft:#1B4034; --soft-ink:#9EE6C6; --hero:#0B4A35; --bar:#0B4A35;
+    --ok-bg:#183A2B; --ok:#6FD0A0; --wait-bg:#3F3217; --wait:#E8B35E; --bad-bg:#45201C; --bad:#F59A8A; --idle-bg:#1D332A; --idle:#98B5A5; --bubble:#1D3A2A; }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { color-scheme: light; }
+body { background: var(--bg); color: var(--ink); font: 400 18px/1.5 var(--font); -webkit-font-smoothing: antialiased; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; border-radius: 10px; }
+.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+/* app bar */
+.topbar { background: var(--bar); color: #fff; position: sticky; top: 0; z-index: 5; box-shadow: 0 2px 14px rgba(17,41,31,.18); }
+.top { display: flex; align-items: stretch; gap: 8px; min-height: 64px; }
+.brand { display: flex; align-items: center; gap: 12px; margin-right: 22px; }
+.logo { width: 48px; height: 48px; border-radius: 15px; background: #fff; display: grid; place-items: center; flex: none; box-shadow: 0 3px 10px rgba(0,0,0,.2); }
+.logo .mk { width: 34px; height: 34px; }
+.bw { font: 800 32px/1 var(--font); letter-spacing: -0.03em; color: #fff; }
+.bw small { display: block; font: 600 13.5px/1.2 var(--font); letter-spacing: 0; color: rgba(255,255,255,.85); margin-top: 4px; }
+@media (max-width: 430px) { .logo { width: 42px; height: 42px; border-radius: 13px; } .logo .mk { width: 30px; height: 30px; } .bw { font-size: 27px; } .bw small { font-size: 12.5px; } .brand { gap: 9px; } }
+nav.tabs { display: flex; align-items: stretch; gap: 2px; flex: 1; min-width: 0; }
+.l-short { display: none; }
+nav.tabs button { display: inline-flex; align-items: center; gap: 8px; background: none; border: 0; padding: 0 12px; font-weight: 600; font-size: 17px; color: rgba(255,255,255,.88); cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; }
+nav.tabs button:hover { color: #fff; background: rgba(255,255,255,.08); }
+nav.tabs button[aria-current="page"] { color: var(--bar); background: #fff; border-bottom-color: transparent; border-radius: 10px; margin: 8px 0 0; height: calc(100% - 8px); }
+nav.tabs button[aria-current="page"]:hover { color: var(--bar); background: #fff; }
+nav.tabs button:focus-visible, .top a.ghost:focus-visible, .clinic-pick select:focus-visible { outline-color: #fff; }
+.clinic-pick { display: flex; align-items: center; margin-left: 10px; flex: none; }
+.clinic-pick label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.clinic-pick select { background: rgba(255,255,255,.16); border: 1px solid transparent; border-radius: 12px; padding: 9px 12px; font-weight: 700; font-size: 17px; cursor: pointer; max-width: 150px; text-overflow: ellipsis; color: #fff; }
+.clinic-pick select:hover { background: rgba(255,255,255,.24); }
+.clinic-pick select option { color: #11291F; background: #fff; }
+.top a.ghost { align-self: center; display: inline-flex; align-items: center; gap: 8px; border-radius: 12px; padding: 9px; font-weight: 600; font-size: 17px; color: #fff; text-decoration: none; white-space: nowrap; }
+.top a.ghost:hover { background: rgba(255,255,255,.16); }
+.top a.ghost span { display: none; }
+.top a.ghost b.av { width: 34px; height: 34px; border-radius: 50%; background: #fff; color: var(--bar); display: grid; place-items: center; font-size: 16px; font-weight: 800; }
+
+main { padding: 24px 0 90px; }
+section[hidden] { display: none; }
+h1 { font: 800 32px/1.1 var(--font); letter-spacing: -0.025em; }
+h2 { font: 700 21px/1.25 var(--font); letter-spacing: -0.01em; }
+.sub { color: var(--muted); margin-top: 6px; max-width: 62ch; }
+
+/* hero card */
+.hero { background: var(--hero); color: #fff; border-radius: 24px; padding: 26px 28px; }
+.hero h1 { color: #fff; font-size: 35px; }
+.hero .sub { color: rgba(255,255,255,.76); }
+.hero-top { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; align-items: flex-end; }
+.tally { display: flex; }
+.tally div { padding: 0 24px; border-left: 1px solid rgba(255,255,255,.24); }
+.tally div:first-child { padding-left: 0; border-left: 0; }
+.tally div:last-child { padding-right: 0; }
+.tally b { display: block; font: 800 41px/1 var(--font); font-variant-numeric: tabular-nums; }
+.tally span { font-size: 16px; color: rgba(255,255,255,.76); }
+.meter { margin-top: 22px; display: flex; align-items: center; gap: 14px; font-size: 16px; color: rgba(255,255,255,.85); }
+.meter .track { flex: 1; height: 10px; border-radius: 99px; background: rgba(255,255,255,.22); overflow: hidden; }
+.meter .track i { display: block; height: 100%; width: 0; background: #fff; border-radius: 99px; transition: width .4s; }
+@media (prefers-reduced-motion: reduce) { .meter .track i { transition: none; } }
+
+.views { display: flex; gap: 8px; margin: 22px 0 14px; }
+.views button { background: var(--card); border: 1px solid var(--line); padding: 8px 18px; border-radius: 99px; cursor: pointer; color: var(--muted); font-weight: 600; font-size: 16px; }
+.views button[aria-pressed="true"] { background: var(--card); color: var(--soft-ink); border-color: var(--brand); }
+
+/* appointment list */
+ul.sheet { list-style: none; background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 6px 8px; }
+.row { display: grid; grid-template-columns: 96px minmax(0, 1fr) 150px 380px; gap: 8px 18px; align-items: center; padding: 14px 10px; border-bottom: 1px solid var(--line); }
+.row:last-child { border-bottom: 0; }
+.when { background: var(--soft); border-radius: 16px; padding: 9px 6px; text-align: center; color: var(--soft-ink); line-height: 1.1; }
+.when .t { font: 800 24px/1 var(--font); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.when .ap { font-size: 15px; font-weight: 600; margin-left: 2px; }
+.when .d { display: block; font-size: 14px; font-weight: 600; margin-top: 4px; opacity: .85; }
+.who strong { font-weight: 700; font-size: 19px; display: block; overflow-wrap: anywhere; }
+.who span { color: var(--muted); font-size: 16px; }
+.who .risk { display: block; margin-top: 3px; font-size: 15px; }
+.who .risk b { font-weight: 800; padding: 1px 8px; border-radius: 99px; margin-right: 4px; }
+.risk.r-high b { background: var(--bad-bg); color: var(--bad); }
+.risk.r-medium b { background: var(--wait-bg); color: var(--wait); }
+.brief { display: flex; gap: 14px; align-items: flex-start; background: var(--card); border: 1px solid var(--line); border-left: 5px solid var(--brand); border-radius: 18px; padding: 14px 18px; margin-top: 14px; }
+.brief .i { width: 22px; height: 22px; color: var(--brand); margin-top: 2px; }
+.brief b { display: block; font-size: 16px; color: var(--soft-ink); }
+.brief p { margin-top: 2px; }
+.tag { display: inline-block; padding: 5px 12px; border-radius: 99px; font-size: 15px; font-weight: 700; white-space: nowrap; }
+.tag.s-ok { background: var(--ok-bg); color: var(--ok); } .tag.s-wait { background: var(--wait-bg); color: var(--wait); }
+.tag.s-bad { background: var(--bad-bg); color: var(--bad); } .tag.s-idle { background: var(--idle-bg); color: var(--idle); }
+.acts { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; column-gap: 4px; }
+@media (min-width: 961px) { .acts { flex-wrap: wrap; row-gap: 2px; } .acts .link { white-space: nowrap; } }
+body { padding-bottom: 90px; }
+.row.gone .who strong { text-decoration: line-through; text-decoration-color: var(--muted); color: var(--muted); }
+.row.gone .when { background: var(--row); color: var(--muted); }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--brand); color: var(--on-brand); border: 0; padding: 10px 18px; border-radius: 12px; font-weight: 700; font-size: 17px; cursor: pointer; white-space: nowrap; }
+.btn:hover { filter: brightness(1.1); }
+.btn[disabled] { opacity: .45; cursor: default; filter: none; }
+.btn.quiet { background: var(--soft); color: var(--soft-ink); }
+.link { background: none; border: 0; color: var(--muted); font-weight: 600; font-size: 16px; padding: 8px 8px; border-radius: 10px; cursor: pointer; }
+.link:hover { color: var(--ink); background: var(--row); }
+.link.armed { color: var(--bad); background: var(--bad-bg); }
+
+.empty { padding: 44px 20px; }
+.empty h2 { margin-bottom: 6px; }
+.empty p { color: var(--muted); max-width: 52ch; margin-bottom: 16px; }
+
+/* forms */
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 26px; }
+form.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 24px; max-width: 760px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field.wide { grid-column: 1 / -1; }
+.field label { font-weight: 600; font-size: 16px; color: var(--muted); }
+.field input, .field select, .picker input { background: var(--row); border: 1.5px solid transparent; border-radius: 14px; padding: 12px 14px; min-height: 48px; font-weight: 500; }
+.field input:focus, .field select:focus, .picker input:focus { outline: none; border-color: var(--brand); background: var(--card); }
+.formfoot { grid-column: 1 / -1; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.page-head { margin: 0 0 18px; }
+
+/* whatsapp */
+.note { font-size: 16px; background: var(--wait-bg); color: var(--wait); padding: 12px 16px; border-radius: 14px; margin-top: 16px; max-width: 70ch; font-weight: 500; }
+.note.ok { background: var(--ok-bg); color: var(--ok); }
+.cols { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 20px; margin-top: 20px; align-items: start; }
+.due { list-style: none; margin-top: 10px; }
+.due li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); font-weight: 600; }
+.due li:last-child { border-bottom: 0; }
+.due li span { color: var(--muted); font-weight: 400; font-size: 16px; }
+.due .btn { padding: 7px 14px; font-size: 16px; }
+.thread { margin-top: 12px; padding: 16px; background: var(--row); border-radius: 18px; display: flex; flex-direction: column; gap: 16px; max-height: 560px; overflow: auto; }
+.msg .to { font-size: 15px; color: var(--muted); margin-bottom: 4px; }
+.bubble { background: var(--bubble); padding: 10px 14px; border-radius: 16px 16px 16px 4px; max-width: 46ch; font-size: 17px; }
+.msg time { display: block; font-size: 14px; color: var(--muted); margin-top: 4px; }
+.msg.in .bubble { background: var(--card); border-radius: 16px 16px 4px 16px; margin-left: auto; }
+.msg.in .to, .msg.in time { text-align: right; }
+.msg .st.failed { color: var(--bad); font-weight: 700; }
+
+/* report */
+.rate { font: 800 clamp(64px, 11vw, 112px)/0.95 var(--font); letter-spacing: -0.045em; font-variant-numeric: tabular-nums; }
+.rate small { font: 500 19px/1.4 var(--font); letter-spacing: 0; color: rgba(255,255,255,.8); display: block; margin-top: 10px; }
+.bar { display: flex; height: 14px; margin-top: 4px; background: var(--row); border-radius: 99px; overflow: hidden; }
+.bar i { display: block; height: 100%; }
+.legend { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 12px; font-size: 16px; color: var(--muted); }
+.legend b { display: inline-block; width: 10px; height: 10px; border-radius: 99px; margin-right: 6px; vertical-align: -1px; }
+table.ledger { border-collapse: collapse; width: 100%; margin-top: 18px; }
+.ledger td { padding: 13px 0; border-bottom: 1px solid var(--line); }
+.ledger tr:last-child td { border-bottom: 0; }
+.ledger td:last-child { text-align: right; font-weight: 800; font-variant-numeric: tabular-nums; }
+.cost { margin-top: 18px; padding: 16px 18px; background: var(--bad-bg); color: var(--bad); border-radius: 16px; max-width: 70ch; font-weight: 500; }
+.cost b { font-size: 22px; }
+.picker { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+.picker label { font-weight: 600; color: var(--muted); }
+.rep-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; margin-top: 20px; align-items: start; }
+
+/* clinics */
+table.list { border-collapse: collapse; width: 100%; margin-top: 8px; }
+.list th { text-align: left; font-weight: 600; color: var(--muted); font-size: 16px; padding: 10px 8px; border-bottom: 1px solid var(--line); }
+.list td { padding: 13px 8px; border-bottom: 1px solid var(--line); }
+.list tr:last-child td { border-bottom: 0; }
+.linkbox { display: flex; gap: 10px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+.linkbox code { background: var(--row); padding: 11px 16px; font: 600 17px var(--font); border-radius: 12px; overflow-wrap: anywhere; }
+.block { margin-top: 20px; }
+
+/* queue, waitlist, follow-ups, reviews */
+.xcard { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 18px 20px; margin-top: 14px; }
+.xcard h2 { font-size: 20px; margin-bottom: 4px; }
+.xcard .hint { color: var(--muted); font-size: 16px; }
+.xrow { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--line); padding: 12px 0; }
+.xrow:first-of-type { margin-top: 10px; }
+.xrow b { font-weight: 700; }
+.xrow small { display: block; color: var(--muted); font-size: 15px; }
+.xrow .acts { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.pbadge { display: inline-block; vertical-align: middle; margin-left: 8px; padding: 2px 10px; border-radius: 99px; background: #FFF1C9; color: #6B4B00; font-size: 14px; font-weight: 800; letter-spacing: 0; }
+.pgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px 18px; margin-top: 14px; }
+.pgrid .field.wide { grid-column: 1 / -1; }
+.switch { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 18px; }
+.switch input { width: 26px; height: 26px; accent-color: var(--brand); flex: none; }
+dialog#memDlg { margin: auto; border: 0; border-radius: 22px; padding: 24px; max-width: min(440px, calc(100vw - 32px)); width: 100%; background: var(--card); color: var(--ink); box-shadow: 0 30px 80px -20px rgba(0,0,0,.5); }
+dialog#memDlg::backdrop { background: rgba(10,30,20,.5); }
+dialog#memDlg h2 { margin-bottom: 12px; }
+dialog#memDlg .field + .field { margin-top: 12px; }
+dialog#memDlg .formfoot { margin-top: 18px; }
+.qbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.qbar .qnow { font-size: 18px; } .qbar .qnow b { font-size: 22px; }
+.qbar .btn { margin: 0; }
+a.btn, a.link { text-decoration: none; }
+dialog#fuDlg { margin: auto; border: 0; border-radius: 22px; padding: 24px; max-width: min(440px, calc(100vw - 32px)); width: 100%; background: var(--card); color: var(--ink); box-shadow: 0 30px 80px -20px rgba(0,0,0,.5); }
+dialog#fuDlg::backdrop { background: rgba(10,30,20,.5); }
+dialog#fuDlg h2 { margin-bottom: 12px; }
+dialog#fuDlg .field + .field { margin-top: 12px; }
+dialog#fuDlg .formfoot { margin-top: 18px; }
+.rvstars { color: #E0A82E; letter-spacing: 1px; }
+#toast { position: fixed; left: 24px; bottom: 24px; background: var(--ink); color: var(--bg); padding: 13px 18px; border-radius: 16px; font-size: 17px; font-weight: 500; max-width: min(460px, calc(100vw - 48px)); opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity .18s, transform .18s; z-index: 10; box-shadow: 0 10px 30px rgba(17,41,31,.25); }
+#toast.on { opacity: 1; transform: none; }
+#toast.err { background: var(--bad); color: #fff; }
+#toast.act { pointer-events: auto; }
+.toast-act { background: none; border: 0; color: inherit; font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; padding: 0 2px; }
+@media (prefers-reduced-motion: reduce) { #toast { transition: none; } }
+
+@media (max-width: 600px) {
+  .l-long { display: none; }
+  .l-short { display: inline; }
+  nav.tabs { gap: 0; }
+  nav.tabs button { flex: 1 1 0; min-width: 0; flex-direction: column; justify-content: center; gap: 3px; padding: 0 2px; height: 56px; font-size: 14px; }
+  nav.tabs button .i { width: 22px; height: 22px; }
+}
+@media (max-width: 1060px) {
+  .top { flex-wrap: wrap; min-height: 0; padding-top: 10px; gap: 0 10px; }
+  .brand { margin-right: auto; }
+  .clinic-pick { margin-left: 0; order: 2; }
+  .top a.ghost { order: 3; }
+  nav.tabs { order: 4; flex: 1 1 100%; margin-top: 8px; }
+  nav.tabs button { height: 46px; }
+}
+@media (max-width: 960px) {
+  .row { grid-template-columns: 90px minmax(0, 1fr) auto; }
+  .row .acts { grid-column: 2 / -1; justify-content: flex-start; }
+}
+@media (max-width: 820px) {
+  .wrap { padding: 0 14px; }
+  h1 { font-size: 28px; }
+  .hero { padding: 20px; border-radius: 22px; }
+  .hero h1 { font-size: 28px; }
+  .tally div { padding: 0 14px; }
+  .tally b { font-size: 32px; }
+  .top { flex-wrap: wrap; min-height: 0; padding-top: 10px; gap: 0 10px; }
+  .brand { margin-right: auto; }
+  .clinic-pick { margin-left: 0; order: 2; }
+  .top a.ghost { order: 3; padding: 9px; }
+  .top a.ghost span { display: none; }
+  nav.tabs { order: 4; flex: 1 1 100%; margin-top: 8px; }
+  nav.tabs button { padding: 0 12px; height: 46px; }
+  .row { grid-template-columns: 84px minmax(0, 1fr); padding: 12px 6px; }
+  .row .state, .row .acts { grid-column: 1 / -1; }
+  .row .acts { justify-content: flex-start; }
+  .panel { padding: 18px; border-radius: 20px; }
+  form.grid { grid-template-columns: 1fr; }
+  .cols, .rep-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) { nav.tabs button { padding: 0 2px; height: 56px; } }
+@media (max-width: 360px) { nav.tabs button { font-size: 14px; } nav.tabs button .i { width: 20px; height: 20px; } }
+
+/* ambient background: slow drifting colour, faint dot grid, soft light that follows the pointer */
+body { position: relative; isolation: isolate; }
+.bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.bg i { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .55; will-change: transform; }
+.bg i:nth-child(1) { width: 46vw; height: 46vw; left: -12vw; top: -14vw; background: #9EDDBF; animation: drift1 38s ease-in-out infinite alternate; }
+.bg i:nth-child(2) { width: 40vw; height: 40vw; right: -10vw; top: 20vh; background: #B7E8DA; animation: drift2 46s ease-in-out infinite alternate; }
+.bg i:nth-child(3) { width: 36vw; height: 36vw; left: 25vw; bottom: -18vw; background: #CFEFC9; animation: drift3 52s ease-in-out infinite alternate; }
+.bg::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(11,90,63,.16) 1.2px, transparent 1.6px); background-size: 24px 24px; -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 0, transparent 75%); mask-image: radial-gradient(ellipse at 50% 30%, #000 0, transparent 75%); }
+.bg .glow { position: absolute; left: 0; top: 0; width: 520px; height: 520px; margin: -260px 0 0 -260px; background: radial-gradient(circle, rgba(255,255,255,.75), rgba(255,255,255,0) 62%); filter: none; opacity: 0; transition: opacity .5s; will-change: transform; }
+.bg .glow.on { opacity: 1; }
+@keyframes drift1 { to { transform: translate(14vw, 10vh) scale(1.15); } }
+@keyframes drift2 { to { transform: translate(-12vw, 14vh) scale(1.2); } }
+@keyframes drift3 { to { transform: translate(10vw, -12vh) scale(1.1); } }
+/* cards respond when you point at them */
+.panel, .group, ul.sheet { transition: box-shadow .25s, border-color .25s, transform .25s; }
+.panel:hover, .group:hover, ul.sheet:hover { border-color: rgba(18,128,90,.45); box-shadow: 0 10px 30px -12px rgba(11,90,63,.35); transform: translateY(-2px); }
+/* the dark summary card catches the light as the pointer moves over it */
+.hero { position: relative; overflow: hidden; isolation: isolate; --hx: 78%; --hy: 0%; }
+.hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(420px circle at var(--hx) var(--hy), rgba(110,231,183,.28), transparent 65%); transition: background-position .2s; }
+.hero::after { content: ""; position: absolute; right: -60px; top: -80px; width: 260px; height: 260px; border-radius: 50%; z-index: -1; border: 1px solid rgba(255,255,255,.08); box-shadow: 0 0 0 36px rgba(255,255,255,.025), 0 0 0 74px rgba(255,255,255,.02); }
+
+/* monthly report and ask helper */
+.mr { margin-top: 16px; }
+.mrhead { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.mrhead .acts { display: flex; gap: 8px; flex-wrap: wrap; }
+.mrsum { margin-top: 14px; font-size: 19px; line-height: 1.55; max-width: 72ch; }
+.mrk { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 16px; }
+.mrk div { background: var(--row); border-radius: 16px; padding: 12px 14px; }
+.mrk span { display: block; color: var(--muted); font-size: 16px; } .mrk b { display: block; font: 800 28px/1.2 var(--font); letter-spacing: -0.02em; } .mrk small { color: var(--muted); font-size: 15px; }
+.mrcols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 18px; }
+.mrcols h3, .mr h3 { font: 700 18px var(--font); margin-bottom: 6px; } .mrcols ul { padding-left: 18px; } .mrcols li { margin: 5px 0; }
+.wk { display: flex; gap: 8px; align-items: flex-end; height: 110px; margin-top: 8px; }
+.wk div { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; font-size: 15px; color: var(--muted); }
+.wk i { display: block; width: min(24px, 70%); background: var(--brand); border-radius: 4px 4px 0 0; min-height: 2px; }
+.badge { display: inline-block; background: var(--soft); color: var(--soft-ink); border-radius: 99px; padding: 2px 10px; font-size: 15px; font-weight: 700; }
+.askfab { position: fixed; right: 18px; bottom: 18px; z-index: 30; display: inline-flex; align-items: center; gap: 8px; background: var(--hero, #0B4A35); color: #fff; border: 0; border-radius: 99px; padding: 12px 18px; font: 700 17px var(--font); cursor: pointer; box-shadow: 0 10px 30px -8px rgba(11,74,53,.6); }
+.askp { position: fixed; right: 18px; bottom: 18px; z-index: 31; width: min(390px, calc(100vw - 24px)); height: min(540px, calc(100vh - 36px)); background: var(--card); border: 1px solid var(--line); border-radius: 24px; box-shadow: 0 24px 60px -16px rgba(11,74,53,.55); display: flex; flex-direction: column; overflow: hidden; }
+.askp[hidden] { display: none; }
+.askp header { background: var(--hero, #0B4A35); color: #fff; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; } .askp header b { font: 800 19px var(--font); } .askp header button { background: rgba(255,255,255,.16); color: #fff; border: 0; border-radius: 50%; width: 34px; height: 34px; cursor: pointer; font-size: 20px; }
+.askm { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; background: var(--row); }
+.askm .m { max-width: 90%; padding: 10px 13px; border-radius: 16px; font-size: 17px; line-height: 1.45; overflow-wrap: anywhere; white-space: pre-wrap; }
+.askm .bot { background: var(--card); border: 1px solid var(--line); align-self: flex-start; } .askm .me { background: var(--brand); color: var(--on-brand); align-self: flex-end; }
+.askq { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 12px 0; } .askq button { background: var(--soft); color: var(--soft-ink); border: 0; border-radius: 99px; padding: 6px 11px; font: 600 15px var(--font); cursor: pointer; }
+.askf { display: flex; gap: 8px; padding: 10px 12px 12px; } .askf input { flex: 1; min-width: 0; border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 12px; font: 18px var(--font); background: var(--card); color: var(--ink); } .askf button { background: var(--brand); color: var(--on-brand); border: 0; border-radius: 12px; padding: 0 16px; font: 700 17px var(--font); cursor: pointer; }
+@media (max-width: 760px) { .askfab { bottom: 78px; right: 12px; } .askp { right: 6px; bottom: 6px; } }
+@media print { .bg, header, nav.tabs, .picker, #repBody, .askfab, .askp, .page-head, .mrhead .acts, #toast { display: none !important; } body { background: #fff; } .panel { box-shadow: none; border: 0; } }
+
+/* a section settles in when you switch to it */
+section:not([hidden]) { animation: settle .38s cubic-bezier(.2,.7,.3,1) both; }
+@keyframes settle { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+button:active:not(:disabled) { transform: scale(.97); }
+@media (hover: none) { .bg .glow { display: none; } .panel:hover, .group:hover, ul.sheet:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .bg i, section:not([hidden]) { animation: none; } .panel, .group, ul.sheet { transition: none; } .panel:hover, .group:hover, ul.sheet:hover { transform: none; } .bg .glow { display: none; } }
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i><span class="glow"></span></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></symbol>
+  <symbol id="i-logo" viewBox="0 0 48 48"><defs><linearGradient id="bg" x1="8" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1FA877"/><stop offset="1" stop-color="#0B5A3F"/></linearGradient></defs><path transform="translate(-1.5 .2)" d="M11 4.5v39M11 4.5h15a8.2 8.2 0 0 1 0 16.4H11m0 0h17a11.3 11.3 0 0 1 0 22.6H11" fill="none" stroke="url(#bg)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path transform="translate(27 28) scale(.86)" fill="#fff" stroke="#0B5A3F" stroke-width="1.6" stroke-linejoin="round" d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.4 4.5 4.5 0 0 1 8 2.4c0 5.8-8 11-8 11z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M5 20V11M12 20V5M19 20v-8"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V7l8-4 8 4v14M9 21v-6h6v6M9 10h.01M15 10h.01"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+</svg>
+<div class="topbar"><div class="wrap">
+  <header class="top">
+    <div class="brand"><span class="logo"><svg class="mk" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-logo"/></svg></span><span class="bw">Baari<small>Clinic desk</small></span></div>
+      <nav class="tabs" aria-label="Sections">
+      <button data-tab="appointments"><svg class="i"><use href="#i-cal"/></svg><span class="l-long">Appointments</span><span class="l-short">Visits</span></button>
+      <button data-tab="book"><svg class="i"><use href="#i-plus"/></svg><span class="l-long">New booking</span><span class="l-short">Book</span></button>
+      <button data-tab="whatsapp"><svg class="i"><use href="#i-chat"/></svg><span class="l-long">WhatsApp</span><span class="l-short">WhatsApp</span></button>
+      <button data-tab="report"><svg class="i"><use href="#i-chart"/></svg><span class="l-long">Report</span><span class="l-short">Report</span></button>
+      <button data-tab="clinics"><svg class="i"><use href="#i-building"/></svg><span class="l-long">Clinics</span><span class="l-short">Clinics</span></button>
+    </nav>
+    <div class="clinic-pick">
+      <label for="clinic">Clinic</label>
+      <select id="clinic"></select>
+    </div>
+    <a class="ghost me" href="/staff/profile" id="meLink" title="Your profile and login"><b class="av" id="meAv">S</b></a>
+    <a class="ghost" href="/patient" target="_blank" rel="noopener" title="Open the patient booking page"><svg class="i"><use href="#i-link"/></svg><span>Patient page</span></a>
+  </header>
+
+</div></div>
+
+<div class="wrap">
+  <main>
+    <!-- Appointments -->
+    <section id="tab-appointments" hidden>
+      <div class="hero">
+        <div class="hero-top">
+          <div>
+            <h1 id="apptTitle">Today</h1>
+            <p class="sub" id="apptSub"></p>
+          </div>
+          <div class="tally" id="tally"></div>
+        </div>
+        <div class="meter" id="meterRow" hidden><span id="meterLabel"></span><div class="track"><i id="meter"></i></div></div>
+      </div>
+      <aside class="brief" id="brief" hidden aria-live="polite"><svg class="i" aria-hidden="true"><use href="#i-spark"/></svg><div><b id="briefTag">Today's briefing</b><p id="briefText"></p></div></aside>
+      <div id="extras"></div>
+      <div class="views" role="group" aria-label="Which appointments">
+        <button data-view="today" aria-pressed="true">Today</button>
+        <button data-view="upcoming" aria-pressed="false">Upcoming</button>
+        <button data-view="all" aria-pressed="false">All</button>
+      </div>
+      <ul class="sheet" id="sheet"></ul>
+    </section>
+
+    <!-- New booking -->
+    <section id="tab-book" hidden>
+      <div class="page-head"><h1>New booking</h1>
+      <p class="sub">For patients who call or walk in. Patients who book online show up in Appointments on their own.</p></div>
+      <div class="panel">
+      <form class="grid" id="bookForm">
+        <div class="field"><label for="bName">Patient name</label><input id="bName" required autocomplete="off"></div>
+        <div class="field"><label for="bPhone">WhatsApp number</label><input id="bPhone" type="tel" required placeholder="98765 43210" autocomplete="off"></div>
+        <div class="field"><label for="bDate">Date</label><input id="bDate" type="date" required></div>
+        <div class="field"><label for="bTime">Time</label><input id="bTime" type="time" required step="900"></div>
+        <div class="field wide"><label for="bType">Reason for visit</label>
+          <select id="bType"><option value="consultation">Consultation</option><option value="follow-up">Follow-up</option><option value="check-up">Check-up</option><option value="procedure">Procedure</option></select></div>
+        <div class="formfoot"><button class="btn" type="submit">Save booking</button></div>
+      </form>
+      </div>
+    </section>
+
+    <!-- WhatsApp -->
+    <section id="tab-whatsapp" hidden>
+      <div class="page-head"><h1>WhatsApp reminders</h1>
+      <p class="sub">Reminders ask the patient to reply YES to confirm or NO to cancel.</p>
+      <div class="note" id="waMode"></div></div>
+      <div class="cols">
+        <div class="panel">
+          <h2>Waiting for a reminder</h2>
+          <p class="sub" style="font-size:17px" id="dueSub">Today and tomorrow, not yet messaged.</p>
+          <ul class="due" id="due"></ul>
+          <div style="margin-top:16px"><button class="btn" id="sendAll" disabled>Send all reminders</button></div>
+        </div>
+        <div class="panel">
+          <h2>Messages</h2>
+          <div class="thread" id="thread"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Report -->
+    <section id="tab-report" hidden>
+      <div class="page-head"><h1>Monthly report</h1></div>
+      <div class="picker"><label for="repMonth">Month</label><input id="repMonth" type="month"></div>
+      <div id="mrBody"></div>
+      <div id="repBody"></div>
+      <div class="xcard" id="reviewsCard" hidden><h2>Patient ratings</h2><p class="hint">Ratings come from patients who had a real visit. You can hide a rating that is abusive.</p><div id="reviewRows"></div></div>
+    </section>
+
+    <!-- Clinics -->
+    <section id="tab-clinics" hidden>
+      <div class="page-head"><h1>Clinics</h1></div>
+      <div class="panel block">
+        <h2>Patient booking link</h2>
+        <p class="sub">Share this on WhatsApp, Instagram or at the front desk. Patients can only book. They cannot see appointments.</p>
+        <div class="linkbox"><code id="plink"></code><button class="btn quiet" id="copyLink">Copy link</button><a class="btn quiet" id="posterBtn" target="_blank" rel="noopener">Print QR poster</a><a class="btn quiet" id="profileBtn" target="_blank" rel="noopener">View public profile</a></div>
+      </div>
+      <div class="panel block" id="planPanel">
+        <h2>Priority membership for patients</h2>
+        <p class="sub">Patients who pay you (cash or UPI at the desk) become priority members for a set number of days. You mark them as paid in the Appointments tab, and Baari gives them the perks below. Emergencies are always seen first, whatever the plan.</p>
+        <div class="pgrid">
+          <label class="switch" style="grid-column:1/-1"><input type="checkbox" id="pOn"> Offer a priority plan at this clinic</label>
+          <div class="field"><label for="pName">Plan name</label><input id="pName" maxlength="40" placeholder="Priority plan"></div>
+          <div class="field"><label for="pPrice">Price (Rs)</label><input id="pPrice" type="number" min="0" max="100000" value="299"></div>
+          <div class="field"><label for="pDays">Valid for (days)</label><input id="pDays" type="number" min="1" max="365" value="30"></div>
+          <div class="field"><label for="pRes">Reserved times per day</label><input id="pRes" type="number" min="0" max="8" value="2"><small class="hint">The first times of each day are kept for members.</small></div>
+          <div class="field"><label for="pCut">Open reserved times to everyone (hours before)</label><input id="pCut" type="number" min="0" max="24" value="3"><small class="hint">So unused times are not wasted.</small></div>
+          <div class="field"><label for="pExtra">Extra days members can book ahead</label><input id="pExtra" type="number" min="0" max="30" value="7"><small class="hint">Everyone else books up to 7 days ahead.</small></div>
+        </div>
+        <p class="hint" style="margin-top:12px">Members also move up to 30 minutes ahead in the live queue and are offered cancelled times first.</p>
+        <p class="hint" id="payStatus" style="margin-top:8px"></p>
+        <div class="formfoot" style="margin-top:14px"><button class="btn" type="button" id="planSave">Save plan</button></div>
+      </div>
+      <div class="panel block">
+        <h2>Your clinics</h2>
+        <div style="overflow-x:auto"><table class="list"><thead><tr><th>Clinic</th><th>Doctor</th><th>Location</th><th>Phone</th><th>Plan</th><th></th></tr></thead><tbody id="clinicRows"></tbody></table></div>
+      </div>
+      <div class="panel block">
+        <h2 style="margin-bottom:18px" id="formTitle">Add a clinic</h2>
+        <form class="grid" id="clinicForm">
+          <div class="field"><label for="cName">Clinic name</label><input id="cName" required></div>
+          <div class="field"><label for="cDoctor">Doctor</label><input id="cDoctor" required></div>
+          <div class="field"><label for="cLocation">Location</label><input id="cLocation" placeholder="Area and city, e.g. Karol Bagh, Delhi"></div>
+          <div class="field"><label for="cLocation2" style="display:none"></label><button class="link" type="button" id="useLoc" style="text-align:left">Use my current location for map distance</button><small id="geoNote" style="color:var(--muted)">Optional. Lets patients find the nearest clinic.</small></div>
+          <div class="field"><label for="cServices">Services (shown to patients)</label><input id="cServices" maxlength="120" placeholder="e.g. General physician, diabetes care, child health"></div>
+          <div class="field"><label for="cOffer">Offer (optional)</label><input id="cOffer" maxlength="80" placeholder="e.g. First consultation free"></div>
+          <div class="field"><label for="cFees">Consultation fee (shown to patients)</label><input id="cFees" maxlength="120" placeholder="e.g. Rs 400, follow-up free within 7 days"></div>
+          <div class="field"><label for="cLangs">Languages spoken</label><input id="cLangs" maxlength="80" placeholder="e.g. Hindi, English, Marathi"></div>
+          <div class="field"><label for="cMaps">Google Maps link (optional)</label><input id="cMaps" type="url" maxlength="300" placeholder="https://maps.app.goo.gl/..."></div>
+          <div class="field"><label for="cAvg">Minutes per patient (for the live queue)</label><input id="cAvg" type="number" min="5" max="60" value="15"></div>
+          <div class="field wide"><label for="cAbout">About the clinic (shown on the profile page)</label><input id="cAbout" maxlength="400" placeholder="One or two lines about you and the clinic"></div>
+          <div class="field"><label for="cPhone">Clinic phone</label><input id="cPhone" type="tel" required></div>
+          <div class="field"><label for="cLang">Reminder language</label><select id="cLang"><option value="en">English</option><option value="hi">Hindi (हिंदी)</option><option value="hinglish">Hinglish (Hindi in English letters)</option></select></div>
+          <div class="field"><label for="cPlan">Plan</label><select id="cPlan"><option value="basic">Basic</option><option value="pro">Pro</option><option value="enterprise">Enterprise</option></select></div>
+          <div class="formfoot"><button class="btn" type="submit" id="clinicSave">Add clinic</button><button class="link" type="button" id="cancelEdit" hidden>Cancel</button><button class="link" type="button" id="sample">Add a sample clinic with sample patients</button></div>
+        </form>
+      </div>
+    </section>
+  </main>
+</div>
+<dialog id="fuDlg" aria-labelledby="fuTitle">
+  <form method="dialog" id="fuForm">
+    <h2 id="fuTitle">Follow-up visit</h2>
+    <p class="sub" id="fuWho" style="margin-bottom:12px"></p>
+    <div class="field"><label for="fuDate">Follow-up around</label><input id="fuDate" type="date"></div>
+    <div class="field"><label for="fuNote">Note for the patient (optional)</label><input id="fuNote" maxlength="140" placeholder="e.g. Repeat sugar test"></div>
+    <div class="formfoot"><button class="btn" type="submit" id="fuSave">Save</button><button class="link" type="button" id="fuRemove">Remove follow-up</button><button class="link" type="button" id="fuCancel">Cancel</button></div>
+  </form>
+</dialog>
+<dialog id="memDlg" aria-labelledby="memTitle">
+  <form method="dialog" id="memForm">
+    <h2 id="memTitle">Add or renew a member</h2>
+    <p class="sub" id="memHint" style="margin-bottom:12px"></p>
+    <div class="field"><label for="memName">Patient name</label><input id="memName" maxlength="80" autocomplete="off"></div>
+    <div class="field"><label for="memPhone">Mobile number</label><input id="memPhone" type="tel" inputmode="tel" autocomplete="off" placeholder="98765 43210"></div>
+    <div class="field"><label for="memAmt">Amount paid (Rs)</label><input id="memAmt" type="number" min="0" max="100000"></div>
+    <div class="formfoot"><button class="btn" type="submit" id="memSave">Mark as paid</button><button class="link" type="button" id="memCancel">Cancel</button></div>
+  </form>
+</dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+
+const API = '/api';
+const state = { clinics: [], cid: null, appts: [], due: [], view: 'today', tab: 'appointments', wa: { mode: 'manual' }, members: new Set(), planOn: false, memOpen: false };
+const $ = (id) => document.getElementById(id);
+
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pad = (n) => String(n).padStart(2, '0');
+const isoDay = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const today = () => isoDay(new Date());
+const parseDay = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+const dayLabel = (s, long) => parseDay(s).toLocaleDateString('en-IN', long ? { weekday: 'long', day: 'numeric', month: 'long' } : { weekday: 'short', day: 'numeric', month: 'short' });
+const clock = (t) => { const [h, m] = t.split(':').map(Number); return { t: `${h % 12 || 12}:${pad(m)}`, ap: h < 12 ? 'am' : 'pm' }; };
+const dr = (n) => (/^dr\.?\s/i.test(n) ? n : 'Dr. ' + n);
+const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
+
+let toastTimer;
+function toast(msg, isErr, action) {
+  const el = $('toast');
+  el.textContent = msg;
+  if (action) {
+    const b = document.createElement('button');
+    b.textContent = action.label; b.className = 'toast-act';
+    b.onclick = () => { action.fn(); el.className = ''; };
+    el.append(' ', b);
+  }
+  el.className = 'on' + (isErr ? ' err' : '') + (action ? ' act' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = ''; }, action ? 9000 : 3600);
+}
+
+async function api(path, opts = {}) {
+  const res = await fetch(API + path, {
+    method: opts.method || 'GET',
+    headers: opts.body ? { 'Content-Type': 'application/json' } : undefined,
+    body: opts.body ? JSON.stringify(opts.body) : undefined,
+  });
+  if (res.status === 401) { location.href = '/staff/login'; throw new Error('Login required'); }
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Something went wrong (' + res.status + ')');
+  return data;
+}
+
+/* ---------- tabs ---------- */
+function show(tab) {
+  if (window.__role === 'staff' && (tab === 'report' || tab === 'clinics')) tab = 'appointments';
+  state.tab = tab;
+  document.querySelectorAll('section[id^="tab-"]').forEach((s) => { s.hidden = s.id !== 'tab-' + tab; });
+  document.querySelectorAll('nav.tabs button').forEach((b) => {
+    if (b.dataset.tab === tab) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+  });
+  if (location.hash !== '#' + tab) history.replaceState(null, '', '#' + tab);
+  ({ appointments: loadAppts, whatsapp: loadWhatsapp, report: () => { loadReport(); loadReviews(); }, clinics: () => { renderClinics(); loadPlanForm(); }, book: prepBook }[tab] || (() => {}))();
+}
+document.querySelector('nav.tabs').addEventListener('click', (e) => { const b = e.target.closest('button[data-tab]'); if (b) show(b.dataset.tab); });
+
+/* ---------- clinics ---------- */
+async function loadClinics() {
+  state.clinics = await api('/clinics');
+  const sel = $('clinic');
+  sel.innerHTML = state.clinics.length
+    ? state.clinics.map((c) => `<option value="${c.id}">${esc(c.name)}</option>`).join('')
+    : '<option value="">No clinic yet</option>';
+  const saved = Number(store.get('baari.clinic'));
+  state.cid = state.clinics.find((c) => c.id === saved)?.id ?? state.clinics[0]?.id ?? null;
+  if (state.cid) sel.value = state.cid;
+}
+$('clinic').addEventListener('change', (e) => { state.cid = Number(e.target.value) || null; store.set('baari.clinic', state.cid); show(state.tab); });
+
+function renderClinics() {
+  $('plink').textContent = window.__plink || (location.origin + '/patient');
+  if (state.cid) { $('posterBtn').href = `${API}/clinics/${state.cid}/poster`; $('profileBtn').href = `/patient/clinic/${state.cid}`; }
+  $('clinicRows').innerHTML = state.clinics.length
+    ? state.clinics.map((c) => `<tr><td>${esc(c.name)}</td><td>${esc(dr(c.doctor_name))}</td><td>${esc(c.location || "Not added")}</td><td>${esc(c.phone)}</td><td>${esc(c.plan)}</td><td><button class="link" data-edit="${c.id}">Edit</button></td></tr>`).join('')
+    : '<tr><td colspan="6" style="color:var(--muted)">No clinics yet. Add one below.</td></tr>';
+  if (window.__scoped && editId == null && state.clinics[0]) setEdit(null);
+}
+$('copyLink').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText($('plink').textContent); toast('Link copied'); } catch { toast('Select the link and copy it', true); }
+});
+let editId = null;
+function setEdit(c) {
+  let quiet = false;
+  if (!c && window.__scoped && state.clinics[0]) { c = state.clinics[0]; quiet = true; }
+  editId = c ? c.id : null;
+  $('formTitle').textContent = c ? 'Edit clinic' : 'Add a clinic';
+  $('clinicSave').textContent = c ? 'Save changes' : 'Add clinic';
+  $('cancelEdit').hidden = !c || !!window.__scoped; $('sample').hidden = !!c || !!window.__scoped;
+  $('cName').value = c ? c.name : ''; $('cDoctor').value = c ? c.doctor_name : '';
+  $('cPhone').value = c ? c.phone : ''; $('cLocation').value = c ? (c.location || '') : ''; $('cServices').value = c ? (c.services || '') : ''; $('cOffer').value = c ? (c.offer || '') : ''; $('cLang').value = c && c.reminder_lang ? c.reminder_lang : 'en';
+  $('cPlan').value = c ? c.plan : 'basic';
+  $('cFees').value = c ? (c.fees || '') : ''; $('cLangs').value = c ? (c.languages || '') : ''; $('cMaps').value = c ? (c.maps_url || '') : ''; $('cAbout').value = c ? (c.about || '') : ''; $('cAvg').value = c ? (c.avg_minutes || 15) : 15;
+  geo = c && c.latitude != null ? { lat: c.latitude, lng: c.longitude } : { lat: '', lng: '' };
+  $('geoNote').textContent = c && c.latitude != null ? 'Map location saved. Press the button to update it.' : 'Optional. Lets patients find the nearest clinic.';
+  if (c && !quiet) { $('clinicForm').scrollIntoView({ behavior: 'smooth', block: 'center' }); $('cName').focus(); }
+}
+$('clinicRows').addEventListener('click', (e) => { const b = e.target.closest('[data-edit]'); if (b) setEdit(state.clinics.find((c) => c.id === Number(b.dataset.edit))); });
+$('cancelEdit').addEventListener('click', () => setEdit(null));
+$('clinicForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const body = { name: $('cName').value.trim(), doctor_name: $('cDoctor').value.trim(), phone: $('cPhone').value.trim(), location: $('cLocation').value.trim(), services: $('cServices').value.trim(), offer: $('cOffer').value.trim(), reminder_lang: $('cLang').value, latitude: geo.lat, longitude: geo.lng, plan: $('cPlan').value };
+  try {
+    if (editId) {
+      await api('/clinics/' + editId, { method: 'PUT', body });
+      await api(`/clinics/${editId}/profile`, { method: 'PUT', body: profileBody() });
+      setEdit(null); await loadClinics(); renderClinics(); toast('Clinic updated');
+    } else {
+      const r = await api('/clinics', { method: 'POST', body });
+      await api(`/clinics/${r.id}/profile`, { method: 'PUT', body: profileBody() });
+      setEdit(null); store.set('baari.clinic', r.id);
+      await loadClinics(); renderClinics(); toast('Clinic added');
+    }
+  } catch (err) { toast(err.message, true); }
+});
+let geo = { lat: '', lng: '' };
+const profileBody = () => ({ fees: $('cFees').value.trim(), languages: $('cLangs').value.trim(), about: $('cAbout').value.trim(), maps_url: $('cMaps').value.trim(), avg_minutes: Number($('cAvg').value) || 15 });
+$('useLoc').addEventListener('click', () => {
+  if (!navigator.geolocation) { toast('This browser cannot share location', true); return; }
+  $('geoNote').textContent = 'Finding your location...';
+  navigator.geolocation.getCurrentPosition(
+    (p) => { geo = { lat: p.coords.latitude, lng: p.coords.longitude }; $('geoNote').textContent = 'Location saved for this clinic (' + geo.lat.toFixed(3) + ', ' + geo.lng.toFixed(3) + ').'; },
+    () => { $('geoNote').textContent = 'Could not get your location. Allow location access and try again.'; },
+    { enableHighAccuracy: true, timeout: 10000 });
+});
+$('sample').addEventListener('click', async () => {
+  try {
+    const c = await api('/clinics', { method: 'POST', body: { name: 'Sample Clinic', doctor_name: 'Meera Iyer', phone: '+91 98765 00000', location: 'Lajpat Nagar, New Delhi', services: 'General physician, diabetes care, child health', offer: 'First consultation free', latitude: 28.5677, longitude: 77.2432, plan: 'pro' } });
+    const t = today();
+    const people = [['Ramesh Kumar', '98200 11122', '09:30', 'check-up'], ['Sunita Devi', '98111 22233', '10:15', 'follow-up'], ['Arjun Mehta', '99876 54321', '11:00', 'consultation'], ['Farida Khan', '97000 12345', '16:00', 'procedure']];
+    for (const [n, p, tm, v] of people) await api('/appointments', { method: 'POST', body: { clinic_id: c.id, patient_name: n, patient_phone: '+91 ' + p, appointment_date: t, appointment_time: tm, visit_type: v } });
+    store.set('baari.clinic', c.id);
+    await loadClinics(); renderClinics();
+    toast('Sample clinic added. Open Appointments to see it.');
+  } catch (err) { toast(err.message, true); }
+});
+
+/* ---------- appointments ---------- */
+function stateOf(a) {
+  if (a.visit_state === 'done' && !['cancelled', 'no-show'].includes(a.status)) return { cls: 's-ok', text: 'Seen', done: true };
+  if (a.visit_state === 'in' && !['cancelled', 'no-show'].includes(a.status)) return { cls: 's-ok', text: 'With doctor', done: false };
+  if (a.status === 'cancelled') return { cls: 's-bad', text: 'Cancelled', done: true };
+  if (a.no_show || a.status === 'no-show') return { cls: 's-bad', text: 'Did not come', done: true };
+  if (a.confirmed) return { cls: 's-ok', text: 'Confirmed by patient', done: false };
+  if (a.whatsapp_sent) return { cls: 's-wait', text: 'Waiting for reply', done: false };
+  return { cls: 's-idle', text: 'No reminder sent yet', done: false };
+}
+
+async function loadAppts() {
+  if (!state.cid) { state.appts = []; return renderAppts(); }
+  try { state.appts = await api(`/clinics/${state.cid}/appointments`); } catch (e) { toast(e.message, true); state.appts = []; }
+  renderAppts();
+  loadBriefing();
+  loadExtras();
+}
+async function loadBriefing() {
+  const box = $('brief'); if (!state.cid) { box.hidden = true; return; }
+  const cid = state.cid;
+  try {
+    const b = await api(`/clinics/${cid}/briefing`);
+    if (cid !== state.cid) return;
+    $('briefText').textContent = b.text; $('briefTag').textContent = b.ai ? "Today's briefing, written by AI" : "Today's briefing";
+    box.hidden = state.view !== 'today';
+  } catch { box.hidden = true; }
+}
+
+function renderAppts() {
+  const t = today();
+  const v = state.view;
+  const list = state.appts.filter((a) => v === 'all' || (v === 'today' ? a.appointment_date === t : a.appointment_date > t));
+  $('apptTitle').textContent = v === 'today' ? dayLabel(t, true) : v === 'upcoming' ? 'Coming up' : 'All appointments';
+  $('apptSub').textContent = state.cid ? (v === 'today' ? 'Patients expected today, in time order.' : 'From today onwards.') : '';
+  document.querySelectorAll('.views button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === v)));
+
+  const live = list.filter((a) => !stateOf(a).done);
+  const nConf = live.filter((a) => a.confirmed).length;
+  $('tally').innerHTML = state.cid
+    ? `<div><b>${live.length}</b><span>expected</span></div>
+       <div><b>${nConf}</b><span>confirmed</span></div>
+       <div><b>${live.length - nConf}</b><span>not confirmed</span></div>`
+    : '';
+  $('meterRow').hidden = !(state.cid && live.length);
+  $('meterLabel').textContent = `${nConf} of ${live.length} confirmed`;
+  $('meter').style.width = live.length ? Math.round((nConf / live.length) * 100) + '%' : '0';
+
+  const sheet = $('sheet');
+  if (!state.cid) {
+    sheet.innerHTML = `<li class="empty"><h2>Add your first clinic</h2><p>Appointments, reminders and reports are kept per clinic. ${window.__role === 'staff' ? 'Ask the clinic owner to add the clinic.' : 'Add one, or load a sample to look around.'}</p>${window.__role === 'staff' ? '' : '<button class="btn" data-go="clinics">Add a clinic</button>'}</li>`;
+    return;
+  }
+  if (!list.length) {
+    sheet.innerHTML = `<li class="empty"><h2>${v === 'today' ? 'Nobody booked for today' : 'Nothing here yet'}</h2><p>Bookings made on the patient page appear here automatically. You can also add one for a patient who calls.</p><button class="btn" data-go="book">New booking</button></li>`;
+    return;
+  }
+  sheet.innerHTML = list.map((a) => {
+    const c = clock(a.appointment_time), s = stateOf(a);
+    let acts = '';
+    if (!s.done) {
+      acts += a.confirmed ? ''
+            : !a.whatsapp_sent ? `<button class="btn" data-act="remind" data-id="${a.id}">Send reminder</button>`
+            : `<button class="btn quiet" data-act="confirm" data-id="${a.id}">Mark confirmed</button>`;
+      acts += `<button class="link" data-act="noshow" data-id="${a.id}">Did not come</button><button class="link" data-act="cancel" data-id="${a.id}">Cancel</button>`;
+    }
+    if (a.visit_state === 'in') acts += `<button class="btn" data-act="seen" data-id="${a.id}">Finished</button>`;
+    if (a.visit_state === 'in' || a.visit_state === 'done') acts += `<button class="link" data-act="followup" data-id="${a.id}">${a.follow_up_date ? 'Follow-up ' + esc(dayLabel(a.follow_up_date)) : 'Set follow-up'}</button>`;
+    return `<li class="row ${s.done ? 'gone' : ''}">
+      <div class="when"><span class="t">${c.t}</span><span class="ap">${c.ap}</span>${v !== 'today' ? `<span class="d">${esc(dayLabel(a.appointment_date))}</span>` : ''}</div>
+      <div class="who"><strong>${esc(a.patient_name)}${isMem(a.patient_phone) ? '<span class="pbadge">Priority</span>' : ''}</strong><span>${esc(a.visit_type)}, ${esc(a.patient_phone)}</span>${!s.done && a.risk && a.risk.level !== 'low' ? `<span class="risk r-${a.risk.level}" title="Estimate from visit history and reminders. Not a certainty."><b>${a.risk.level === 'high' ? 'Likely to miss' : 'Might miss'}</b> ${esc(a.risk.reasons.join(', '))}</span>` : ''}</div>
+      <div class="state"><span class="tag ${s.cls}">${s.text}</span></div>
+      <div class="acts">${acts}</div></li>`;
+  }).join('');
+}
+
+fetch('/api/staff/me', { credentials: 'same-origin' }).then((r) => r.ok ? r.json() : null).then((m) => { if (m && m.default_password) { const bn = document.createElement('div'); bn.style.cssText = 'background:#FBE5E1;color:#AE2F1B;font-weight:600;padding:10px 16px;text-align:center'; bn.innerHTML = 'You are using the starting password. <a href="/staff/profile" style="color:inherit;text-decoration:underline">Change it now</a>'; document.body.prepend(bn); }
+  if (m && m.patient_url) { window.__plink = m.patient_url; $('plink').textContent = m.patient_url; }
+  if (m && m.clinic_id) { window.__scoped = true; const pf = $('cPlan').closest('.field'); if (pf) pf.style.display = 'none'; $('sample').hidden = true; if (state.clinics.length) setEdit(null); }
+  if (m && m.role === 'staff') { window.__role = 'staff'; document.querySelectorAll('nav.tabs button[data-tab="report"], nav.tabs button[data-tab="clinics"]').forEach((b) => { b.style.display = 'none'; }); if (['report', 'clinics'].includes(state.tab)) show('appointments'); }
+  if (m) { document.getElementById('meAv').textContent = (m.name.split(' ').filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join('') || 'S'); document.getElementById('meLink').title = m.name + ' - profile and login'; } }).catch(() => {});
+document.querySelector('.views').addEventListener('click', (e) => { const b = e.target.closest('button[data-view]'); if (b) { state.view = b.dataset.view; renderAppts(); $('brief').hidden = b.dataset.view !== 'today' || !$('briefText').textContent; } });
+
+async function sendReminder(id, a) {
+  try {
+    const r = await api('/whatsapp/send', { method: 'POST', body: { appointment_id: id, clinic_id: state.cid } });
+    if (r.mode === 'manual') {
+      // Open the WhatsApp desktop app straight to this patient with the message typed in.
+      const link = document.createElement('a');
+      link.href = r.app_link; document.body.append(link); link.click(); link.remove();
+      toast(`Opening WhatsApp for ${a.patient_name}. Press send there.`, false, { label: 'App did not open? Use the web version', fn: () => window.open(r.link, '_blank') });
+    } else toast(`Reminder sent to ${a.patient_name} on WhatsApp`);
+    return true;
+  } catch (err) { toast(err.message, true); return false; }
+}
+
+function arm(btn, label, run) {
+  if (btn.classList.contains('armed')) return run();
+  const old = btn.textContent;
+  btn.classList.add('armed'); btn.textContent = label;
+  setTimeout(() => { if (btn.isConnected) { btn.classList.remove('armed'); btn.textContent = old; } }, 3500);
+}
+
+$('sheet').addEventListener('click', async (e) => {
+  const go = e.target.closest('[data-go]'); if (go) return show(go.dataset.go);
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const id = Number(b.dataset.id), a = state.appts.find((x) => x.id === id);
+  const done = async (fn, msg) => { try { await fn(); toast(msg); await loadAppts(); } catch (err) { toast(err.message, true); } };
+  if (b.dataset.act === 'remind') { await sendReminder(id, a); await loadAppts(); }
+  if (b.dataset.act === 'seen') done(() => api(`/appointments/${id}/visit-state`, { method: 'PUT', body: { state: 'done' } }), `${a.patient_name} marked as seen`);
+  if (b.dataset.act === 'followup') return openFollowUp(a);
+  if (b.dataset.act === 'confirm') done(() => api(`/appointments/${id}/confirm`, { method: 'PUT' }), `${a.patient_name} marked confirmed`);
+  if (b.dataset.act === 'noshow') arm(b, 'Sure?', () => done(() => api(`/appointments/${id}/no-show`, { method: 'PUT' }), `${a.patient_name} marked as did not come`));
+  if (b.dataset.act === 'cancel') arm(b, 'Cancel it?', () => done(() => api(`/appointments/${id}/cancel`, { method: 'PUT' }), `Appointment cancelled`));
+});
+
+/* ---------- queue, waitlist, follow-ups, reviews ---------- */
+const telHref = (p) => 'tel:' + String(p || '').replace(/[^\d+]/g, '');
+async function loadExtras() {
+  const box = $('extras'); if (!state.cid) { box.innerHTML = ''; return; }
+  const cid = state.cid; let x;
+  try { x = await api(`/clinics/${cid}/extras`); } catch { box.innerHTML = ''; return; }
+  if (cid !== state.cid) return;
+  const before = [...state.members].sort().join(','), after = (x.member_phones || []).slice().sort().join(',');
+  state.members = new Set(x.member_phones || []); state.planOn = !!x.plan_on;
+  if (before !== after) renderAppts();
+  let h = '';
+  const q = x.queue;
+  if (q.now || q.waiting || q.done) {
+    h += `<div class="xcard qbar"><div class="qnow">${q.now ? `With the doctor: <b>${esc(q.now.name)}</b> (${esc(clock(q.now.time).t)} ${clock(q.now.time).ap})` : 'Nobody with the doctor'}<small class="hint" style="display:block">${q.waiting} waiting, ${q.done} seen today. Patients see their place in line on their phone.</small></div><button class="btn" id="callNext" ${q.waiting || q.now ? '' : 'disabled'}>${q.waiting ? 'Call next patient' : 'Finish current patient'}</button></div>`;
+  }
+  if (x.waitlist.length) {
+    h += `<div class="xcard"><h2>Waitlist</h2><p class="hint">Patients waiting for a free time. When someone cancels, the first in line is offered the slot on their waitlist page for 30 minutes. You can also call and book them here.</p>${x.waitlist.map((w) => `<div class="xrow"><div><b>${esc(w.patient_name)}</b>${w.member ? '<span class="pbadge">Priority</span>' : ''}<small>${esc(dayLabel(w.wait_date))}${w.status === 'offered' ? `, slot opened at <b>${esc(clock(w.offer_time).t)} ${clock(w.offer_time).ap}</b>, held ${w.minutes_left} min` : ', waiting for a cancellation'}</small></div><div class="acts"><a class="btn quiet" href="${telHref(w.patient_phone)}">Call ${esc(w.patient_phone)}</a>${w.status === 'offered' ? `<button class="btn" data-wl="book" data-id="${w.id}">Book ${esc(clock(w.offer_time).t)} ${clock(w.offer_time).ap}</button>` : ''}<button class="link" data-wl="remove" data-id="${w.id}">Remove</button></div></div>`).join('')}</div>`;
+  }
+  if (x.followups.length) {
+    h += `<div class="xcard"><h2>Follow-ups due</h2><p class="hint">Patients you asked to come back. Call them to book the visit.</p>${x.followups.map((f) => `<div class="xrow"><div><b>${esc(f.patient_name)}</b><small>Follow-up around ${esc(dayLabel(f.follow_up_date))}${f.follow_up_note ? ': ' + esc(f.follow_up_note) : ''}</small></div><div class="acts"><a class="btn quiet" href="${telHref(f.patient_phone)}">Call ${esc(f.patient_phone)}</a><button class="link" data-fu="done" data-id="${f.id}">Done</button></div></div>`).join('')}</div>`;
+  }
+  if (x.plan_on) {
+    h += `<div class="xcard"><div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap"><div><h2>Priority members</h2><p class="hint">${state.members.size} active ${state.members.size === 1 ? 'member' : 'members'}. When a patient pays at the desk, add them here.</p></div><div class="acts"><button class="btn" id="memAdd">Add or renew a member</button><button class="link" id="memList">${state.memOpen ? 'Hide list' : 'Show list'}</button></div></div><div id="memRows">${state.memOpen ? '<p class="hint" style="margin-top:10px">Loading...</p>' : ''}</div></div>`;
+  }
+  box.innerHTML = h;
+  if (x.plan_on && state.memOpen) loadMembers();
+}
+async function loadMembers() {
+  const box = $('memRows'); if (!box) return;
+  let r; try { r = await api(`/clinics/${state.cid}/plan`); } catch { box.innerHTML = ''; return; }
+  const rows = r.members;
+  box.innerHTML = rows.length ? rows.map((m) => `<div class="xrow"><div><b>${esc(m.patient_name)}</b><small>${esc(m.phone)}, Rs ${m.amount}, ${m.source === 'online' ? 'paid online, ' : m.source === 'demo' ? 'demo payment, ' : ''}${m.status === 'cancelled' ? 'cancelled' : m.active ? 'valid until ' + esc(dayLabel(m.expires_on)) : m.starts_on > today() ? 'starts ' + esc(dayLabel(m.starts_on)) : 'expired ' + esc(dayLabel(m.expires_on))}</small></div><div class="acts">${m.status === 'active' && m.expires_on >= today() ? `<button class="link" data-memx="${m.id}">Cancel</button>` : ''}</div></div>`).join('') : '<p class="hint" style="margin-top:10px">No members yet.</p>';
+}
+$('extras').addEventListener('click', async (e) => {
+  if (e.target.closest('#memAdd')) { openMember(); return; }
+  if (e.target.closest('#memList')) { state.memOpen = !state.memOpen; loadExtras(); return; }
+  const mx = e.target.closest('[data-memx]'); if (mx) { try { await api(`/members/${mx.dataset.memx}/cancel`, { method: 'POST', body: {} }); toast('Membership cancelled'); loadExtras(); renderAppts(); } catch (err) { toast(err.message, true); } return; }
+  const run = async (fn, msg) => { try { await fn(); if (msg) toast(msg); await loadAppts(); } catch (err) { toast(err.message, true); } };
+  if (e.target.closest('#callNext')) return run(async () => { const r = await api(`/clinics/${state.cid}/queue/next`, { method: 'POST', body: {} }); toast(r.now ? `${r.now.name} is next` : 'Queue finished'); });
+  const w = e.target.closest('[data-wl]'); if (w) return run(() => api(`/waitlist/${w.dataset.id}/${w.dataset.wl}`, { method: 'POST', body: {} }), w.dataset.wl === 'book' ? 'Booked from the waitlist' : 'Removed');
+  const f = e.target.closest('[data-fu]'); if (f) return run(() => api(`/appointments/${f.dataset.id}/follow-up-done`, { method: 'PUT' }), 'Marked done');
+});
+let fuId = null;
+function openFollowUp(a) {
+  fuId = a.id; $('fuWho').textContent = `${a.patient_name}, seen ${dayLabel(a.appointment_date)}`;
+  $('fuDate').min = today(); $('fuDate').value = a.follow_up_date || ''; $('fuNote').value = a.follow_up_note || ''; $('fuRemove').hidden = !a.follow_up_date;
+  $('fuDlg').showModal();
+}
+$('fuCancel').addEventListener('click', () => $('fuDlg').close());
+$('fuRemove').addEventListener('click', async () => { try { await api(`/appointments/${fuId}/follow-up`, { method: 'PUT', body: { date: '' } }); $('fuDlg').close(); toast('Follow-up removed'); loadAppts(); } catch (err) { toast(err.message, true); } });
+$('fuForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!$('fuDate').value) { toast('Choose a date', true); return; }
+  try { await api(`/appointments/${fuId}/follow-up`, { method: 'PUT', body: { date: $('fuDate').value, note: $('fuNote').value } }); $('fuDlg').close(); toast('Follow-up saved'); loadAppts(); } catch (err) { toast(err.message, true); }
+});
+const isMem = (phone) => state.members.has(String(phone || '').replace(/\D/g, '').slice(-10));
+async function openMember() {
+  let pl = null; try { pl = (await api(`/clinics/${state.cid}/plan`)).plan; } catch {}
+  $('memHint').textContent = pl ? `${pl.name}: Rs ${pl.price} for ${pl.days} days. If the number is already a member, this adds ${pl.days} more days.` : '';
+  $('memName').value = ''; $('memPhone').value = ''; $('memAmt').value = pl ? pl.price : ''; $('memDlg').showModal(); $('memName').focus();
+}
+$('memCancel').addEventListener('click', () => $('memDlg').close());
+$('memForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try { const r = await api(`/clinics/${state.cid}/members`, { method: 'POST', body: { name: $('memName').value, phone: $('memPhone').value, amount: $('memAmt').value } }); $('memDlg').close(); toast(`${r.message}, valid until ${dayLabel(r.expires_on)}`); loadExtras(); } catch (err) { toast(err.message, true); }
+});
+async function loadPlanForm() {
+  if (!state.cid || !$('planPanel')) return;
+  let r; try { r = await api(`/clinics/${state.cid}/plan`); } catch { return; }
+  $('payStatus').textContent = r.demo ? 'Online payment is in demo mode: patients see a pretend checkout and no money is charged. Demo members are not counted in revenue.' : r.online ? 'Online payment is on: patients can pay with UPI or card on the booking page. Money goes to the Razorpay account of the Baari team.' : 'Online payment is off. Patients pay at your desk. Ask the Baari team to turn on online payment.';
+  const p = r.plan; $('pOn').checked = p.on; $('pName').value = p.name; $('pPrice').value = p.price; $('pDays').value = p.days; $('pRes').value = p.reserved; $('pCut').value = p.cutoff_hours; $('pExtra').value = p.extra_days;
+}
+$('planSave').addEventListener('click', async () => {
+  try { await api(`/clinics/${state.cid}/plan`, { method: 'PUT', body: { on: $('pOn').checked, name: $('pName').value, price: $('pPrice').value, days: $('pDays').value, reserved: $('pRes').value, cutoff_hours: $('pCut').value, extra_days: $('pExtra').value } }); toast('Plan saved'); loadPlanForm(); loadExtras(); } catch (err) { toast(err.message, true); }
+});
+async function loadReviews() {
+  const card = $('reviewsCard'); if (!state.cid || window.__role === 'staff') { card.hidden = true; return; }
+  let rows; try { rows = await api(`/clinics/${state.cid}/reviews`); } catch { card.hidden = true; return; }
+  card.hidden = false;
+  $('reviewRows').innerHTML = rows.length ? rows.map((r) => `<div class="xrow"><div><span class="rvstars" aria-label="${r.rating} out of 5">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span> <small style="display:inline">${esc(new Date(r.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }))}${r.hidden ? ', hidden from patients' : ''}</small>${r.comment ? `<div>${esc(r.comment)}</div>` : ''}</div><div class="acts"><button class="link" data-hide="${r.id}" data-to="${r.hidden ? 0 : 1}">${r.hidden ? 'Show again' : 'Hide'}</button></div></div>`).join('') : '<p class="hint" style="margin-top:10px">No ratings yet. Patients can rate after the visit from their visit page.</p>';
+}
+$('reviewRows').addEventListener('click', async (e) => { const b = e.target.closest('[data-hide]'); if (!b) return; try { await api(`/reviews/${b.dataset.hide}/hide`, { method: 'PUT', body: { hidden: b.dataset.to === '1' } }); loadReviews(); } catch (err) { toast(err.message, true); } });
+
+/* ---------- new booking ---------- */
+function prepBook() {
+  if (!$('bDate').value) $('bDate').value = today();
+  if (!state.cid) toast('Add a clinic first', true);
+}
+$('bookForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!state.cid) return toast('Add a clinic first', true);
+  try {
+    await api('/appointments', { method: 'POST', body: { clinic_id: state.cid, patient_name: $('bName').value.trim(), patient_phone: $('bPhone').value.trim(), appointment_date: $('bDate').value, appointment_time: $('bTime').value, visit_type: $('bType').value } });
+    const c = clock($('bTime').value);
+    toast(`Booked ${$('bName').value.trim()} for ${c.t} ${c.ap}`);
+    $('bName').value = ''; $('bPhone').value = ''; $('bName').focus();
+  } catch (err) { toast(err.message, true); }
+});
+
+/* ---------- whatsapp ---------- */
+async function loadWhatsapp() {
+  const cloud = state.wa.mode === 'cloud';
+  $('waMode').textContent = cloud
+    ? 'Connected to WhatsApp. Reminders go out by themselves 24 hours before each visit, and YES or NO replies update the appointment.'
+    : 'WhatsApp is not connected yet, so Send reminder opens WhatsApp on this computer with the message ready. Press send there. To send automatically, add your WhatsApp Business keys to the .env file.';
+  $('waMode').classList.toggle('ok', cloud);
+  $('dueSub').textContent = cloud ? 'These go out on their own when the visit is within 24 hours. You can also send now.' : 'Today and tomorrow, not yet messaged.';
+  if (!state.cid) { $('due').innerHTML = ''; $('thread').innerHTML = '<p class="sub">Add a clinic first.</p>'; return; }
+  try {
+    const [appts, logs] = await Promise.all([api(`/clinics/${state.cid}/appointments`), api(`/whatsapp/logs/${state.cid}`)]);
+    state.appts = appts;
+    const t = today(), tm = isoDay(new Date(Date.now() + 864e5));
+    state.due = appts.filter((a) => !a.whatsapp_sent && !stateOf(a).done && (a.appointment_date === t || a.appointment_date === tm) && new Date(`${a.appointment_date}T${a.appointment_time}`) > new Date());
+    $('due').innerHTML = state.due.length
+      ? state.due.map((a) => { const c = clock(a.appointment_time); return `<li><div>${esc(a.patient_name)}<br><span>${a.appointment_date === t ? 'Today' : 'Tomorrow'}, ${c.t} ${c.ap}</span></div><button class="btn" data-remind="${a.id}">${cloud ? 'Send now' : 'Open WhatsApp'}</button></li>`; }).join('')
+      : '<li style="color:var(--muted)">Everyone has been messaged.</li>';
+    $('sendAll').hidden = !cloud;
+    $('sendAll').disabled = !state.due.length;
+    $('sendAll').textContent = state.due.length ? `Send ${state.due.length} reminder${state.due.length > 1 ? 's' : ''} now` : 'Send all reminders';
+    const when = (l) => new Date(String(l.sent_at).replace(' ', 'T') + 'Z').toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
+    const label = (st) => st === 'received' ? '' : st === 'manual' ? 'Opened in WhatsApp' : st === 'sent' ? 'Sent through WhatsApp' : st.startsWith('failed') ? 'Not sent. ' + st.slice(7) : st;
+    $('thread').innerHTML = logs.length
+      ? logs.map((l) => l.status === 'received'
+          ? `<div class="msg in"><div class="to">${esc(l.patient_name)} replied</div><div class="bubble">${esc(l.message)}</div><time>${esc(when(l))}</time></div>`
+          : `<div class="msg"><div class="to">To ${esc(l.patient_name)}, ${esc(l.patient_phone)}</div><div class="bubble">${esc(l.message)}</div><time>${esc(when(l))}, <span class="st ${l.status.startsWith('failed') ? 'failed' : ''}">${esc(label(l.status))}</span></time></div>`).join('')
+      : '<p class="sub">No messages yet. Reminders you send appear here.</p>';
+  } catch (err) { toast(err.message, true); }
+}
+$('due').addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-remind]'); if (!b) return;
+  const id = Number(b.dataset.remind), a = state.due.find((x) => x.id === id);
+  if (await sendReminder(id, a)) loadWhatsapp();
+});
+$('sendAll').addEventListener('click', async () => {
+  const due = state.due.slice();
+  $('sendAll').disabled = true;
+  let sent = 0;
+  for (const a of due) { try { await api('/whatsapp/send', { method: 'POST', body: { appointment_id: a.id, clinic_id: state.cid } }); sent++; } catch (err) { toast(`${a.patient_name}: ${err.message}`, true); break; } }
+  if (sent) toast(`${sent} reminder${sent > 1 ? 's' : ''} sent`);
+  loadWhatsapp();
+});
+
+/* ---------- report ---------- */
+async function loadReport() {
+  loadMonthly();
+  if (!$('repMonth').value) $('repMonth').value = today().slice(0, 7);
+  const body = $('repBody');
+  if (!state.cid) { body.innerHTML = '<p class="sub" style="margin-top:24px">Add a clinic first.</p>'; return; }
+  try {
+    const r = await api(`/clinics/${state.cid}/report?month=${$('repMonth').value}`);
+    const total = r.total_appointments;
+    if (!total) { body.innerHTML = '<p class="sub" style="margin-top:28px">No appointments in this month.</p>'; return; }
+    const other = Math.max(0, total - r.confirmed - r.no_shows - r.cancelled);
+    const pct = (n) => (n / total * 100).toFixed(2) + '%';
+    const lost = (r.no_shows * 1200).toLocaleString('en-IN');
+    body.innerHTML = `
+      <div class="hero"><div class="rate">${esc(r.no_show_rate)}<small>of ${total} booked patients did not come</small></div></div>
+      <div class="rep-grid">
+        <div class="panel">
+          <h2>How the month went</h2>
+          <div class="bar" role="img" aria-label="Confirmed ${r.confirmed}, did not come ${r.no_shows}, cancelled ${r.cancelled}, other ${other}" style="margin-top:16px">
+            <i style="width:${pct(r.confirmed)};background:var(--ok)"></i><i style="width:${pct(r.no_shows)};background:var(--bad)"></i><i style="width:${pct(r.cancelled)};background:var(--muted)"></i></div>
+          <div class="legend"><span><b style="background:var(--ok)"></b>Confirmed</span><span><b style="background:var(--bad)"></b>Did not come</span><span><b style="background:var(--muted)"></b>Cancelled</span><span><b style="background:var(--row);border:1px solid var(--line)"></b>Other</span></div>
+          <p class="cost">Missed visits cost about <b>\u20B9${lost}</b> this month, counted at \u20B91,200 a visit. Reminders are how you bring this number down.</p>
+        </div>
+        <div class="panel">
+          <h2>In numbers</h2>
+          <table class="ledger"><tr><td>Booked</td><td>${total}</td></tr><tr><td>Confirmed by patient</td><td>${r.confirmed}</td></tr><tr><td>Reminders sent</td><td>${r.whatsapp_sent}</td></tr><tr><td>Cancelled</td><td>${r.cancelled}</td></tr><tr><td>Did not come</td><td>${r.no_shows}</td></tr></table>
+        </div>
+      </div>`;
+  } catch (err) { toast(err.message, true); }
+}
+$('repMonth').addEventListener('change', loadReport);
+
+/* ---------- automatic monthly report ---------- */
+async function loadMonthly() {
+  const box = $('mrBody'); if (!box) return;
+  if (!state.cid) { box.innerHTML = ''; return; }
+  const month = $('repMonth').value || today().slice(0, 7);
+  box.innerHTML = '<p class="sub" style="margin-top:20px">Preparing your report…</p>';
+  try {
+    const r = await api(`/clinics/${state.cid}/monthly-report?month=${month}`), s = r.stats, pv = r.previous;
+    const delta = (a, b, unit) => b > 0 || a > 0 ? (a === b ? 'same as last month' : `${a > b ? 'up' : 'down'} ${Math.abs(Math.round((a - b) * 10) / 10)}${unit} from last month`) : '';
+    const wk = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], order = [1, 2, 3, 4, 5, 6, 0], max = Math.max(1, ...s.by_weekday);
+    const when = r.partial ? 'So far this month. The full report is written automatically after the month ends.' : `Written automatically${r.ai ? ' with AI' : ''} on ${new Date(r.generated_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long' })}`;
+    const share = `${r.clinic.name}, ${r.month_label}: ${s.total} bookings` + (s.expected ? `, ${s.no_show_rate}% did not come` : '') + `, ${s.portal} from the booking link. ${r.tips[0] || ''}`;
+    box.innerHTML = `<div class="panel mr">
+      <div class="mrhead"><div><h2>${esc(r.month_label)} summary ${r.partial ? '<span class="badge">So far</span>' : ''}</h2><p class="sub">${esc(when)}</p></div>
+        <div class="acts"><button class="btn quiet" id="mrPrint" type="button">Print</button><a class="btn quiet" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(share)}">Share on WhatsApp</a></div></div>
+      <p class="mrsum">${esc(r.summary)}</p>
+      <div class="mrk"><div><span>Bookings</span><b>${s.total}</b><small>${esc(delta(s.total, pv.total, ''))}</small></div>
+        <div><span>Did not come</span><b>${s.expected ? s.no_show_rate + '%' : '-'}</b><small>${s.expected ? esc(delta(s.no_show_rate, pv.no_show_rate, ' points')) : 'No past visits yet'}</small></div>
+        <div><span>Reminders sent</span><b>${s.reminded}</b><small>of ${s.total} bookings</small></div>
+        <div><span>From booking link</span><b>${s.portal}</b><small>${s.total ? Math.round(s.portal / s.total * 100) : 0}% of bookings</small></div>
+        <div><span>New patients</span><b>${s.new_patients}</b><small>${s.returning_patients} returning</small></div></div>
+      <div class="mrcols"><div><h3>What stood out</h3><ul>${r.insights.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div><div><h3>What to try next</h3><ul>${r.tips.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div></div>
+      ${s.total ? `<h3 style="margin-top:18px">Visits by day</h3><div class="wk" role="img" aria-label="Visits by weekday">${order.map((i) => `<div title="${wk[i]}: ${s.by_weekday[i]}"><span>${s.by_weekday[i] || ''}</span><i style="height:${Math.round(s.by_weekday[i] / max * 70)}px"></i>${wk[i]}</div>`).join('')}</div>` : ''}
+    </div>`;
+    $('mrPrint').onclick = () => window.print();
+  } catch (err) { box.innerHTML = ''; }
+}
+async function checkNewReport() {
+  if (window.__role === 'staff' || !state.cid) return;
+  try {
+    const r = await api(`/clinics/${state.cid}/monthly-reports`);
+    if (r.unseen) toast(`Your ${r.unseen.label} report is ready`, false, { label: 'Open', fn: () => { $('repMonth').value = r.unseen.month; show('report'); } });
+  } catch {}
+}
+
+/* ---------- ask your clinic ---------- */
+(function () {
+  const fab = document.createElement('button'); fab.className = 'askfab'; fab.type = 'button';
+  fab.innerHTML = '<svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>Ask Baari';
+  const panel = document.createElement('section'); panel.className = 'askp'; panel.hidden = true; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', 'Ask about your clinic');
+  panel.innerHTML = '<header><b>Ask about your clinic</b><button type="button" aria-label="Close">&times;</button></header><div class="askm" aria-live="polite"></div><div class="askq"><button type="button">Who might miss today?</button><button type="button">Tomorrow\'s bookings</button><button type="button">Free slots today</button><button type="button">No-shows this month</button></div><form class="askf"><input maxlength="300" placeholder="Ask about today, tomorrow or this month" aria-label="Your question" autocomplete="off"><button type="submit">Ask</button></form>';
+  document.body.append(fab, panel);
+  const msgs = panel.querySelector('.askm'), input = panel.querySelector('input'); let busy = false, started = false;
+  const add = (cls, t) => { const d = document.createElement('div'); d.className = 'm ' + cls; d.textContent = t; msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight; return d; };
+  fab.onclick = () => { panel.hidden = false; fab.hidden = true; if (!started) { started = true; add('bot', 'Ask me about your own bookings: who might miss, what is tomorrow, free slots or this month\'s numbers.'); } input.focus(); };
+  panel.querySelector('header button').onclick = () => { panel.hidden = true; fab.hidden = false; };
+  async function ask(q) {
+    q = String(q || '').trim(); if (!q || busy) return; if (!state.cid) { add('bot', 'Add a clinic first.'); return; }
+    busy = true; add('me', q); input.value = ''; const w = add('bot', '…');
+    try { const r = await api(`/clinics/${state.cid}/ask`, { method: 'POST', body: { question: q } }); w.textContent = r.answer; } catch (e) { w.textContent = e.message; }
+    busy = false; msgs.scrollTop = msgs.scrollHeight;
+  }
+  panel.querySelector('form').onsubmit = (e) => { e.preventDefault(); ask(input.value); };
+  panel.querySelector('.askq').onclick = (e) => { if (e.target.tagName === 'BUTTON') ask(e.target.textContent); };
+})();
+
+/* ---------- start ---------- */
+(async function init() {
+  try { state.wa = await api('/whatsapp/status'); } catch {}
+  try { await loadClinics(); } catch (e) { toast(e.message, true); }
+  const first = (location.hash || '').slice(1);
+  show(['appointments', 'book', 'whatsapp', 'report', 'clinics'].includes(first) ? first : 'appointments');
+  setTimeout(checkNewReport, 1500);
+})();
+
+
+/* pointer light: one cheap update per frame */
+(() => {
+  const g = document.querySelector('.bg .glow'); if (!g) return;
+  let x = 0, y = 0, raf = 0, hero = null;
+  addEventListener('pointermove', (e) => {
+    if (e.pointerType === 'touch') return;
+    x = e.clientX; y = e.clientY; hero = e.target.closest ? e.target.closest('.hero') : null;
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0; g.classList.add('on'); g.style.transform = `translate(${x}px, ${y}px)`;
+      if (hero) { const r = hero.getBoundingClientRect(); hero.style.setProperty('--hx', (x - r.left) + 'px'); hero.style.setProperty('--hy', (y - r.top) + 'px'); }
+    });
+  }, { passive: true });
+  document.addEventListener('pointerleave', () => g.classList.remove('on'));
+})();
+</script>
+</body>
+</html>

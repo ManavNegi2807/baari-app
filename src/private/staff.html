@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clinic login - Baari</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #D6EEE0; --card: #FFFFFF; --ink: #11291F; --muted: #3F5A4C; --line: #C4E0D1; --row: #ECF3EF;
+  --brand: #12805A; --on-brand: #FFFFFF; --soft: #D8F0E4; --soft-ink: #0B5A3F; --hero: #0B4A35;
+  --ok: #17683F; --bad: #AE2F1B; --bad-bg: #FBE5E1;
+  --font: "Figtree", "Segoe UI", system-ui, sans-serif;
+}
+:root[data-theme="dark"] { --bg:#0B1A14; --card:#112419; --ink:#E6F3EC; --muted:#98B5A5; --line:#21392D; --row:#183024; --brand:#4FD3A0; --on-brand:#06241A; --soft:#1B4034; --soft-ink:#9EE6C6; --hero:#0B4A35; --ok:#6FD0A0; --bad:#F59A8A; --bad-bg:#45201C; }
+@media not all {
+  :root:not([data-theme="light"]) { --bg:#0B1A14; --card:#112419; --ink:#E6F3EC; --muted:#98B5A5; --line:#21392D; --row:#183024; --brand:#4FD3A0; --on-brand:#06241A; --soft:#1B4034; --soft-ink:#9EE6C6; --hero:#0B4A35; --ok:#6FD0A0; --bad:#F59A8A; --bad-bg:#45201C; }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { color-scheme: light; }
+body { background: var(--bg); color: var(--ink); font: 400 18px/1.5 var(--font); -webkit-font-smoothing: antialiased; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; border-radius: 10px; }
+.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+[hidden] { display: none !important; }
+
+.page { max-width: 520px; margin: 0 auto; padding: 16px 16px 150px; }
+
+/* hero */
+.hero { background: var(--hero); color: #fff; border-radius: 28px; padding: 22px 22px 24px; }
+.brand { display: flex; align-items: center; gap: 14px; min-width: 0; flex: 1; }
+.logo { width: 64px; height: 64px; border-radius: 19px; background: #fff; display: grid; place-items: center; flex: none; box-shadow: 0 6px 18px rgba(0,0,0,.22); }
+.logo .mk { width: 44px; height: 44px; }
+.bw { font: 800 40px/1 var(--font); letter-spacing: -0.03em; color: #fff; min-width: 0; }
+.bw small { display: block; font: 600 15px/1.25 var(--font); letter-spacing: 0; color: rgba(255,255,255,.85); margin-top: 6px; }
+@media (max-width: 430px) { .logo { width: 54px; height: 54px; border-radius: 17px; } .logo .mk { width: 38px; height: 38px; } .bw { font-size: 34px; } .bw small { font-size: 14px; } .brand { gap: 12px; } }
+.hero h1 { font: 800 clamp(36px, 9vw, 46px)/1.05 var(--font); letter-spacing: -0.03em; margin-top: 26px; }
+.hero p { color: rgba(255,255,255,.8); margin-top: 8px; max-width: 36ch; }
+#steps { list-style: none; display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+#steps li { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px 6px 8px; border-radius: 99px; background: rgba(255,255,255,.14); font-size: 16px; font-weight: 600; color: rgba(255,255,255,.82); }
+#steps li .dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(255,255,255,.55); display: grid; place-items: center; }
+#steps li .dot .i { width: 12px; height: 12px; stroke-width: 3.5; opacity: 0; }
+#steps li.done { background: #fff; color: var(--hero); }
+#steps li.done .dot { background: var(--hero); border-color: var(--hero); }
+#steps li.done .dot .i { opacity: 1; stroke: #fff; }
+
+fieldset, .block { border: 0; margin-top: 26px; min-width: 0; }
+legend { font: 700 21px/1.2 var(--font); letter-spacing: -0.01em; padding: 0 4px 12px; }
+
+/* clinic list */
+.group { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 6px; }
+.opt { display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 16px; cursor: pointer; position: relative; }
+.opt + .opt { margin-top: 2px; }
+.opt input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.opt .ico { width: 44px; height: 44px; border-radius: 50%; background: var(--soft); color: var(--soft-ink); display: grid; place-items: center; flex: none; }
+.opt .txt { flex: 1; min-width: 0; }
+.opt .txt strong { display: block; font-weight: 700; }
+.opt .txt span { color: var(--muted); font-size: 16px; }
+.opt .txt .loc { display: block; margin-top: 2px; }
+.opt .mark { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; color: transparent; flex: none; }
+.opt .mark .i { width: 14px; height: 14px; stroke-width: 3.5; }
+.opt:has(input:checked) { background: var(--row); }
+.opt:has(input:checked) .mark { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
+.opt:has(input:focus-visible) { outline: 3px solid var(--brand); outline-offset: -2px; }
+.empty { padding: 18px 12px; color: var(--muted); }
+
+/* fields */
+.fields { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 18px; }
+.field + .field { margin-top: 18px; }
+.field label, .field .lbl { display: block; font-weight: 600; font-size: 16px; color: var(--muted); margin-bottom: 6px; }
+.field input[type="text"], .field input[type="tel"] { width: 100%; background: var(--row); border: 1.5px solid transparent; border-radius: 14px; padding: 12px 14px; min-height: 50px; font-weight: 500; }
+.field input[type="text"]:focus, .field input[type="tel"]:focus { outline: none; border-color: var(--brand); background: var(--card); }
+.field input[aria-invalid="true"] { border-color: var(--bad); background: var(--bad-bg); }
+.err { color: var(--bad); font-size: 16px; font-weight: 600; margin-top: 6px; }
+.err:empty { display: none; }
+.hint { color: var(--muted); font-size: 15px; margin-top: 6px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.chip span { display: block; padding: 9px 16px; border-radius: 99px; background: var(--row); font-weight: 600; font-size: 17px; }
+.chip input:checked + span { background: var(--brand); color: var(--on-brand); }
+.chip input:focus-visible + span { outline: 3px solid var(--brand); outline-offset: 2px; }
+
+.days { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 8px; scrollbar-width: thin; }
+.day { position: relative; flex: none; }
+.day input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.day span { display: block; width: 66px; text-align: center; padding: 10px 0; border-radius: 18px; background: var(--card); border: 1px solid var(--line); line-height: 1.15; }
+.day b { display: block; font: 800 26px/1.15 var(--font); }
+.day small { font-size: 14px; font-weight: 600; color: var(--muted); }
+.day input:checked + span { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
+.day input:checked + span small { color: var(--on-brand); opacity: .85; }
+.day input:focus-visible + span { outline: 3px solid var(--brand); outline-offset: 2px; }
+.tgroup { margin-top: 16px; }
+.tgroup h3 { font-weight: 600; font-size: 16px; color: var(--muted); margin-bottom: 8px; }
+.times .chip span { background: var(--card); border: 1px solid var(--line); border-radius: 14px; min-width: 88px; text-align: center; font-variant-numeric: tabular-nums; }
+.times .chip input:checked + span { background: var(--brand); border-color: var(--brand); }
+
+/* bottom bar */
+.bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 0 12px calc(12px + env(safe-area-inset-bottom)); pointer-events: none; }
+.bar > div { max-width: 496px; margin: 0 auto; background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 12px 12px 12px 18px; display: flex; align-items: center; gap: 14px; box-shadow: 0 8px 28px rgba(17,41,31,.16); pointer-events: auto; }
+.bar p { flex: 1; font-size: 16px; color: var(--muted); line-height: 1.3; min-width: 0; }
+.bar p b { display: block; font: 700 19px/1.25 var(--font); color: var(--ink); }
+.btn { background: var(--brand); color: var(--on-brand); border: 0; border-radius: 14px; padding: 13px 22px; font-weight: 700; cursor: pointer; white-space: nowrap; min-height: 50px; }
+.perks { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 14px 0 4px; padding: 0; color: rgba(255,255,255,.9); font-size: 16px; font-weight: 600; }
+.perks li::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #6EE7B7; margin-right: 7px; vertical-align: 1px; }
+.svc { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.svc em { font-style: normal; font-size: 14px; font-weight: 600; background: var(--row); color: var(--soft-ink); padding: 2px 9px; border-radius: 99px; }
+.offer { display: inline-block; margin-top: 7px; font-size: 15px; font-weight: 700; color: #7A4B00; background: #FFF1CC; padding: 3px 10px; border-radius: 99px; }
+.nextfree { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 9px; padding-top: 9px; border-top: 1px dashed var(--line); font-size: 16px; color: var(--muted); }
+.nextfree b { color: var(--ink); white-space: nowrap; }
+.quick { position: relative; z-index: 2; background: var(--brand); color: var(--on-brand); border: 0; border-radius: 99px; padding: 6px 14px; font-weight: 700; font-size: 15px; cursor: pointer; white-space: nowrap; }
+.near { display: inline-flex; align-items: center; gap: 8px; background: var(--card); color: var(--soft-ink); border: 1px solid var(--brand); border-radius: 99px; padding: 10px 18px; font-weight: 700; cursor: pointer; margin: 0 0 8px; }
+.near-note { margin: 0 0 10px; color: var(--muted); font-size: 16px; min-height: 0; }
+.near-note:empty { display: none; }
+.dist { color: var(--soft-ink) !important; font-weight: 700; }
+.btn:hover { filter: brightness(1.1); }
+.btn[disabled] { opacity: .5; cursor: default; filter: none; }
+.btn.quiet { background: var(--soft); color: var(--soft-ink); }
+.banner { background: var(--bad-bg); color: var(--bad); border-radius: 16px; padding: 12px 16px; margin-top: 20px; font-weight: 600; font-size: 17px; }
+
+/* confirmation */
+.ticket { background: var(--hero); color: #fff; border-radius: 28px; padding: 24px; margin-top: 16px; position: relative; }
+.ticket .ref { color: rgba(255,255,255,.75); font-size: 16px; }
+.ticket .big { font: 800 clamp(68px, 21vw, 100px)/0.95 var(--font); letter-spacing: -0.05em; margin-top: 10px; font-variant-numeric: tabular-nums; }
+.ticket .big small { font: 700 26px/1 var(--font); letter-spacing: 0; margin-left: 6px; opacity: .8; }
+.ticket .when { font: 700 23px/1.25 var(--font); margin-top: 10px; }
+.facts { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 6px 18px; margin-top: 14px; }
+.facts div { display: flex; justify-content: space-between; gap: 16px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+.facts div:last-child { border-bottom: 0; }
+.facts dt { color: var(--muted); } .facts dd { font-weight: 600; text-align: right; }
+.next { margin-top: 18px; color: var(--muted); max-width: 46ch; }
+.actions { margin-top: 20px; }
+.done-h { font: 800 35px/1.1 var(--font); letter-spacing: -0.03em; margin: 18px 4px 0; }
+
+/* ambient background: slow drifting colour, faint dot grid, soft light that follows the pointer */
+body { position: relative; isolation: isolate; }
+.bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.bg i { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .55; will-change: transform; }
+.bg i:nth-child(1) { width: 46vw; height: 46vw; left: -12vw; top: -14vw; background: #9EDDBF; animation: drift1 38s ease-in-out infinite alternate; }
+.bg i:nth-child(2) { width: 40vw; height: 40vw; right: -10vw; top: 20vh; background: #B7E8DA; animation: drift2 46s ease-in-out infinite alternate; }
+.bg i:nth-child(3) { width: 36vw; height: 36vw; left: 25vw; bottom: -18vw; background: #CFEFC9; animation: drift3 52s ease-in-out infinite alternate; }
+.bg::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(11,90,63,.16) 1.2px, transparent 1.6px); background-size: 24px 24px; -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 0, transparent 75%); mask-image: radial-gradient(ellipse at 50% 30%, #000 0, transparent 75%); }
+.bg .glow { position: absolute; left: 0; top: 0; width: 520px; height: 520px; margin: -260px 0 0 -260px; background: radial-gradient(circle, rgba(255,255,255,.75), rgba(255,255,255,0) 62%); filter: none; opacity: 0; transition: opacity .5s; will-change: transform; }
+.bg .glow.on { opacity: 1; }
+@keyframes drift1 { to { transform: translate(14vw, 10vh) scale(1.15); } }
+@keyframes drift2 { to { transform: translate(-12vw, 14vh) scale(1.2); } }
+@keyframes drift3 { to { transform: translate(10vw, -12vh) scale(1.1); } }
+/* cards respond when you point at them */
+.panel, .group, ul.sheet { transition: box-shadow .25s, border-color .25s, transform .25s; }
+.panel:hover, .group:hover, ul.sheet:hover { border-color: rgba(18,128,90,.45); box-shadow: 0 10px 30px -12px rgba(11,90,63,.35); transform: translateY(-2px); }
+/* the dark summary card catches the light as the pointer moves over it */
+.hero { position: relative; overflow: hidden; isolation: isolate; --hx: 78%; --hy: 0%; }
+.hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(420px circle at var(--hx) var(--hy), rgba(110,231,183,.28), transparent 65%); transition: background-position .2s; }
+.hero::after { content: ""; position: absolute; right: -60px; top: -80px; width: 260px; height: 260px; border-radius: 50%; z-index: -1; border: 1px solid rgba(255,255,255,.08); box-shadow: 0 0 0 36px rgba(255,255,255,.025), 0 0 0 74px rgba(255,255,255,.02); }
+/* a section settles in when you switch to it */
+section:not([hidden]) { animation: settle .38s cubic-bezier(.2,.7,.3,1) both; }
+@keyframes settle { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+button:active:not(:disabled) { transform: scale(.97); }
+@media (hover: none) { .bg .glow { display: none; } .panel:hover, .group:hover, ul.sheet:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .bg i, section:not([hidden]) { animation: none; } .panel, .group, ul.sheet { transition: none; } .panel:hover, .group:hover, ul.sheet:hover { transform: none; } .bg .glow { display: none; } }
+
+/* ---- account pages ---- */
+.page { max-width: 560px; padding-bottom: 60px; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.top a { color: rgba(255,255,255,.9); font-weight: 600; font-size: 16px; text-decoration: none; background: rgba(255,255,255,.14); padding: 7px 14px; border-radius: 99px; }
+.how { list-style: none; margin: 22px 0 0; padding: 0; display: none; gap: 14px; }
+.how li { display: grid; grid-template-columns: 30px 1fr; gap: 12px; align-items: start; color: rgba(255,255,255,.88); font-size: 17px; }
+.how b { display: block; color: #fff; }
+.how span { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,.16); display: grid; place-items: center; font-weight: 800; }
+.avatar { width: 64px; height: 64px; border-radius: 50%; background: rgba(255,255,255,.18); display: grid; place-items: center; font: 800 28px/1 var(--font); margin-top: 22px; }
+.who { font: 800 30px/1.1 var(--font); letter-spacing: -0.02em; margin-top: 12px; }
+.heroacts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.heroacts a, .heroacts button { background: #fff; color: var(--hero); border: 0; border-radius: 99px; padding: 9px 18px; font-weight: 700; cursor: pointer; text-decoration: none; font-size: 17px; }
+.heroacts .ghost { background: rgba(255,255,255,.14); color: #fff; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 20px; margin-top: 18px; }
+.card h2 { font: 800 23px/1.2 var(--font); letter-spacing: -0.01em; margin-bottom: 14px; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: var(--row); padding: 4px; border-radius: 16px; margin-bottom: 18px; }
+.seg button { border: 0; background: none; border-radius: 12px; padding: 10px; font-weight: 700; cursor: pointer; color: var(--muted); }
+.seg button[aria-selected="true"] { background: var(--card); color: var(--soft-ink); box-shadow: 0 1px 4px rgba(17,41,31,.12); }
+.field input[type="password"], .field input[type="text"], .field input[type="tel"] { width: 100%; background: var(--row); border: 1.5px solid transparent; border-radius: 14px; padding: 12px 14px; min-height: 50px; font-weight: 500; }
+.field input:focus { outline: none; border-color: var(--brand); background: var(--card); }
+.field input:disabled { opacity: .7; }
+.btn.full { width: 100%; margin-top: 20px; }
+.alt { text-align: center; margin-top: 16px; color: var(--muted); font-size: 17px; }
+.alt a, .linkbtn { color: var(--soft-ink); font-weight: 700; background: none; border: 0; cursor: pointer; text-decoration: underline; font-size: inherit; }
+.visit { display: grid; grid-template-columns: auto 1fr; gap: 14px; padding: 14px 0; border-top: 1px solid var(--line); }
+.visit:first-of-type { border-top: 0; padding-top: 0; }
+.when { background: var(--soft); color: var(--soft-ink); border-radius: 16px; padding: 10px 14px; text-align: center; min-width: 78px; line-height: 1.1; }
+.when b { display: block; font: 800 28px/1.05 var(--font); }
+.when small { font-weight: 700; font-size: 15px; }
+.visit h3 { font: 700 19px/1.3 var(--font); }
+.visit p { color: var(--muted); font-size: 16px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
+.tag { font-size: 15px; font-weight: 700; padding: 3px 11px; border-radius: 99px; background: var(--row); color: var(--muted); }
+.tag.ok { background: var(--soft); color: var(--soft-ink); }
+.tag.bad { background: var(--bad-bg); color: var(--bad); }
+.small { background: none; border: 1px solid var(--line); color: var(--bad); border-radius: 99px; padding: 5px 14px; font-weight: 700; font-size: 15px; cursor: pointer; }
+.past .when { background: var(--row); color: var(--muted); }
+.note { color: var(--muted); font-size: 17px; }
+.ok-msg { color: var(--ok); font-weight: 600; font-size: 16px; margin-top: 8px; }
+#nearby { margin-top: 28px; }
+#nearby h2 { font: 800 23px/1.2 var(--font); letter-spacing: -0.01em; margin: 0 4px 12px; }
+.tiles { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.cl { display: flex; flex-direction: column; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 16px 18px; text-decoration: none; color: inherit; transition: transform .2s, box-shadow .2s, border-color .2s; }
+.cl:hover { transform: translateY(-2px); border-color: rgba(18,128,90,.45); box-shadow: 0 10px 30px -12px rgba(11,90,63,.35); }
+.cl strong { font-weight: 800; font-size: 20px; }
+.cl small { color: var(--muted); font-size: 16px; }
+.cl .go { align-self: flex-start; margin-top: 8px; background: var(--soft); color: var(--soft-ink); border-radius: 99px; padding: 6px 14px; font-weight: 700; font-size: 15px; }
+.cl:hover .go { background: var(--brand); color: var(--on-brand); }
+@media (min-width: 1000px) {
+  .page { max-width: 1120px; padding-top: 28px; }
+  #wrap { display: grid; grid-template-columns: 400px 1fr; column-gap: 40px; align-items: start; }
+  #wrap > .hero { position: sticky; top: 24px; }
+  .how { display: grid; }
+  .card:first-child { margin-top: 0; }
+  #nearby { margin-top: 36px; }
+}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i><span class="glow"></span></div>
+<div class="page">
+  <div id="wrap">
+    <div class="hero" id="hero"></div>
+    <main id="main" aria-live="polite"></main>
+  </div>
+</div>
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+async function call(path, method = 'GET', body) {
+  const res = await fetch('/api/staff' + path, { method, headers: body ? { 'Content-Type': 'application/json' } : undefined, body: body ? JSON.stringify(body) : undefined, credentials: 'same-origin' });
+  const data = await res.json().catch(() => null);
+  if (!res.ok) throw Object.assign(new Error((data && data.error) || 'Something went wrong. Try again.'), { status: res.status });
+  return data;
+}
+document.body.insertAdjacentHTML('afterbegin', '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-logo" viewBox="0 0 48 48"><defs><linearGradient id="bg" x1="8" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1FA877"/><stop offset="1" stop-color="#0B5A3F"/></linearGradient></defs><path transform="translate(-1.5 .2)" d="M11 4.5v39M11 4.5h15a8.2 8.2 0 0 1 0 16.4H11m0 0h17a11.3 11.3 0 0 1 0 22.6H11" fill="none" stroke="url(#bg)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path transform="translate(27 28) scale(.86)" fill="#fff" stroke="#0B5A3F" stroke-width="1.6" stroke-linejoin="round" d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.4 4.5 4.5 0 0 1 8 2.4c0 5.8-8 11-8 11z"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol></svg>');
+const brand = (right) => `<div class="top"><div class="brand"><span class="logo"><svg class="mk" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-logo"/></svg></span><span class="bw">Baari<small>Clinic staff login</small></span></div>${right || ''}</div>`;
+const initials = (n) => n.split(' ').filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join('') || 'S';
+
+function showLogin() {
+  $('hero').innerHTML = brand('<a href="/patient">Patient page</a>') + `<h1>Clinic desk</h1><p>Log in to manage today's appointments, send reminders and see your report.</p>
+    <ol class="how"><li><span>1</span><div><b>See today at a glance</b>Who is coming, who has confirmed and who still needs a reminder.</div></li><li><span>2</span><div><b>Remind on WhatsApp</b>One tap per patient, or automatic once WhatsApp is connected.</div></li><li><span>3</span><div><b>Cut missed visits</b>Track no-shows and what they cost your clinic.</div></li></ol>`;
+  $('main').innerHTML = `<div class="card"><h2>Staff log in</h2><form id="f" novalidate>
+      <div class="field"><label for="u">Username</label><input id="u" type="text" autocomplete="username" autocapitalize="none" value="staff"></div>
+      <div class="field"><label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password" placeholder="Your password"></div>
+      <div class="err" id="err" role="alert"></div>
+      <button class="btn full" type="submit" id="go">Log in</button></form>
+      <p class="alt">Patients book from <a href="/patient">the patient page</a>. They do not need this login.</p></div>`;
+  $('pw').focus();
+  $('f').addEventListener('input', () => { $('err').textContent = ''; });
+  $('f').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!$('u').value.trim() || !$('pw').value) { $('err').textContent = 'Enter your username and password.'; return; }
+    $('go').disabled = true;
+    try { await call('/login', 'POST', { username: $('u').value, password: $('pw').value }); location.href = '/'; }
+    catch (er) { $('err').textContent = er.message; $('go').disabled = false; }
+  });
+}
+
+function teamRows(list, me) {
+  return list.map((t) => `<div class="visit" style="grid-template-columns:auto 1fr auto;align-items:center"><div class="when" style="min-width:48px;padding:8px 10px"><b style="font-size:20px">${esc(initials(t.name))}</b></div>
+    <div><h3>${esc(t.name)}${t.id === me.id ? ' <span class="tag ok">You</span>' : ''} <span class="tag">${t.role === 'owner' ? 'Owner' : 'Staff'}</span></h3><p>@${esc(t.username)}</p></div>
+    ${t.id === me.id ? '' : `<button class="small" data-rm="${t.id}">Remove</button>`}</div>`).join('');
+}
+async function loadTeam(me) {
+  if (me.role !== 'owner') return;
+  try {
+    const list = await call('/team'); $('team').innerHTML = teamRows(list, me);
+    $('rsWho').innerHTML = list.map((t) => `<option value="${t.id}">${esc(t.name)} (@${esc(t.username)})</option>`).join('');
+  } catch (er) { $('team').textContent = er.message; }
+}
+async function clinicSummary() {
+  try {
+    const r = await fetch('/api/clinics', { credentials: 'same-origin' }); const list = await r.json();
+    $('cn').textContent = list.length ? list.length + (list.length === 1 ? ' clinic' : ' clinics') + ': ' + list.map((c) => c.name).slice(0, 3).join(', ') + (list.length > 3 ? '...' : '') : 'No clinic added yet.';
+  } catch {}
+}
+function showProfile(me) {
+  document.title = 'Your profile - Baari';
+  $('hero').innerHTML = brand('<a href="/">Clinic desk</a>') + `<div class="avatar" aria-hidden="true" id="av">${esc(initials(me.name))}</div><div class="who" id="wh">${esc(me.name)}</div><p>@${esc(me.username)} · ${me.role === 'owner' ? 'Owner' : 'Staff'}</p>
+    <div class="heroacts"><a href="/">Open clinic desk</a><button class="ghost" id="out">Log out</button></div>
+    <ol class="how"><li><span>1</span><div><b>Your login</b>Change your name and password here.</div></li><li><span>2</span><div><b>Your team</b>${me.role === 'owner' ? 'Give each receptionist their own login so you can remove access when someone leaves.' : 'Your clinic owner manages who has a login.'}</div></li></ol>`;
+  $('out').onclick = async () => { await call('/logout', 'POST'); location.href = '/staff/login'; };
+  $('main').innerHTML = (me.default_password ? '<div class="card" style="border-color:var(--bad);background:var(--bad-bg)"><h2 style="color:var(--bad)">Change your password</h2><p class="note">You are still using the starting password. Anyone who knows it can open your clinic desk. Choose a new one below.</p></div>' : '') + `<div class="card"><h2>Your clinics</h2><p class="note" id="cn">Loading...</p>
+      <div class="row" style="margin-top:12px"><code id="pl" style="background:var(--row);padding:8px 12px;border-radius:12px;font-weight:600"></code><button class="small" style="color:var(--soft-ink)" id="cp">Copy patient link</button></div></div>
+    <div class="card"><h2>Your details</h2><form id="df" novalidate><div class="field"><label for="dn">Name</label><input id="dn" type="text" value="${esc(me.name)}"></div>
+      <div class="field"><label for="du">Username</label><input id="du" type="text" value="${esc(me.username)}" disabled></div>
+      <div class="err" id="derr" role="alert"></div><div class="ok-msg" id="dok" role="status"></div><button class="btn full" type="submit">Save name</button></form></div>
+    <div class="card"><h2>Change password</h2><form id="pf" novalidate><div class="field"><label for="cur">Current password</label><input id="cur" type="password" autocomplete="current-password"></div>
+      <div class="field"><label for="nw">New password</label><input id="nw" type="password" autocomplete="new-password" placeholder="At least 8 characters"></div>
+      <div class="err" id="perr" role="alert"></div><div class="ok-msg" id="pok" role="status"></div><button class="btn full" type="submit">Change password</button></form></div>
+    <div class="card" id="teamCard"><h2>Team</h2><div id="team" class="note">Loading...</div>
+      <form id="tf" novalidate style="margin-top:14px;border-top:1px solid var(--line);padding-top:16px"><h3 style="font:700 18px var(--font);margin-bottom:10px">Add a team member</h3>
+        <div class="field"><label for="tn">Name</label><input id="tn" type="text"></div>
+        <div class="field"><label for="tu">Username</label><input id="tu" type="text" autocapitalize="none"></div>
+        <div class="field"><label for="tp">Password</label><input id="tp" type="password" autocomplete="new-password" placeholder="At least 8 characters"></div>
+        <div class="field"><label for="tr">Access</label><select id="tr" style="width:100%;background:var(--row);border:1.5px solid transparent;border-radius:14px;padding:12px 14px;min-height:50px;font-weight:500"><option value="staff">Staff: appointments, bookings and WhatsApp</option><option value="owner">Owner: everything, including clinics, team and report</option></select></div>
+        <div class="err" id="terr" role="alert"></div><div class="ok-msg" id="tok" role="status"></div><button class="btn full" type="submit">Add member</button></form>
+      <form id="rf" novalidate style="margin-top:18px;border-top:1px solid var(--line);padding-top:16px"><h3 style="font:700 18px var(--font);margin-bottom:10px">Reset a password</h3>
+        <div class="field"><label for="rsWho">Who</label><select id="rsWho" style="width:100%;background:var(--row);border:1.5px solid transparent;border-radius:14px;padding:12px 14px;min-height:50px;font-weight:500"></select></div>
+        <div class="field"><label for="rsPw">New password</label><input id="rsPw" type="password" autocomplete="new-password" placeholder="At least 8 characters"></div>
+        <div class="err" id="rerr" role="alert"></div><div class="ok-msg" id="rok" role="status"></div><button class="btn full" type="submit">Reset password</button></form></div>`;
+  $('pl').textContent = me.patient_url || (location.origin + '/patient');
+  $('cp').onclick = async () => { try { await navigator.clipboard.writeText($('pl').textContent); $('cp').textContent = 'Copied'; } catch { $('cp').textContent = 'Select and copy it'; } };
+  $('df').addEventListener('submit', async (e) => { e.preventDefault(); $('derr').textContent = ''; $('dok').textContent = '';
+    try { const r = await call('/me', 'PUT', { name: $('dn').value }); me.name = r.name; $('dok').textContent = 'Saved.'; $('wh').textContent = r.name; $('av').textContent = initials(r.name); loadTeam(me); } catch (er) { $('derr').textContent = er.message; } });
+  $('pf').addEventListener('submit', async (e) => { e.preventDefault(); $('perr').textContent = ''; $('pok').textContent = '';
+    try { await call('/password', 'PUT', { current: $('cur').value, next: $('nw').value }); $('pok').textContent = 'Password changed.'; $('pf').reset(); } catch (er) { $('perr').textContent = er.message; } });
+  $('tf').addEventListener('submit', async (e) => { e.preventDefault(); $('terr').textContent = ''; $('tok').textContent = '';
+    try { await call('/team', 'POST', { name: $('tn').value, username: $('tu').value, password: $('tp').value, role: $('tr').value }); $('tok').textContent = 'Added. Share the username and password with them.'; $('tf').reset(); loadTeam(me); } catch (er) { $('terr').textContent = er.message; } });
+  document.addEventListener('click', async (e) => {
+    const b = e.target.closest('[data-rm]'); if (!b) return;
+    if (b.dataset.armed !== '1') { b.dataset.armed = '1'; b.textContent = 'Tap again to remove'; setTimeout(() => { b.dataset.armed = ''; b.textContent = 'Remove'; }, 4000); return; }
+    try { await call('/team/' + b.dataset.rm, 'DELETE'); loadTeam(me); } catch (er) { b.textContent = er.message; }
+  });
+  if (me.role !== 'owner') { $('teamCard').remove(); } else {
+    $('rf').addEventListener('submit', async (e) => { e.preventDefault(); $('rerr').textContent = ''; $('rok').textContent = '';
+      try { await call('/team/' + $('rsWho').value + '/password', 'PUT', { password: $('rsPw').value }); $('rok').textContent = 'Password reset. Share the new one with them.'; $('rf').reset(); } catch (er) { $('rerr').textContent = er.message; } });
+  }
+  loadTeam(me); clinicSummary();
+}
+(async () => {
+  let me = null;
+  try { me = await call('/me'); } catch {}
+  const onProfile = location.pathname.endsWith('/profile');
+  if (onProfile && !me) { location.replace('/staff/login'); return; }
+  if (!onProfile && me) { location.replace('/'); return; }
+  if (me) showProfile(me); else showLogin();
+})();
+/* pointer light: one cheap update per frame */
+(() => {
+  const g = document.querySelector('.bg .glow'); if (!g) return;
+  let x = 0, y = 0, raf = 0, hero = null;
+  addEventListener('pointermove', (e) => {
+    if (e.pointerType === 'touch') return;
+    x = e.clientX; y = e.clientY; hero = e.target.closest ? e.target.closest('.hero') : null;
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0; g.classList.add('on'); g.style.transform = `translate(${x}px, ${y}px)`;
+      if (hero) { const r = hero.getBoundingClientRect(); hero.style.setProperty('--hx', (x - r.left) + 'px'); hero.style.setProperty('--hy', (y - r.top) + 'px'); }
+    });
+  }, { passive: true });
+  document.addEventListener('pointerleave', () => g.classList.remove('on'));
+})();
+</script>
+</body>
+</html>
